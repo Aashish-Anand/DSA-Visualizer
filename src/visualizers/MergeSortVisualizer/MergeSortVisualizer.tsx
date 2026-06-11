@@ -109,7 +109,8 @@ export function MergeSortVisualizer({ state }: MergeSortVisualizerProps) {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-12 w-full mt-4 pb-8">
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="flex flex-col items-center gap-12 min-w-max mx-auto mt-4 pb-8 px-4">
         {/* Top level: The main array */}
         <div className="w-full flex justify-center">
           {renderSubarrayBars({
@@ -134,6 +135,7 @@ export function MergeSortVisualizer({ state }: MergeSortVisualizerProps) {
           <AnimatePresence mode="popLayout">
             {subarrays.map((subarray, index) => renderSubarrayBars(subarray, index, false))}
           </AnimatePresence>
+        </div>
         </div>
       </div>
     </div>

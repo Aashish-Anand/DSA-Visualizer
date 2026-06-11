@@ -4,6 +4,8 @@ A visual, interactive learning platform that helps beginners understand **Data S
 
 > **No backend required.** All algorithm execution happens entirely in the browser.
 
+🚀 **Live Demo:** [https://dsa-visualizer-two-pi.vercel.app/](https://dsa-visualizer-two-pi.vercel.app/)
+
 ![Bubble Sort visualization with animated histogram bars](https://img.shields.io/badge/Algorithms-2-7c3aed?style=for-the-badge) ![Built with React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=for-the-badge&logo=typescript)
 
 ---

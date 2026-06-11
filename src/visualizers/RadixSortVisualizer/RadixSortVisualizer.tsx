@@ -32,7 +32,8 @@ export function RadixSortVisualizer({ state }: RadixSortVisualizerProps) {
       </div>
 
       {/* Main Array Top Level */}
-      <div className="flex items-end justify-center mb-12 h-[120px] gap-2">
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="flex items-end justify-center mb-12 h-[120px] gap-2 min-w-max mx-auto px-4">
         <AnimatePresence mode="popLayout">
           {array.map((val, idx) => {
             const heightPercent = (val / maxValue) * 100;
@@ -97,6 +98,7 @@ export function RadixSortVisualizer({ state }: RadixSortVisualizerProps) {
             );
           })}
         </AnimatePresence>
+        </div>
       </div>
 
       {/* 10 Buckets */}

@@ -1,5 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { usePlaybackEngine } from "@/hooks/usePlaybackEngine";
@@ -459,11 +460,37 @@ function AlgorithmLayout({
     Hard: "bg-red-500/10 text-red-500 border-red-500/20",
   };
 
+  const [showDesktopToast, setShowDesktopToast] = useState(() => {
+    return typeof window !== "undefined" && window.innerWidth < 1024;
+  });
+
+  useEffect(() => {
+    if (showDesktopToast) {
+      const timer = setTimeout(() => setShowDesktopToast(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showDesktopToast]);
+
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-full lg:h-screen lg:overflow-hidden relative">
+      {/* Mobile Toast */}
+      <AnimatePresence>
+        {showDesktopToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: 20, x: "-50%" }}
+            className="fixed bottom-6 left-1/2 z-50 flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-xl text-xs font-medium whitespace-nowrap"
+          >
+            <Info size={14} />
+            For the best experience, use a Desktop!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <motion.header
-        className="shrink-0 px-4 lg:px-6 py-3 border-b border-border"
+        className="shrink-0 pl-14 pr-4 lg:px-6 py-3 border-b border-border"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -486,7 +513,7 @@ function AlgorithmLayout({
       </motion.header>
 
       {/* Controls Bar */}
-      <div className="shrink-0 px-4 lg:px-6 py-2.5 border-b border-border bg-card/50 flex items-center justify-between gap-4 flex-wrap">
+      <div className="shrink-0 px-4 lg:px-6 py-2.5 border-b border-border bg-card/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PlaybackControls
           isPlaying={engine.isPlaying}
           speed={engine.speed}
@@ -502,15 +529,17 @@ function AlgorithmLayout({
           onReset={engine.reset}
           onSpeedChange={engine.setSpeed}
         />
-        <Separator orientation="vertical" className="h-6 hidden sm:block" />
-        {inputControls}
+        <Separator orientation="vertical" className="h-6 hidden lg:block" />
+        <div className="w-full sm:w-auto">
+          {inputControls}
+        </div>
       </div>
 
       {/* Main content — Visualizer + Pseudocode */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden min-h-0">
         {/* Visualizer */}
         <motion.div
-          className="flex-1 lg:flex-[3] overflow-auto border-b lg:border-b-0 lg:border-r border-border"
+          className="min-h-[40vh] lg:min-h-0 flex-1 lg:flex-[3] lg:overflow-auto border-b lg:border-b-0 lg:border-r border-border"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -520,7 +549,7 @@ function AlgorithmLayout({
 
         {/* Pseudocode */}
         <motion.div
-          className="lg:flex-[2] lg:max-w-sm xl:max-w-md overflow-hidden border-b lg:border-b-0 border-border bg-card/30"
+          className="lg:flex-[2] lg:max-w-sm xl:max-w-md lg:overflow-hidden border-b lg:border-b-0 border-border bg-card/30 min-h-[300px] lg:min-h-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -536,7 +565,7 @@ function AlgorithmLayout({
 
       {/* Explanation Panel */}
       <motion.div
-        className="shrink-0 border-t border-border bg-card/50 min-h-[100px] max-h-[140px]"
+        className="shrink-0 border-t border-border bg-card/50 lg:min-h-[100px] lg:max-h-[140px]"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}

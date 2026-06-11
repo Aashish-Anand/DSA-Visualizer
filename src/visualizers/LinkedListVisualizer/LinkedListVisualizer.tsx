@@ -25,7 +25,8 @@ export function LinkedListVisualizer({ state }: LinkedListVisualizerProps) {
       </div>
 
       {/* Linked List */}
-      <div className="flex items-center p-8 bg-card/30 rounded-2xl border border-border/50 overflow-x-auto min-w-min mx-auto">
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="flex items-center p-8 bg-card/30 rounded-2xl border border-border/50 min-w-max mx-auto">
         <AnimatePresence mode="popLayout">
           {nodes.map((node, index) => {
             const isHead = node.id === headId;
@@ -119,6 +120,7 @@ export function LinkedListVisualizer({ state }: LinkedListVisualizerProps) {
             );
           })}
         </AnimatePresence>
+        </div>
       </div>
 
       {status === "found" && (

@@ -27,7 +27,8 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
         {/* Input Array */}
         <div className="flex flex-col gap-2">
           <div className="text-xs uppercase tracking-wider font-semibold text-muted-foreground ml-2">1. Input Array</div>
-          <div className="flex flex-wrap gap-2">
+          <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex flex-nowrap gap-2 min-w-max px-2">
             {inputArray.map((val, idx) => {
               const isHighlighted = (phase === "counting" || phase === "placing") && currentIndex === idx;
               
@@ -49,6 +50,7 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
 
@@ -58,7 +60,8 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
             <span>2. Count Array (Index = Value)</span>
             {phase === "accumulating" && <span className="text-amber-500 animate-pulse">Adding previous counts...</span>}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex flex-nowrap gap-2 min-w-max px-2">
             {countArray.map((count, idx) => {
               const isHighlighted = highlightedCountIndex === idx;
               
@@ -88,13 +91,15 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
 
         {/* Output Array */}
         <div className="flex flex-col gap-2">
           <div className="text-xs uppercase tracking-wider font-semibold text-muted-foreground ml-2">3. Output Array</div>
-          <div className="flex flex-wrap gap-2">
+          <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
+            <div className="flex flex-nowrap gap-2 min-w-max px-2">
             {outputArray.map((val, idx) => {
               const isNewlyPlaced = phase === "placing" && val !== null && !sortedIndices.includes(idx) && idx === currentIndex; // Note: generator needs to manage this correctly
               const isSorted = sortedIndices.includes(idx);
@@ -119,6 +124,7 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
 

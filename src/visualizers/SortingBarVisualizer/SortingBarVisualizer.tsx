@@ -140,7 +140,8 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
       </div>
 
       {/* Bars container */}
-      <div className="flex items-end justify-center relative mb-12" style={{ gap: `${gap}px`, height: "280px", width: "100%" }}>
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="flex items-end justify-center relative mb-12 min-w-max mx-auto px-4" style={{ gap: `${gap}px`, height: "280px" }}>
         <AnimatePresence mode="popLayout">
           {array.map((value, index) => {
             const heightPercent = (value / maxValue) * 100;
@@ -246,6 +247,7 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
           })}
         </AnimatePresence>
       </div>
+    </div>
 
       {/* Progress indicator */}
       <div className="mt-8 flex items-center gap-3 text-xs text-muted-foreground">

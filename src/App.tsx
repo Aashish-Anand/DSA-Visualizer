@@ -25,12 +25,12 @@ function App() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex min-h-[100dvh] lg:h-screen bg-background text-foreground overflow-y-auto lg:overflow-hidden">
       <Sidebar
         activeAlgorithm={activeAlgorithm}
         onSelectAlgorithm={setActiveAlgorithm}
       />
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 min-w-0 lg:overflow-hidden">
         <AlgorithmPage key={activeAlgorithm} algorithmId={activeAlgorithm} />
       </main>
     </div>

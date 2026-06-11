@@ -30,7 +30,8 @@ export function ArraySearchVisualizer({ state }: ArraySearchVisualizerProps) {
       </div>
 
       {/* Array Container */}
-      <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl p-8 bg-card/30 rounded-2xl border border-border/50">
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="flex flex-nowrap items-center justify-center gap-2 max-w-4xl min-w-max mx-auto p-8 bg-card/30 rounded-2xl border border-border/50">
         <AnimatePresence mode="popLayout">
           {array.map((val, idx) => {
             const isFound = foundIndex === idx;
@@ -115,6 +116,7 @@ export function ArraySearchVisualizer({ state }: ArraySearchVisualizerProps) {
             );
           })}
         </AnimatePresence>
+        </div>
       </div>
 
       {/* Legend */}

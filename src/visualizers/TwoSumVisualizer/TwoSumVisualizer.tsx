@@ -70,7 +70,8 @@ export function TwoSumVisualizer({ state }: TwoSumVisualizerProps) {
         <div className="text-xs font-medium text-muted-foreground mb-2 text-center">
           Input Array
         </div>
-        <div className="flex items-center justify-center gap-1.5 flex-wrap">
+        <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+          <div className="flex items-center justify-center gap-1.5 flex-nowrap min-w-max px-2">
           {array.map((value, index) => {
             const style = getCellStyle(index);
             return (
@@ -114,6 +115,7 @@ export function TwoSumVisualizer({ state }: TwoSumVisualizerProps) {
               </motion.div>
             );
           })}
+          </div>
         </div>
       </div>
 
