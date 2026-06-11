@@ -100,8 +100,8 @@
   --color-viz-comparing: hsl(45 93% 55%);
   --color-viz-swapping: hsl(0 84% 65%);
   --color-viz-sorted: hsl(142 71% 50%);
-  --color-viz-default: hsl(262 83% 68%);
   --color-viz-active: hsl(199 89% 55%);
+  --color-viz-default: hsl(262 83% 68%);
   --color-viz-found: hsl(142 71% 50%);
   --color-viz-hashmap: hsl(262 60% 60%);
 }

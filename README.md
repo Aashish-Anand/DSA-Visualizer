@@ -21,30 +21,43 @@ A visual, interactive learning platform that helps beginners understand **Data S
 
 ---
 
+## 📸 Screenshots
+
+### Bubble Sort, Selection Sort, Insertion Sort, Quick Sort (Shared Bar Visualizer)
+These algorithms use a unified bar visualizer with dynamic markers (`MIN`, `KEY`, `PIVOT`) to illustrate how each algorithm breaks down the array.
+![Selection Sort](public/screenshots/selection-sort.png)
+
+![Quick Sort](public/screenshots/quick-sort.png)
+
+### Merge Sort
+A custom tree-based visualizer showing the array splitting into smaller chunks, descending into rows, and merging back together.
+![Merge Sort](public/screenshots/merge-sort.png)
+
+### Radix Sort
+A bucket-based visualizer with 10 animated buckets (0-9) where numbers drop down based on their place value.
+![Radix Sort](public/screenshots/radix-sort.png)
+
+### Counting Sort
+A 3-part layout displaying the flow from the input array, to the frequency counts, to the final output array.
+![Counting Sort](public/screenshots/counting-sort.png)
+
+---
+
 ## 🧠 Algorithms
 
-### Bubble Sort (Sorting)
+### Sorting
 
-Visualizes the array as animated histogram bars with color-coded states:
+1. **Bubble Sort** (Easy)
+2. **Selection Sort** (Easy)
+3. **Insertion Sort** (Easy)
+4. **Quick Sort** (Medium)
+5. **Merge Sort** (Medium)
+6. **Radix Sort** (Medium)
+7. **Counting Sort** (Medium)
 
-| Color | Meaning |
-|-------|---------|
-| 🟡 Amber | Currently being compared |
-| 🔴 Red | Being swapped |
-| 🟢 Green | In its final sorted position |
+### Arrays
 
-**Controls:** Randomize array, adjust array size (5–20 elements).
-
-### Two Sum (Arrays)
-
-Visualizes the HashMap approach step by step:
-
-- **Array display** — Cells highlight as the algorithm scans through
-- **Info cards** — Current index, current value, complement needed
-- **HashMap table** — Entries animate in as they're added
-- **Success state** — Celebration animation when the pair is found
-
-**Controls:** Generate random input, adjust target value.
+1. **Two Sum** (Easy) — Visualizes the HashMap approach step by step with info cards and a dynamic table.
 
 ---
 
@@ -68,6 +81,13 @@ npm install
 # Start the dev server
 npm run dev
 ```
+
+> **Troubleshooting `npm: command not found`**
+> If you get a "command not found" error, your Node manager (like `fnm` or `nvm`) might not be loaded in your terminal session.
+> Try running this before your `npm` commands:
+> ```bash
+> export PATH="$HOME/.local/share/fnm:$PATH" && eval "$(fnm env)"
+> ```
 
 Open **http://localhost:5173** in your browser.
 

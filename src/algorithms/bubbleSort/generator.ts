@@ -1,4 +1,4 @@
-import type { VisualizationStep, BubbleSortState } from "@/types";
+import type { VisualizationStep, SortingBarState } from "@/types";
 
 /**
  * Generates a complete sequence of visualization steps for the Bubble Sort algorithm.
@@ -6,22 +6,28 @@ import type { VisualizationStep, BubbleSortState } from "@/types";
  */
 export function generateBubbleSortSteps(
   inputArray: number[]
-): VisualizationStep<BubbleSortState>[] {
-  const steps: VisualizationStep<BubbleSortState>[] = [];
+): VisualizationStep<SortingBarState>[] {
+  const steps: VisualizationStep<SortingBarState>[] = [];
   const array = [...inputArray];
   const n = array.length;
   const sortedIndices: number[] = [];
 
+  const createBaseState = (): SortingBarState => ({
+    array: [...array],
+    comparingIndices: null,
+    swappedIndices: null,
+    sortedIndices: [...sortedIndices],
+    highlightedIndex: null,
+    highlightLabel: null,
+    partitionRegion: null,
+    pivotIndex: null,
+    insertingFromIndex: null,
+    sortedRegion: null,
+  });
+
   // Initial state
   steps.push({
-    state: {
-      array: [...array],
-      comparingIndices: null,
-      swappedIndices: null,
-      sortedIndices: [],
-      currentI: 0,
-      currentJ: 0,
-    },
+    state: createBaseState(),
     activeLine: 0,
     explanation: `Starting Bubble Sort with array [${array.join(", ")}]. Array has ${n} elements.`,
     beginnerExplanation: `Let's sort these ${n} numbers from smallest to biggest! We'll do this by comparing neighbors and swapping them if they're in the wrong order.`,
@@ -30,14 +36,7 @@ export function generateBubbleSortSteps(
   for (let i = 0; i < n - 1; i++) {
     // Start of outer loop pass
     steps.push({
-      state: {
-        array: [...array],
-        comparingIndices: null,
-        swappedIndices: null,
-        sortedIndices: [...sortedIndices],
-        currentI: i,
-        currentJ: 0,
-      },
+      state: createBaseState(),
       activeLine: 1,
       explanation: `Starting pass ${i + 1} of ${n - 1}. Will compare elements from index 0 to ${n - i - 2}.`,
       beginnerExplanation: `Round ${i + 1}! We'll walk through the unsorted part of the array and bubble the biggest number to the right.`,
@@ -49,12 +48,8 @@ export function generateBubbleSortSteps(
       // Comparing step
       steps.push({
         state: {
-          array: [...array],
+          ...createBaseState(),
           comparingIndices: [j, j + 1],
-          swappedIndices: null,
-          sortedIndices: [...sortedIndices],
-          currentI: i,
-          currentJ: j,
         },
         activeLine: 2,
         explanation: `Comparing arr[${j}] = ${array[j]} and arr[${j + 1}] = ${array[j + 1]}.`,
@@ -70,12 +65,8 @@ export function generateBubbleSortSteps(
 
         steps.push({
           state: {
-            array: [...array],
-            comparingIndices: null,
+            ...createBaseState(),
             swappedIndices: [j, j + 1],
-            sortedIndices: [...sortedIndices],
-            currentI: i,
-            currentJ: j,
           },
           activeLine: 3,
           explanation: `Since ${temp} > ${array[j]}, swap them. Array is now [${array.join(", ")}].`,
@@ -84,14 +75,7 @@ export function generateBubbleSortSteps(
       } else {
         // No swap needed
         steps.push({
-          state: {
-            array: [...array],
-            comparingIndices: null,
-            swappedIndices: null,
-            sortedIndices: [...sortedIndices],
-            currentI: i,
-            currentJ: j,
-          },
+          state: createBaseState(),
           activeLine: 2,
           explanation: `${array[j]} ≤ ${array[j + 1]}, no swap needed. They are already in the correct order.`,
           beginnerExplanation: `${array[j]} is not bigger than ${array[j + 1]}, so they're already in the right order. No swap needed! ✓`,
@@ -103,14 +87,7 @@ export function generateBubbleSortSteps(
     sortedIndices.push(n - 1 - i);
 
     steps.push({
-      state: {
-        array: [...array],
-        comparingIndices: null,
-        swappedIndices: null,
-        sortedIndices: [...sortedIndices],
-        currentI: i,
-        currentJ: n - i - 1,
-      },
+      state: createBaseState(),
       activeLine: 4,
       explanation: `Pass ${i + 1} complete.${swapped ? "" : " No swaps were made."} Element ${array[n - 1 - i]} is now in its final position at index ${n - 1 - i}.`,
       beginnerExplanation: `Round ${i + 1} is done! The number ${array[n - 1 - i]} has bubbled up to its correct spot. ${swapped ? "We made some swaps this round." : "No swaps were needed — things are getting sorted!"} 🎯`,
@@ -124,14 +101,7 @@ export function generateBubbleSortSteps(
 
   // Final sorted state
   steps.push({
-    state: {
-      array: [...array],
-      comparingIndices: null,
-      swappedIndices: null,
-      sortedIndices: [...sortedIndices],
-      currentI: n - 1,
-      currentJ: 0,
-    },
+    state: createBaseState(),
     activeLine: 5,
     explanation: `Bubble Sort complete! The sorted array is [${array.join(", ")}].`,
     beginnerExplanation: `We did it! 🎉 All the numbers are now sorted from smallest to biggest: [${array.join(", ")}]. Each number bubbled up to its correct position!`,

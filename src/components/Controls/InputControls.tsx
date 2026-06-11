@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Shuffle, Dice5 } from "lucide-react";
 
-interface BubbleSortInputControlsProps {
-  type: "bubble-sort";
+interface SortingInputControlsProps {
+  type: "sorting";
   arraySize: number;
   onArraySizeChange: (size: number) => void;
   onRandomize: () => void;
@@ -16,20 +16,20 @@ interface TwoSumInputControlsProps {
   onRandomize: () => void;
 }
 
-type InputControlsProps = BubbleSortInputControlsProps | TwoSumInputControlsProps;
+type InputControlsProps = SortingInputControlsProps | TwoSumInputControlsProps;
 
 export function InputControls(props: InputControlsProps) {
-  if (props.type === "bubble-sort") {
-    return <BubbleSortInputs {...props} />;
+  if (props.type === "sorting") {
+    return <SortingInputs {...props} />;
   }
   return <TwoSumInputs {...props} />;
 }
 
-function BubbleSortInputs({
+function SortingInputs({
   arraySize,
   onArraySizeChange,
   onRandomize,
-}: BubbleSortInputControlsProps) {
+}: SortingInputControlsProps) {
   return (
     <div className="flex items-center gap-3 flex-wrap">
       <Button
@@ -50,7 +50,7 @@ function BubbleSortInputs({
           value={[arraySize]}
           onValueChange={([v]) => onArraySizeChange(v)}
           min={5}
-          max={20}
+          max={40}
           step={1}
           className="w-24"
         />

@@ -1,13 +1,24 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { BubbleSortState } from "@/types";
+import type { SortingBarState } from "@/types";
 
-interface BubbleSortVisualizerProps {
-  state: BubbleSortState;
+interface SortingBarVisualizerProps {
+  state: SortingBarState;
 }
 
-export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
-  const { array, comparingIndices, swappedIndices, sortedIndices } = state;
+export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
+  const {
+    array,
+    comparingIndices,
+    swappedIndices,
+    sortedIndices,
+    highlightedIndex,
+    highlightLabel,
+    partitionRegion,
+    pivotIndex,
+    insertingFromIndex,
+    sortedRegion,
+  } = state;
 
   const maxValue = useMemo(() => Math.max(...array, 1), [array]);
 
@@ -17,6 +28,17 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
     }
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "var(--color-viz-comparing)";
+    }
+    if (highlightedIndex === index) {
+      if (highlightLabel === "MIN" || highlightLabel === "KEY") {
+        return "var(--color-viz-active)"; // e.g. blue/orange
+      }
+    }
+    if (pivotIndex === index) {
+      return "hsl(190, 90%, 50%)"; // cyan for pivot
+    }
+    if (insertingFromIndex === index) {
+      return "var(--color-viz-active)";
     }
     if (sortedIndices.includes(index)) {
       return "var(--color-viz-sorted)";
@@ -31,6 +53,9 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "0 0 20px hsla(45, 93%, 47%, 0.4)";
     }
+    if (highlightedIndex === index || pivotIndex === index) {
+      return "0 0 16px hsla(199, 89%, 48%, 0.4)";
+    }
     if (sortedIndices.includes(index)) {
       return "0 0 12px hsla(142, 71%, 45%, 0.3)";
     }
@@ -44,11 +69,20 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "CMP";
     }
+    if (highlightedIndex === index && highlightLabel) {
+      return highlightLabel;
+    }
+    if (pivotIndex === index) {
+      return "PIVOT";
+    }
     if (sortedIndices.includes(index)) {
       return "✓";
     }
     return null;
   };
+
+  const isPartitioned = partitionRegion && index >= partitionRegion[0] && index <= partitionRegion[1];
+  const isSortedRegion = sortedRegion && index >= sortedRegion[0] && index <= sortedRegion[1];
 
   const barWidth = Math.max(24, Math.min(56, 600 / array.length));
   const gap = Math.max(3, Math.min(8, 200 / array.length));
@@ -56,59 +90,76 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full min-h-[300px] p-4">
       {/* Legend */}
-      <div className="flex items-center gap-4 mb-6 text-xs font-medium">
+      <div className="flex items-center gap-4 mb-6 text-xs font-medium flex-wrap justify-center">
         <div className="flex items-center gap-1.5">
-          <div
-            className="w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "var(--color-viz-comparing)" }}
-          />
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--color-viz-comparing)" }} />
           <span className="text-muted-foreground">Comparing</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div
-            className="w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "var(--color-viz-swapping)" }}
-          />
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--color-viz-swapping)" }} />
           <span className="text-muted-foreground">Swapping</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div
-            className="w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "var(--color-viz-sorted)" }}
-          />
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--color-viz-sorted)" }} />
           <span className="text-muted-foreground">Sorted</span>
         </div>
+        {highlightLabel && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "var(--color-viz-active)" }} />
+            <span className="text-muted-foreground">{highlightLabel}</span>
+          </div>
+        )}
+        {pivotIndex !== null && (
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: "hsl(190, 90%, 50%)" }} />
+            <span className="text-muted-foreground">Pivot</span>
+          </div>
+        )}
       </div>
 
       {/* Bars container */}
-      <div
-        className="flex items-end justify-center"
-        style={{ gap: `${gap}px`, height: "280px" }}
-      >
+      <div className="flex items-end justify-center relative" style={{ gap: `${gap}px`, height: "280px", width: "100%" }}>
         <AnimatePresence mode="popLayout">
           {array.map((value, index) => {
             const heightPercent = (value / maxValue) * 100;
             const color = getBarColor(index);
             const glow = getBarGlow(index);
             const label = getStatusLabel(index);
+            
+            const isInPartition = partitionRegion && index >= partitionRegion[0] && index <= partitionRegion[1];
+            const isOutsidePartition = partitionRegion && !isInPartition;
+            const isInSortedRegion = sortedRegion && index >= sortedRegion[0] && index <= sortedRegion[1];
 
             return (
               <motion.div
                 key={`bar-${index}`}
                 layout
-                className="flex flex-col items-center"
+                className="flex flex-col items-center relative"
                 style={{ width: `${barWidth}px` }}
                 initial={false}
               >
                 {/* Value label */}
                 <motion.div
                   className="text-xs font-semibold mb-1 tabular-nums"
-                  style={{ color }}
+                  style={{ color, opacity: isOutsidePartition ? 0.4 : 1 }}
                   animate={{ scale: label === "SWAP" ? [1, 1.2, 1] : 1 }}
                   transition={{ duration: 0.3 }}
                 >
                   {value}
                 </motion.div>
+
+                {/* Bar Background for Partition/Sorted Region */}
+                {(isInPartition || isInSortedRegion) && (
+                   <motion.div
+                     className="absolute bottom-0 w-[120%] -z-10 rounded-sm"
+                     style={{
+                       backgroundColor: isInPartition ? "hsla(262, 83%, 58%, 0.1)" : "hsla(142, 71%, 45%, 0.1)",
+                       height: "calc(100% + 40px)",
+                       bottom: "-25px"
+                     }}
+                     layoutId={isInPartition ? "partition-bg" : "sorted-bg"}
+                   />
+                )}
 
                 {/* Bar */}
                 <motion.div
@@ -117,11 +168,13 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
                     backgroundColor: color,
                     boxShadow: glow,
                     width: `${barWidth}px`,
+                    opacity: isOutsidePartition ? 0.3 : 1
                   }}
                   animate={{
                     height: `${Math.max(heightPercent * 2.4, 12)}px`,
                     backgroundColor: color,
                     boxShadow: glow,
+                    opacity: isOutsidePartition ? 0.3 : 1
                   }}
                   transition={{
                     height: { type: "spring", stiffness: 300, damping: 25 },
@@ -142,7 +195,7 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 4 }}
-                      className="text-[9px] font-bold mt-0.5"
+                      className="text-[9px] font-bold mt-0.5 whitespace-nowrap absolute -bottom-5"
                       style={{ color }}
                     >
                       {label}
@@ -156,7 +209,7 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
       </div>
 
       {/* Progress indicator */}
-      <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-8 flex items-center gap-3 text-xs text-muted-foreground">
         <span>
           Sorted: {sortedIndices.length} / {array.length}
         </span>
@@ -164,9 +217,7 @@ export function BubbleSortVisualizer({ state }: BubbleSortVisualizerProps) {
           <motion.div
             className="h-full rounded-full"
             style={{ backgroundColor: "var(--color-viz-sorted)" }}
-            animate={{
-              width: `${(sortedIndices.length / array.length) * 100}%`,
-            }}
+            animate={{ width: `${(sortedIndices.length / array.length) * 100}%` }}
             transition={{ duration: 0.5 }}
           />
         </div>

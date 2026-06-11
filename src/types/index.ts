@@ -18,16 +18,73 @@ export interface VisualizationStep<T = Record<string, unknown>> {
 }
 
 // ================================
-// Bubble Sort Types
+// Shared Sorting Types
 // ================================
 
-export interface BubbleSortState {
+export interface SortingBarState {
   array: number[];
   comparingIndices: [number, number] | null;
   swappedIndices: [number, number] | null;
   sortedIndices: number[];
-  currentI: number;
-  currentJ: number;
+  
+  // Extended markers for other sorts
+  highlightedIndex: number | null;
+  highlightLabel: string | null;
+  partitionRegion: [number, number] | null;
+  pivotIndex: number | null;
+  insertingFromIndex: number | null;
+  sortedRegion: [number, number] | null;
+}
+
+// ================================
+// Merge Sort Types
+// ================================
+
+export interface MergeSortSubarray {
+  startIndex: number;
+  endIndex: number;
+  values: number[];
+  isSorted: boolean;
+}
+
+export interface MergeSortState {
+  array: number[];
+  subarrays: MergeSortSubarray[];
+  activeSubarray: number | null;
+  mergingIndices: number[];
+  sortedIndices: number[];
+  depth: number;
+  phase: "splitting" | "merging" | "complete";
+}
+
+// ================================
+// Radix Sort Types
+// ================================
+
+export interface RadixSortState {
+  array: number[];
+  currentDigit: number;
+  buckets: number[][];
+  highlightedIndex: number | null;
+  highlightedDigit: number | null;
+  phase: "distributing" | "collecting" | "complete";
+  sortedIndices: number[];
+  currentBucket: number | null;
+}
+
+// ================================
+// Counting Sort Types
+// ================================
+
+export interface CountingSortState {
+  inputArray: number[];
+  countArray: number[];
+  outputArray: (number | null)[];
+  currentIndex: number | null;
+  highlightedCountIndex: number | null;
+  phase: "counting" | "accumulating" | "placing" | "complete";
+  sortedIndices: number[];
+  maxValue: number;
 }
 
 // ================================

@@ -7,48 +7,85 @@ import { PlaybackControls } from "@/components/Controls/PlaybackControls";
 import { InputControls } from "@/components/Controls/InputControls";
 import { PseudocodePanel } from "@/components/PseudocodePanel/PseudocodePanel";
 import { ExplanationPanel } from "@/components/ExplanationPanel/ExplanationPanel";
-import { BubbleSortVisualizer } from "@/visualizers/BubbleSortVisualizer/BubbleSortVisualizer";
+
+// Visualizers
+import { SortingBarVisualizer } from "@/visualizers/SortingBarVisualizer/SortingBarVisualizer";
+import { MergeSortVisualizer } from "@/visualizers/MergeSortVisualizer/MergeSortVisualizer";
+import { RadixSortVisualizer } from "@/visualizers/RadixSortVisualizer/RadixSortVisualizer";
+import { CountingSortVisualizer } from "@/visualizers/CountingSortVisualizer/CountingSortVisualizer";
 import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualizer";
-import {
-  generateBubbleSortSteps,
-  generateRandomArray,
-} from "@/algorithms/bubbleSort/generator";
+
+// Generators & Configs
 import { bubbleSortConfig } from "@/algorithms/bubbleSort/config";
-import {
-  generateTwoSumSteps,
-  generateRandomTwoSumInput,
-} from "@/algorithms/twoSum/generator";
+import { generateBubbleSortSteps, generateRandomArray } from "@/algorithms/bubbleSort/generator";
+import { selectionSortConfig } from "@/algorithms/selectionSort/config";
+import { generateSelectionSortSteps } from "@/algorithms/selectionSort/generator";
+import { insertionSortConfig } from "@/algorithms/insertionSort/config";
+import { generateInsertionSortSteps } from "@/algorithms/insertionSort/generator";
+import { quickSortConfig } from "@/algorithms/quickSort/config";
+import { generateQuickSortSteps } from "@/algorithms/quickSort/generator";
+import { mergeSortConfig } from "@/algorithms/mergeSort/config";
+import { generateMergeSortSteps } from "@/algorithms/mergeSort/generator";
+import { radixSortConfig } from "@/algorithms/radixSort/config";
+import { generateRadixSortSteps } from "@/algorithms/radixSort/generator";
+import { countingSortConfig } from "@/algorithms/countingSort/config";
+import { generateCountingSortSteps, generateCountingSortArray } from "@/algorithms/countingSort/generator";
 import { twoSumConfig } from "@/algorithms/twoSum/config";
-import type { BubbleSortState, TwoSumState } from "@/types";
+import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
+
+import type { 
+  SortingBarState, 
+  MergeSortState, 
+  RadixSortState, 
+  CountingSortState, 
+  TwoSumState,
+  AlgorithmConfig
+} from "@/types";
 
 interface AlgorithmPageProps {
   algorithmId: string;
 }
 
 export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
-  if (algorithmId === "bubble-sort") {
-    return <BubbleSortPage />;
+  switch (algorithmId) {
+    case "bubble-sort":
+      return <BarSortPage config={bubbleSortConfig} generator={generateBubbleSortSteps} />;
+    case "selection-sort":
+      return <BarSortPage config={selectionSortConfig} generator={generateSelectionSortSteps} />;
+    case "insertion-sort":
+      return <BarSortPage config={insertionSortConfig} generator={generateInsertionSortSteps} />;
+    case "quick-sort":
+      return <BarSortPage config={quickSortConfig} generator={generateQuickSortSteps} />;
+    case "merge-sort":
+      return <MergeSortPage />;
+    case "radix-sort":
+      return <RadixSortPage />;
+    case "counting-sort":
+      return <CountingSortPage />;
+    case "two-sum":
+      return <TwoSumPage />;
+    default:
+      return <div>Algorithm not found</div>;
   }
-  return <TwoSumPage />;
 }
 
 // ================================
-// Bubble Sort Page
+// Generic Bar Sort Page (Bubble, Selection, Insertion, Quick)
 // ================================
 
-function BubbleSortPage() {
-  const config = bubbleSortConfig;
+interface BarSortPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[]) => any[];
+}
+
+function BarSortPage({ config, generator }: BarSortPageProps) {
   const [arraySize, setArraySize] = useState(8);
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateRandomArray(8)
   );
 
-  const steps = useMemo(
-    () => generateBubbleSortSteps(inputArray),
-    [inputArray]
-  );
-
-  const engine = usePlaybackEngine<BubbleSortState>(steps);
+  const steps = useMemo(() => generator(inputArray), [inputArray, generator]);
+  const engine = usePlaybackEngine<SortingBarState>(steps);
 
   const handleRandomize = useCallback(() => {
     setInputArray(generateRandomArray(arraySize));
@@ -65,7 +102,7 @@ function BubbleSortPage() {
       engine={engine}
       inputControls={
         <InputControls
-          type="bubble-sort"
+          type="sorting"
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
@@ -73,7 +110,136 @@ function BubbleSortPage() {
       }
       visualizer={
         engine.currentStep ? (
-          <BubbleSortVisualizer state={engine.currentStep.state} />
+          <SortingBarVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Merge Sort Page
+// ================================
+
+function MergeSortPage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateRandomArray(8)
+  );
+
+  const steps = useMemo(() => generateMergeSortSteps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<MergeSortState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateRandomArray(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateRandomArray(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={mergeSortConfig}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <MergeSortVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Radix Sort Page
+// ================================
+
+function RadixSortPage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateRandomArray(8).map(x => x * Math.floor(Math.random() * 10)) // make numbers larger for better visualization
+  );
+
+  const steps = useMemo(() => generateRadixSortSteps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<RadixSortState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateRandomArray(arraySize).map(x => x * Math.floor(Math.random() * 10)));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateRandomArray(size).map(x => x * Math.floor(Math.random() * 10)));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={radixSortConfig}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <RadixSortVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Counting Sort Page
+// ================================
+
+function CountingSortPage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateCountingSortArray(8)
+  );
+
+  const steps = useMemo(() => generateCountingSortSteps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<CountingSortState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateCountingSortArray(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateCountingSortArray(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={countingSortConfig}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <CountingSortVisualizer state={engine.currentStep.state} />
         ) : null
       }
     />
@@ -132,8 +298,8 @@ function TwoSumPage() {
 // ================================
 
 interface AlgorithmLayoutProps {
-  config: typeof bubbleSortConfig;
-  engine: ReturnType<typeof usePlaybackEngine<BubbleSortState>> | ReturnType<typeof usePlaybackEngine<TwoSumState>>;
+  config: AlgorithmConfig;
+  engine: any; // using any here to simplify generic hook typing across 5 different states
   inputControls: React.ReactNode;
   visualizer: React.ReactNode;
 }

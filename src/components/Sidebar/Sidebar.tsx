@@ -32,7 +32,15 @@ const CATEGORIES: SidebarCategory[] = [
   {
     name: "Sorting",
     icon: "arrow-up-down",
-    items: [{ id: "bubble-sort", title: "Bubble Sort", difficulty: "Easy" }],
+    items: [
+      { id: "bubble-sort", title: "Bubble Sort", difficulty: "Easy" },
+      { id: "selection-sort", title: "Selection Sort", difficulty: "Easy" },
+      { id: "insertion-sort", title: "Insertion Sort", difficulty: "Easy" },
+      { id: "quick-sort", title: "Quick Sort", difficulty: "Medium" },
+      { id: "merge-sort", title: "Merge Sort", difficulty: "Medium" },
+      { id: "radix-sort", title: "Radix Sort", difficulty: "Medium" },
+      { id: "counting-sort", title: "Counting Sort", difficulty: "Medium" },
+    ],
   },
 ];
 
