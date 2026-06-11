@@ -13,6 +13,8 @@ import { SortingBarVisualizer } from "@/visualizers/SortingBarVisualizer/Sorting
 import { MergeSortVisualizer } from "@/visualizers/MergeSortVisualizer/MergeSortVisualizer";
 import { RadixSortVisualizer } from "@/visualizers/RadixSortVisualizer/RadixSortVisualizer";
 import { CountingSortVisualizer } from "@/visualizers/CountingSortVisualizer/CountingSortVisualizer";
+import { ArraySearchVisualizer } from "@/visualizers/ArraySearchVisualizer/ArraySearchVisualizer";
+import { LinkedListVisualizer } from "@/visualizers/LinkedListVisualizer/LinkedListVisualizer";
 import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualizer";
 
 // Generators & Configs
@@ -30,6 +32,12 @@ import { radixSortConfig } from "@/algorithms/radixSort/config";
 import { generateRadixSortSteps } from "@/algorithms/radixSort/generator";
 import { countingSortConfig } from "@/algorithms/countingSort/config";
 import { generateCountingSortSteps, generateCountingSortArray } from "@/algorithms/countingSort/generator";
+import { linearSearchConfig } from "@/algorithms/linearSearch/config";
+import { generateLinearSearchSteps, generateSearchTarget } from "@/algorithms/linearSearch/generator";
+import { binarySearchConfig } from "@/algorithms/binarySearch/config";
+import { generateBinarySearchSteps } from "@/algorithms/binarySearch/generator";
+import { singlyLinkedListSearchConfig } from "@/algorithms/singlyLinkedListSearch/config";
+import { generateSinglyLinkedListSearchSteps } from "@/algorithms/singlyLinkedListSearch/generator";
 import { twoSumConfig } from "@/algorithms/twoSum/config";
 import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
 
@@ -37,9 +45,12 @@ import type {
   SortingBarState, 
   MergeSortState, 
   RadixSortState, 
-  CountingSortState, 
+  CountingSortState,
+  ArraySearchState,
+  LinkedListState,
   TwoSumState,
-  AlgorithmConfig
+  AlgorithmConfig,
+  VisualizationStep
 } from "@/types";
 
 interface AlgorithmPageProps {
@@ -48,6 +59,7 @@ interface AlgorithmPageProps {
 
 export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
   switch (algorithmId) {
+    // Sorting
     case "bubble-sort":
       return <BarSortPage config={bubbleSortConfig} generator={generateBubbleSortSteps} />;
     case "selection-sort":
@@ -62,11 +74,141 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <RadixSortPage />;
     case "counting-sort":
       return <CountingSortPage />;
+      
+    // Searching
+    case "linear-search":
+      return <ArraySearchPage config={linearSearchConfig} generator={generateLinearSearchSteps} />;
+    case "binary-search":
+      return <ArraySearchPage config={binarySearchConfig} generator={generateBinarySearchSteps} />;
+      
+    // Linked Lists
+    case "sll-search":
+      return <LinkedListSearchPage config={singlyLinkedListSearchConfig} generator={generateSinglyLinkedListSearchSteps} />;
+      
+    // Arrays
     case "two-sum":
       return <TwoSumPage />;
     default:
-      return <div>Algorithm not found</div>;
+      return <div className="p-8">Algorithm not found</div>;
   }
+}
+
+// ================================
+// Generic Array Search Page (Linear, Binary)
+// ================================
+
+interface ArraySearchPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[], target: number) => VisualizationStep<ArraySearchState>[];
+}
+
+function ArraySearchPage({ config, generator }: ArraySearchPageProps) {
+  const [arraySize, setArraySize] = useState(10);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateRandomArray(10)
+  );
+  const [target, setTarget] = useState<number>(() => generateSearchTarget(inputArray));
+
+  const steps = useMemo(() => generator(inputArray, target), [inputArray, target, generator]);
+  const engine = usePlaybackEngine<ArraySearchState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    const newArray = generateRandomArray(arraySize);
+    setInputArray(newArray);
+    setTarget(generateSearchTarget(newArray));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    const newArray = generateRandomArray(size);
+    setInputArray(newArray);
+    setTarget(generateSearchTarget(newArray));
+  }, []);
+
+  const handleTargetChange = useCallback((newTarget: number) => {
+    setTarget(newTarget);
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="search"
+          arraySize={arraySize}
+          target={target}
+          onArraySizeChange={handleArraySizeChange}
+          onTargetChange={handleTargetChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <ArraySearchVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Linked List Search Page
+// ================================
+
+interface LinkedListSearchPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[], target: number) => VisualizationStep<LinkedListState>[];
+}
+
+function LinkedListSearchPage({ config, generator }: LinkedListSearchPageProps) {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateRandomArray(8)
+  );
+  const [target, setTarget] = useState<number>(() => generateSearchTarget(inputArray));
+
+  const steps = useMemo(() => generator(inputArray, target), [inputArray, target, generator]);
+  const engine = usePlaybackEngine<LinkedListState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    const newArray = generateRandomArray(arraySize);
+    setInputArray(newArray);
+    setTarget(generateSearchTarget(newArray));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    const newArray = generateRandomArray(size);
+    setInputArray(newArray);
+    setTarget(generateSearchTarget(newArray));
+  }, []);
+
+  const handleTargetChange = useCallback((newTarget: number) => {
+    setTarget(newTarget);
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="search"
+          arraySize={arraySize}
+          target={target}
+          onArraySizeChange={handleArraySizeChange}
+          onTargetChange={handleTargetChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <LinkedListVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
 }
 
 // ================================
@@ -75,7 +217,7 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
 
 interface BarSortPageProps {
   config: AlgorithmConfig;
-  generator: (arr: number[]) => any[];
+  generator: (arr: number[]) => VisualizationStep<SortingBarState>[];
 }
 
 function BarSortPage({ config, generator }: BarSortPageProps) {
@@ -299,7 +441,8 @@ function TwoSumPage() {
 
 interface AlgorithmLayoutProps {
   config: AlgorithmConfig;
-  engine: any; // using any here to simplify generic hook typing across 5 different states
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  engine: ReturnType<typeof usePlaybackEngine<any>>; // Using any here because it's a generic wrapper and layout doesn't care about specific state.
   inputControls: React.ReactNode;
   visualizer: React.ReactNode;
 }

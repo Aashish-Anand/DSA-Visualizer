@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { CountingSortState } from "@/types";
 
 interface CountingSortVisualizerProps {
@@ -6,7 +6,7 @@ interface CountingSortVisualizerProps {
 }
 
 export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
-  const { inputArray, countArray, outputArray, currentIndex, highlightedCountIndex, phase, sortedIndices, maxValue } = state;
+  const { inputArray, countArray, outputArray, currentIndex, highlightedCountIndex, phase, sortedIndices } = state;
 
   return (
     <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[500px]">
@@ -108,7 +108,9 @@ export function CountingSortVisualizer({ state }: CountingSortVisualizerProps) {
                         ? "border-dashed border-border/50 bg-transparent" 
                         : isSorted
                           ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-500 shadow-[0_0_10px_hsla(142,71%,45%,0.2)]"
-                          : "border-primary bg-primary/10 text-primary scale-110 shadow-lg"
+                          : isNewlyPlaced
+                            ? "border-amber-500 bg-amber-500/10 text-amber-500 scale-110 shadow-lg"
+                            : "border-primary bg-primary/10 text-primary shadow-sm"
                     }`}
                   >
                     {val !== null ? val : ""}

@@ -34,6 +34,7 @@ export interface SortingBarState {
   pivotIndex: number | null;
   insertingFromIndex: number | null;
   sortedRegion: [number, number] | null;
+  floatingBar?: { value: number; index: number } | null;
 }
 
 // ================================
@@ -85,6 +86,40 @@ export interface CountingSortState {
   phase: "counting" | "accumulating" | "placing" | "complete";
   sortedIndices: number[];
   maxValue: number;
+}
+
+// ================================
+// Array Search Types (Linear, Binary)
+// ================================
+
+export interface ArraySearchState {
+  array: number[];
+  target: number;
+  currentIndex: number | null;
+  lowIndex: number | null;
+  highIndex: number | null;
+  midIndex: number | null;
+  foundIndex: number | null;
+  status: "searching" | "found" | "not-found";
+}
+
+// ================================
+// Linked List Types
+// ================================
+
+export interface LinkedListNode {
+  id: string; // Unique ID for animations
+  value: number;
+  nextId: string | null;
+}
+
+export interface LinkedListState {
+  nodes: LinkedListNode[];
+  headId: string | null;
+  currId: string | null;
+  target: number;
+  foundId: string | null;
+  status: "searching" | "found" | "not-found";
 }
 
 // ================================

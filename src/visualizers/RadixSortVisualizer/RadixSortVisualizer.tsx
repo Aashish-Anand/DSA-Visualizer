@@ -59,7 +59,7 @@ export function RadixSortVisualizer({ state }: RadixSortVisualizerProps) {
 
             // Extract the current digit for highlighting
             const valStr = val.toString();
-            const digitChar = valStr.length > currentDigit ? valStr[valStr.length - 1 - currentDigit] : '0';
+            // Removed unused digitChar
 
             return (
               <motion.div

@@ -8,9 +8,9 @@ export function generateCountingSortSteps(
   const max_val = Math.max(...array, 1);
   
   // Initialize state arrays
-  let countArray = Array(max_val + 1).fill(0);
-  let outputArray: (number | null)[] = Array(array.length).fill(null);
-  let sortedIndices: number[] = [];
+  const countArray = Array(max_val + 1).fill(0);
+  const outputArray: (number | null)[] = Array(array.length).fill(null);
+  const sortedIndices: number[] = [];
 
   const createBaseState = (
     phase: CountingSortState["phase"] = "counting",

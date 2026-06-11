@@ -16,73 +16,67 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
     highlightLabel,
     partitionRegion,
     pivotIndex,
-    insertingFromIndex,
     sortedRegion,
+    floatingBar,
   } = state;
 
   const maxValue = useMemo(() => Math.max(...array, 1), [array]);
 
   const getBarColor = (index: number): string => {
+    if (highlightedIndex === index || pivotIndex === index) {
+      return "var(--color-viz-active)";
+    }
     if (swappedIndices && (index === swappedIndices[0] || index === swappedIndices[1])) {
       return "var(--color-viz-swapping)";
     }
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "var(--color-viz-comparing)";
     }
-    if (highlightedIndex === index) {
-      if (highlightLabel === "MIN" || highlightLabel === "KEY") {
-        return "var(--color-viz-active)"; // e.g. blue/orange
-      }
-    }
-    if (pivotIndex === index) {
-      return "hsl(190, 90%, 50%)"; // cyan for pivot
-    }
-    if (insertingFromIndex === index) {
-      return "var(--color-viz-active)";
-    }
-    if (sortedIndices.includes(index)) {
+    if (sortedIndices?.includes(index)) {
       return "var(--color-viz-sorted)";
     }
     return "var(--color-viz-default)";
   };
 
   const getBarGlow = (index: number): string => {
+    if (highlightedIndex === index || pivotIndex === index) {
+      return "0 0 16px hsla(199, 89%, 48%, 0.4)";
+    }
     if (swappedIndices && (index === swappedIndices[0] || index === swappedIndices[1])) {
       return "0 0 20px hsla(0, 84%, 60%, 0.4)";
     }
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "0 0 20px hsla(45, 93%, 47%, 0.4)";
     }
-    if (highlightedIndex === index || pivotIndex === index) {
-      return "0 0 16px hsla(199, 89%, 48%, 0.4)";
-    }
-    if (sortedIndices.includes(index)) {
+    if (sortedIndices?.includes(index)) {
       return "0 0 12px hsla(142, 71%, 45%, 0.3)";
     }
     return "none";
   };
 
-  const getStatusLabel = (index: number): string | null => {
+  const getActionLabel = (index: number): string | null => {
     if (swappedIndices && (index === swappedIndices[0] || index === swappedIndices[1])) {
       return "SWAP";
     }
     if (comparingIndices && (index === comparingIndices[0] || index === comparingIndices[1])) {
       return "CMP";
     }
+    if (sortedIndices?.includes(index)) {
+      return "✓";
+    }
+    return null;
+  };
+
+  const getRoleLabel = (index: number): string | null => {
     if (highlightedIndex === index && highlightLabel) {
       return highlightLabel;
     }
     if (pivotIndex === index) {
       return "PIVOT";
     }
-    if (sortedIndices.includes(index)) {
-      return "✓";
-    }
     return null;
   };
 
-  const isPartitioned = partitionRegion && index >= partitionRegion[0] && index <= partitionRegion[1];
-  const isSortedRegion = sortedRegion && index >= sortedRegion[0] && index <= sortedRegion[1];
 
   const barWidth = Math.max(24, Math.min(56, 600 / array.length));
   const gap = Math.max(3, Math.min(8, 200 / array.length));
@@ -117,14 +111,43 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
         )}
       </div>
 
+      {/* Key Box (Insertion Sort) */}
+      <div className="h-16 w-full flex items-center justify-center mb-4">
+        <AnimatePresence>
+          {floatingBar && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="flex items-center gap-3 bg-card border border-border shadow-md px-5 py-2.5 rounded-xl"
+            >
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+                Current Key
+              </span>
+              <div 
+                className="w-8 h-8 rounded-md flex items-center justify-center font-bold text-sm"
+                style={{ 
+                  backgroundColor: "var(--color-viz-comparing)",
+                  boxShadow: "0 0 12px hsla(45, 93%, 47%, 0.3)",
+                  color: "#fff"
+                }}
+              >
+                {floatingBar.value}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {/* Bars container */}
-      <div className="flex items-end justify-center relative" style={{ gap: `${gap}px`, height: "280px", width: "100%" }}>
+      <div className="flex items-end justify-center relative mb-12" style={{ gap: `${gap}px`, height: "280px", width: "100%" }}>
         <AnimatePresence mode="popLayout">
           {array.map((value, index) => {
             const heightPercent = (value / maxValue) * 100;
             const color = getBarColor(index);
             const glow = getBarGlow(index);
-            const label = getStatusLabel(index);
+            const actionLabel = getActionLabel(index);
+            const roleLabel = getRoleLabel(index);
             
             const isInPartition = partitionRegion && index >= partitionRegion[0] && index <= partitionRegion[1];
             const isOutsidePartition = partitionRegion && !isInPartition;
@@ -142,7 +165,7 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
                 <motion.div
                   className="text-xs font-semibold mb-1 tabular-nums"
                   style={{ color, opacity: isOutsidePartition ? 0.4 : 1 }}
-                  animate={{ scale: label === "SWAP" ? [1, 1.2, 1] : 1 }}
+                  animate={{ scale: actionLabel === "SWAP" ? [1, 1.2, 1] : 1 }}
                   transition={{ duration: 0.3 }}
                 >
                   {value}
@@ -188,20 +211,36 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
                   {index}
                 </div>
 
-                {/* Status label */}
-                <AnimatePresence>
-                  {label && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 4 }}
-                      className="text-[9px] font-bold mt-0.5 whitespace-nowrap absolute -bottom-5"
-                      style={{ color }}
-                    >
-                      {label}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* Status labels */}
+                <div className="absolute -bottom-10 flex flex-col items-center gap-1">
+                  <AnimatePresence>
+                    {roleLabel && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        className="text-[9px] font-bold whitespace-nowrap"
+                        style={{ color: "var(--color-viz-active)" }} // Roles are blue
+                      >
+                        {roleLabel}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  
+                  <AnimatePresence>
+                    {actionLabel && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 4 }}
+                        className="text-[9px] font-bold whitespace-nowrap"
+                        style={{ color: actionLabel === "SWAP" ? "var(--color-viz-swapping)" : (actionLabel === "✓" ? "var(--color-viz-sorted)" : "var(--color-viz-comparing)") }}
+                      >
+                        {actionLabel}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </motion.div>
             );
           })}
@@ -211,13 +250,13 @@ export function SortingBarVisualizer({ state }: SortingBarVisualizerProps) {
       {/* Progress indicator */}
       <div className="mt-8 flex items-center gap-3 text-xs text-muted-foreground">
         <span>
-          Sorted: {sortedIndices.length} / {array.length}
+          Sorted: {sortedIndices?.length || 0} / {array.length}
         </span>
         <div className="w-32 h-1.5 bg-muted rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ backgroundColor: "var(--color-viz-sorted)" }}
-            animate={{ width: `${(sortedIndices.length / array.length) * 100}%` }}
+            animate={{ width: `${((sortedIndices?.length || 0) / array.length) * 100}%` }}
             transition={{ duration: 0.5 }}
           />
         </div>

@@ -33,19 +33,22 @@ export function usePlaybackEngine<T>(
     speedRef.current = speed;
   }, [speed]);
 
-  // Reset when steps change (new algorithm input)
-  useEffect(() => {
-    setCurrentStepIndex(0);
-    setIsPlaying(false);
-    clearTimer();
-  }, [steps]);
-
   const clearTimer = useCallback(() => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+     
   }, []);
+
+  // Reset when steps change (new algorithm input)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentStepIndex(0);
+     
+    setIsPlaying(false);
+    clearTimer();
+  }, [steps, clearTimer]);
 
   const startTimer = useCallback(() => {
     clearTimer();

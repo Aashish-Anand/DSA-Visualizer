@@ -11,6 +11,7 @@ export function generateInsertionSortSteps(
     sortedTo: number,
     keyIndex: number | null = null,
     insertingFrom: number | null = null,
+    floatingBar: { value: number; index: number } | null = null
   ): SortingBarState => ({
     array: [...array],
     comparingIndices: null,
@@ -22,6 +23,7 @@ export function generateInsertionSortSteps(
     pivotIndex: null,
     insertingFromIndex: insertingFrom,
     sortedRegion: [0, sortedTo],
+    floatingBar,
   });
 
   steps.push({
@@ -36,17 +38,15 @@ export function generateInsertionSortSteps(
     let j = i - 1;
 
     steps.push({
-      state: createBaseState(i - 1, i),
+      state: createBaseState(i - 1, i, null, { value: key, index: i }),
       activeLine: 2,
       explanation: `Selected arr[${i}] (${key}) as the key to insert into the sorted region (0 to ${i - 1}).`,
       beginnerExplanation: `We're picking up ${key}. We need to find its correct spot in the sorted numbers to the left.`,
     });
-
-    let lastJ = i;
     while (j >= 0) {
       steps.push({
         state: {
-          ...createBaseState(i - 1, j + 1), // The key is temporarily conceptually at j+1
+          ...createBaseState(i - 1, j + 1, null, { value: key, index: j + 1 }), // The key is temporarily conceptually at j+1
           comparingIndices: [j, j + 1],
         },
         activeLine: 4,
@@ -60,15 +60,13 @@ export function generateInsertionSortSteps(
         
         steps.push({
           state: {
-            ...createBaseState(i - 1, j), // Key has moved left conceptually
-            insertingFromIndex: j + 1,
+            ...createBaseState(i - 1, j, j + 1, { value: key, index: j }), // Key has moved left conceptually
             swappedIndices: [j, j + 1], // Visually represent the shift as a swap for the bar highlight
           },
           activeLine: 5,
           explanation: `Since ${array[j]} > ${key}, shift ${array[j]} to the right.`,
           beginnerExplanation: `Yes, ${key} is smaller! So we shift ${array[j]} to the right to make room.`,
         });
-        lastJ = j;
         j--;
       } else {
         break;

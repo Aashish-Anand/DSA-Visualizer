@@ -1,0 +1,24 @@
+import type { AlgorithmConfig } from "@/types";
+
+export const binarySearchConfig: AlgorithmConfig = {
+  id: "binary-search",
+  title: "Binary Search",
+  category: "Searching",
+  categoryIcon: "Search",
+  description:
+    "Binary search compares the target value to the middle element of the array. If they are unequal, the half in which the target cannot lie is eliminated and the search continues on the remaining half.",
+  difficulty: "Easy",
+  pseudocode: [
+    { code: "function binarySearch(arr, target):", indent: 0 },
+    { code: "low = 0, high = arr.length - 1", indent: 1 },
+    { code: "while low <= high:", indent: 1 },
+    { code: "mid = (low + high) / 2", indent: 2 },
+    { code: "if arr[mid] == target:", indent: 2 },
+    { code: "return mid", indent: 3 },
+    { code: "if arr[mid] < target:", indent: 2 },
+    { code: "low = mid + 1", indent: 3 },
+    { code: "else:", indent: 2 },
+    { code: "high = mid - 1", indent: 3 },
+    { code: "return -1", indent: 1 },
+  ],
+};

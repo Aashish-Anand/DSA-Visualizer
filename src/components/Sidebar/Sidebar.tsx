@@ -25,8 +25,23 @@ interface SidebarCategory {
 
 const CATEGORIES: SidebarCategory[] = [
   {
+    name: "Searching",
+    icon: "search",
+    items: [
+      { id: "linear-search", title: "Linear Search", difficulty: "Easy" },
+      { id: "binary-search", title: "Binary Search", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "Linked Lists",
+    icon: "network",
+    items: [
+      { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
+    ],
+  },
+  {
     name: "Arrays",
-    icon: "brackets",
+    icon: "layers",
     items: [{ id: "two-sum", title: "Two Sum", difficulty: "Easy" }],
   },
   {
@@ -155,7 +170,7 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm }: SidebarProps) {
                             }}
                           />
                         )}
-                        <span className="relative">{item.title}</span>
+                        <span className="relative flex-1 text-left leading-tight py-1">{item.title}</span>
                         <Badge
                           variant="outline"
                           className={`relative ml-auto text-[9px] px-1.5 py-0 h-4 ${

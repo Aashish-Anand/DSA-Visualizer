@@ -5,7 +5,7 @@ export function generateRadixSortSteps(
 ): VisualizationStep<RadixSortState>[] {
   const steps: VisualizationStep<RadixSortState>[] = [];
   const array = [...inputArray];
-  let buckets: number[][] = Array.from({ length: 10 }, () => []);
+  const buckets: number[][] = Array.from({ length: 10 }, () => []);
 
   const createBaseState = (
     currentDigit: number = 0,

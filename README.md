@@ -59,7 +59,14 @@ A 3-part layout displaying the flow from the input array, to the frequency count
 
 1. **Two Sum** (Easy) — Visualizes the HashMap approach step by step with info cards and a dynamic table.
 
----
+### Searching
+
+1. **Linear Search** (Easy)
+2. **Binary Search** (Easy) — Visualizes divide and conquer by eliminating halves of the array.
+
+### Linked Lists
+
+1. **Singly Linked List Search** (Easy) — Visualizes pointer traversal across nodes.
 
 ## 🚀 Getting Started
 
@@ -97,6 +104,26 @@ Open **http://localhost:5173** in your browser.
 npm run build
 npm run preview
 ```
+
+## 🧪 Testing & Quality Assurance
+
+This project uses a robust QA pipeline to prevent regressions.
+
+### Run Unit Tests
+We use **Vitest** to mathematically verify the core logic of the algorithm generators.
+```bash
+npm run test
+```
+
+### Run Static Analysis & Type Checking
+To check for ESLint warnings and TypeScript type errors:
+```bash
+npm run lint
+npm run typecheck
+```
+
+> **Note on Committing:** 
+> We use **Husky** and **lint-staged**. Whenever you run `git commit`, it will automatically run the linters and type checkers on your staged files. If there are any errors (like unused variables or type mismatches), the commit will be aborted to keep the `main` branch clean!
 
 ---
 
@@ -166,6 +193,9 @@ src/
 | [shadcn/ui](https://ui.shadcn.com) | UI component primitives |
 | [Framer Motion](https://motion.dev) | Animations |
 | [Lucide React](https://lucide.dev) | Icons |
+| [Vitest](https://vitest.dev) | Automated Unit Testing |
+| [Husky & Lint-Staged](https://typicode.github.io/husky/) | Pre-commit hooks & Quality Assurance |
+| [GitHub Actions](https://github.com/features/actions) | CI/CD Pipeline |
 
 ---
 
@@ -206,8 +236,7 @@ The playback engine, pseudocode panel, explanation panel, and controls work auto
 
 ## 📋 Future Roadmap
 
-- [ ] Binary Search
-- [ ] Linked Lists (insertion, deletion, traversal)
+- [ ] Linked Lists (insertion, deletion)
 - [ ] Stack & Queue operations
 - [ ] Binary Search Trees
 - [ ] Graph traversal (BFS, DFS)
