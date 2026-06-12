@@ -36,7 +36,7 @@ export function FounderStory() {
             AlgoLens is the tool I wish existed when I was learning.
           </p>
 
-          <div className="pt-8 border-t border-white/[0.06]">
+          <div className="pt-8 border-t border-foreground/[0.06]">
             <div className="flex items-center gap-4">
               <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
                 A

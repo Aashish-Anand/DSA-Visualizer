@@ -56,14 +56,14 @@ export function InteractiveDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.15 }}
-          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden"
+          className="rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] overflow-hidden"
         >
           {/* Window chrome */}
-          <div className="flex items-center h-11 px-4 border-b border-white/[0.06] bg-white/[0.02]">
+          <div className="flex items-center h-11 px-4 border-b border-foreground/[0.06] bg-foreground/[0.02]">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
             </div>
             <div className="flex-1 flex justify-center">
               <span className="text-[11px] text-muted-foreground font-mono">
@@ -82,7 +82,7 @@ export function InteractiveDemo() {
 
           {/* Explanation */}
           {engine.currentStep && (
-            <div className="mx-4 md:mx-10 mb-6 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div className="mx-4 md:mx-10 mb-6 p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
               <p className="text-[13px] text-muted-foreground leading-relaxed">
                 <span className="text-primary font-medium mr-2">Step {engine.currentStepIndex + 1}:</span>
                 {engine.currentStep.beginnerExplanation}
@@ -91,19 +91,19 @@ export function InteractiveDemo() {
           )}
 
           {/* Controls */}
-          <div className="flex items-center justify-between h-14 px-4 md:px-10 border-t border-white/[0.06] bg-white/[0.02]">
+          <div className="flex items-center justify-between h-14 px-4 md:px-10 border-t border-foreground/[0.06] bg-foreground/[0.02]">
             {/* Playback buttons */}
             <div className="flex items-center gap-1">
               <button
                 onClick={engine.reset}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={engine.previous}
                 disabled={engine.isFirstStep}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors disabled:opacity-30"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors disabled:opacity-30"
               >
                 <SkipBack className="w-3.5 h-3.5" />
               </button>
@@ -120,7 +120,7 @@ export function InteractiveDemo() {
               <button
                 onClick={engine.next}
                 disabled={engine.isLastStep}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/[0.06] transition-colors disabled:opacity-30"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors disabled:opacity-30"
               >
                 <SkipForward className="w-3.5 h-3.5" />
               </button>
@@ -128,7 +128,7 @@ export function InteractiveDemo() {
 
             {/* Progress */}
             <div className="hidden sm:flex items-center gap-3 flex-1 max-w-xs mx-6">
-              <div className="flex-1 h-1 rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="flex-1 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
                   style={{ width: `${engine.progress}%` }}

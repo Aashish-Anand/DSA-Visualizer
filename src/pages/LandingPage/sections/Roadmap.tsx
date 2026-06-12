@@ -76,10 +76,10 @@ export function Roadmap() {
               transition={{ delay: i * 0.05 }}
               className={`p-6 rounded-xl border transition-colors ${
                 cat.status === "live"
-                  ? "border-white/[0.08] bg-white/[0.02]"
+                  ? "border-foreground/[0.08] bg-foreground/[0.02]"
                   : cat.status === "next"
                   ? "border-primary/20 bg-primary/[0.03]"
-                  : "border-white/[0.04] bg-transparent"
+                  : "border-foreground/[0.04] bg-transparent"
               }`}
             >
               <div className="flex items-center justify-between mb-5">
@@ -105,10 +105,10 @@ export function Roadmap() {
                     key={j}
                     className={`text-[12px] px-2.5 py-1 rounded-md ${
                       cat.status === "live"
-                        ? "bg-white/[0.04] text-foreground/80"
+                        ? "bg-foreground/[0.04] text-foreground/80"
                         : cat.status === "next"
                         ? "bg-primary/10 text-primary/80"
-                        : "bg-white/[0.02] text-muted-foreground/50"
+                        : "bg-foreground/[0.02] text-muted-foreground/50"
                     }`}
                   >
                     {item}

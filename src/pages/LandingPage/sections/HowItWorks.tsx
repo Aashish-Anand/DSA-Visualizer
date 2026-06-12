@@ -60,7 +60,7 @@ export function HowItWorks() {
               <div className="text-[13px] font-mono text-muted-foreground/50 pt-1 shrink-0">
                 {step.number}
               </div>
-              <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0 group-hover:border-primary/30 group-hover:bg-primary/[0.06] transition-colors duration-300">
+              <div className="w-10 h-10 rounded-xl bg-foreground/[0.04] border border-foreground/[0.06] flex items-center justify-center shrink-0 group-hover:border-primary/30 group-hover:bg-primary/[0.06] transition-colors duration-300">
                 <step.icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
               </div>
               <div className="flex-1">

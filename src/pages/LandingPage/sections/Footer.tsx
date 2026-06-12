@@ -2,7 +2,7 @@ import { Play } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/[0.04] px-6 md:px-10 py-10">
+    <footer className="border-t border-foreground/[0.04] px-6 md:px-10 py-10">
       <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2.5">
           <div className="flex items-center justify-center w-6 h-6 rounded-md bg-primary/15 border border-primary/20">

@@ -47,7 +47,7 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-white/[0.08] bg-white/[0.03] text-[13px] text-muted-foreground"
+            className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-foreground/[0.08] bg-foreground/[0.03] text-[13px] text-muted-foreground"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Now visualizing 10+ algorithms
@@ -89,7 +89,7 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
             </button>
             <a
               href="#demo"
-              className="h-11 px-6 text-[14px] font-medium text-foreground bg-white/[0.04] border border-white/[0.08] rounded-xl hover:bg-white/[0.07] transition-all flex items-center"
+              className="h-11 px-6 text-[14px] font-medium text-foreground bg-foreground/[0.04] border border-foreground/[0.08] rounded-xl hover:bg-foreground/[0.07] transition-all flex items-center"
             >
               Try the demo
             </a>
@@ -101,14 +101,14 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden shadow-[0_0_80px_-20px_hsla(262,83%,58%,0.15)]"
+          className="relative rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] backdrop-blur-sm overflow-hidden shadow-[0_0_80px_-20px_hsla(262,83%,58%,0.15)]"
         >
           {/* Window chrome */}
-          <div className="flex items-center h-11 px-4 border-b border-white/[0.06] bg-white/[0.02]">
+          <div className="flex items-center h-11 px-4 border-b border-foreground/[0.06] bg-foreground/[0.02]">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
-              <div className="w-3 h-3 rounded-full bg-white/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
+              <div className="w-3 h-3 rounded-full bg-foreground/[0.08]" />
             </div>
             <div className="flex-1 flex justify-center">
               <span className="text-[11px] text-muted-foreground font-mono">
@@ -126,7 +126,7 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
           </div>
 
           {/* Status bar */}
-          <div className="flex items-center justify-between h-9 px-4 border-t border-white/[0.06] bg-white/[0.02] text-[11px] text-muted-foreground font-mono">
+          <div className="flex items-center justify-between h-9 px-4 border-t border-foreground/[0.06] bg-foreground/[0.02] text-[11px] text-muted-foreground font-mono">
             <span>Step {engine.currentStepIndex + 1} / {engine.totalSteps}</span>
             <span className="hidden sm:inline">{engine.currentStep?.explanation?.slice(0, 60)}…</span>
             <span>{engine.speed}x</span>

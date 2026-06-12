@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   ArrowUpDown,
   Brackets,
@@ -79,9 +80,11 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 interface SidebarProps {
   activeAlgorithm: string;
   onSelectAlgorithm: (id: string) => void;
+  isDark: boolean;
+  toggleTheme: () => void;
 }
 
-export function Sidebar({ activeAlgorithm, onSelectAlgorithm }: SidebarProps) {
+export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleTheme }: SidebarProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(CATEGORIES.map((c) => c.name))
   );
@@ -102,20 +105,21 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm }: SidebarProps) {
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-4 py-4 border-b border-border">
+      <div className="px-4 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
             <Sparkles size={14} className="text-primary-foreground" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-bold text-foreground leading-tight">
-              DSA Visual
+              AlgoLens
             </span>
             <span className="text-[9px] text-muted-foreground uppercase tracking-widest">
               Learn by Seeing
             </span>
           </div>
         </div>
+        <ThemeToggle isDark={isDark} onToggle={toggleTheme} className="text-muted-foreground hover:text-foreground" />
       </div>
 
       {/* Navigation */}

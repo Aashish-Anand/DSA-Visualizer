@@ -10,21 +10,23 @@ import { Footer } from "./sections/Footer";
 
 interface LandingPageProps {
   onLaunchApp: () => void;
+  isDark: boolean;
+  toggleTheme: () => void;
 }
 
-export function LandingPage({ onLaunchApp }: LandingPageProps) {
+export function LandingPage({ onLaunchApp, isDark, toggleTheme }: LandingPageProps) {
   return (
     <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 overflow-x-hidden">
       {/* Subtle dot grid background */}
       <div
         className="fixed inset-0 -z-10 pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(circle, hsl(0 0% 100% / 0.03) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 5%, transparent) 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
 
-      <Navbar onLaunchApp={onLaunchApp} />
+      <Navbar onLaunchApp={onLaunchApp} isDark={isDark} toggleTheme={toggleTheme} />
 
       <main>
         <HeroSection onLaunchApp={onLaunchApp} />

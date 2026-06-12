@@ -42,7 +42,7 @@ export function ProblemSection() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-8 rounded-2xl border border-white/[0.06] bg-white/[0.02]"
+            className="p-8 rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02]"
           >
             <div className="text-[13px] font-medium text-red-400/80 uppercase tracking-[0.1em] mb-6">
               Without AlgoLens
