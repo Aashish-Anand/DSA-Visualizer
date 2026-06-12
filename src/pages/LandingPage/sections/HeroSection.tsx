@@ -17,7 +17,7 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
   // Auto-play continuously
   useEffect(() => {
     const timer = setTimeout(() => {
-      engine.setSpeed(1.5);
+      engine.setSpeed(2);
       engine.play();
     }, 800);
     return () => clearTimeout(timer);
