@@ -26,11 +26,35 @@ interface SidebarCategory {
 
 const CATEGORIES: SidebarCategory[] = [
   {
+    name: "Arrays",
+    icon: "layers",
+    items: [
+      { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
+      { id: "two-sum", title: "Two Sum", difficulty: "Easy" },
+      { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
+      { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
+      { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
+    ],
+  },
+  {
     name: "Searching",
     icon: "search",
     items: [
-      { id: "linear-search", title: "Linear Search", difficulty: "Easy" },
       { id: "binary-search", title: "Binary Search", difficulty: "Easy" },
+      { id: "linear-search", title: "Linear Search", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "Sorting",
+    icon: "arrow-up-down",
+    items: [
+      { id: "bubble-sort", title: "Bubble Sort", difficulty: "Easy" },
+      { id: "insertion-sort", title: "Insertion Sort", difficulty: "Easy" },
+      { id: "selection-sort", title: "Selection Sort", difficulty: "Easy" },
+      { id: "counting-sort", title: "Counting Sort", difficulty: "Medium" },
+      { id: "merge-sort", title: "Merge Sort", difficulty: "Medium" },
+      { id: "quick-sort", title: "Quick Sort", difficulty: "Medium" },
+      { id: "radix-sort", title: "Radix Sort", difficulty: "Medium" },
     ],
   },
   {
@@ -41,27 +65,13 @@ const CATEGORIES: SidebarCategory[] = [
     ],
   },
   {
-    name: "Arrays",
-    icon: "layers",
+    name: "Trees",
+    icon: "network",
     items: [
-      { id: "two-sum", title: "Two Sum", difficulty: "Easy" },
-      { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
-      { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
-      { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
-      { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
-    ],
-  },
-  {
-    name: "Sorting",
-    icon: "arrow-up-down",
-    items: [
-      { id: "bubble-sort", title: "Bubble Sort", difficulty: "Easy" },
-      { id: "selection-sort", title: "Selection Sort", difficulty: "Easy" },
-      { id: "insertion-sort", title: "Insertion Sort", difficulty: "Easy" },
-      { id: "quick-sort", title: "Quick Sort", difficulty: "Medium" },
-      { id: "merge-sort", title: "Merge Sort", difficulty: "Medium" },
-      { id: "radix-sort", title: "Radix Sort", difficulty: "Medium" },
-      { id: "counting-sort", title: "Counting Sort", difficulty: "Medium" },
+      { id: "tree-inorder", title: "In-order Traversal", difficulty: "Easy" },
+      { id: "tree-postorder", title: "Post-order Traversal", difficulty: "Easy" },
+      { id: "tree-preorder", title: "Pre-order Traversal", difficulty: "Easy" },
+      { id: "tree-levelorder", title: "Level-order Traversal", difficulty: "Medium" },
     ],
   },
 ];

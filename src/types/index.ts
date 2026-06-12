@@ -216,6 +216,29 @@ export interface MajorityElement2State {
 }
 
 // ================================
+// Tree Types
+// ================================
+
+export interface TreeNode {
+  id: string;
+  value: number;
+  left: string | null;
+  right: string | null;
+  x: number;
+  y: number;
+}
+
+export interface TreeTraversalState {
+  nodes: TreeNode[]; // The list of all nodes in the tree
+  rootId: string | null;
+  currentNodeId: string | null;
+  visitedNodeIds: string[];
+  queueIds?: string[]; // Used for level-order traversal
+  callStackIds?: string[]; // Used to visualize recursion stack
+  phase: "init" | "traversing" | "complete";
+}
+
+// ================================
 // Algorithm Config Types
 // ================================
 

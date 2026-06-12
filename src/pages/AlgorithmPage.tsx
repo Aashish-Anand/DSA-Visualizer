@@ -20,6 +20,7 @@ import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualize
 import { StockBuySellVisualizer } from "@/visualizers/StockBuySellVisualizer/StockBuySellVisualizer";
 import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
 import { MajorityElementVisualizer } from "@/visualizers/MajorityElementVisualizer/MajorityElementVisualizer";
+import { TreeVisualizer } from "@/visualizers/TreeVisualizer/TreeVisualizer";
 
 // Generators & Configs
 import { bubbleSortConfig } from "@/algorithms/bubbleSort/config";
@@ -53,6 +54,16 @@ import { generateMajorityElement1Steps, generateMajorityElement1Array } from "@/
 import { majorityElement2Config } from "@/algorithms/MajorityElement2/config";
 import { generateMajorityElement2Steps, generateMajorityElement2Array } from "@/algorithms/MajorityElement2/generator";
 
+import { treePreorderConfig } from "@/algorithms/treePreorder/config";
+import { generateTreePreorderSteps } from "@/algorithms/treePreorder/generator";
+import { treeInorderConfig } from "@/algorithms/treeInorder/config";
+import { generateTreeInorderSteps } from "@/algorithms/treeInorder/generator";
+import { treePostorderConfig } from "@/algorithms/treePostorder/config";
+import { generateTreePostorderSteps } from "@/algorithms/treePostorder/generator";
+import { treeLevelorderConfig } from "@/algorithms/treeLevelorder/config";
+import { generateTreeLevelorderSteps } from "@/algorithms/treeLevelorder/generator";
+import { generateBinaryTree } from "@/algorithms/tree/utils";
+
 import type { 
   SortingBarState, 
   MergeSortState, 
@@ -65,6 +76,8 @@ import type {
   KadaneState,
   MajorityElement1State,
   MajorityElement2State,
+  TreeTraversalState,
+  TreeNode,
   AlgorithmConfig,
   VisualizationStep
 } from "@/types";
@@ -112,6 +125,17 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <MajorityElement1Page />;
     case "majority-element-2":
       return <MajorityElement2Page />;
+      
+    // Trees
+    case "tree-preorder":
+      return <TreeTraversalPage config={treePreorderConfig} generator={generateTreePreorderSteps} />;
+    case "tree-inorder":
+      return <TreeTraversalPage config={treeInorderConfig} generator={generateTreeInorderSteps} />;
+    case "tree-postorder":
+      return <TreeTraversalPage config={treePostorderConfig} generator={generateTreePostorderSteps} />;
+    case "tree-levelorder":
+      return <TreeTraversalPage config={treeLevelorderConfig} generator={generateTreeLevelorderSteps} />;
+
     default:
       return <div className="p-8">Algorithm not found</div>;
   }
@@ -625,6 +649,48 @@ function MajorityElement2Page() {
       visualizer={
         engine.currentStep ? (
           <MajorityElementVisualizer state={engine.currentStep.state} variant="majority-2" />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Tree Traversal Page
+// ================================
+
+interface TreeTraversalPageProps {
+  config: AlgorithmConfig;
+  generator: (nodes: TreeNode[], rootId: string | null) => VisualizationStep<TreeTraversalState>[];
+}
+
+function TreeTraversalPage({ config, generator }: TreeTraversalPageProps) {
+  const [treeData, setTreeData] = useState(() => generateBinaryTree(3));
+
+  const steps = useMemo(() => generator(treeData.nodes, treeData.rootId), [treeData, generator]);
+  const engine = usePlaybackEngine<TreeTraversalState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setTreeData(generateBinaryTree(3));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRandomize}
+            className="px-3 py-1.5 text-xs font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          >
+            Randomize Tree
+          </button>
+        </div>
+      }
+      visualizer={
+        engine.currentStep ? (
+          <TreeVisualizer state={engine.currentStep.state} />
         ) : null
       }
     />

@@ -14,13 +14,13 @@ const categories = [
   },
   {
     name: "Linked Lists",
-    status: "next" as const,
+    status: "live" as const,
     items: ["Traversal", "Reverse", "Cycle Detection", "Merge Two Sorted"],
   },
   {
     name: "Trees",
-    status: "planned" as const,
-    items: ["Inorder / Preorder / Postorder", "Level Order", "LCA", "Invert Tree"],
+    status: "live" as const,
+    items: ["In-order Traversal", "Pre-order Traversal", "Post-order Traversal", "Level-order Traversal"],
   },
   {
     name: "Graphs",
@@ -87,7 +87,7 @@ export function Roadmap() {
                 {cat.status === "live" ? (
                   <span className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-400">
                     <CheckCircle2 className="w-3 h-3" />
-                    Live
+                    In Progress
                   </span>
                 ) : cat.status === "next" ? (
                   <span className="flex items-center gap-1.5 text-[11px] font-medium text-primary animate-pulse">
@@ -95,7 +95,7 @@ export function Roadmap() {
                     In Progress
                   </span>
                 ) : (
-                  <span className="text-[11px] text-muted-foreground/50">Planned</span>
+                  <span className="text-[11px] text-muted-foreground/50">Coming Soon</span>
                 )}
               </div>
 
