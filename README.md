@@ -23,52 +23,52 @@ A visual, interactive learning platform that helps beginners understand **Data S
 
 ---
 
-## 📸 Screenshots
+## 📸 Visualizers in Action
 
-### Bubble Sort, Selection Sort, Insertion Sort, Quick Sort (Shared Bar Visualizer)
-These algorithms use a unified bar visualizer with dynamic markers (`MIN`, `KEY`, `PIVOT`) to illustrate how each algorithm breaks down the array.
-![Selection Sort](public/screenshots/selection-sort.png)
-
-![Quick Sort](public/screenshots/quick-sort.png)
-
-### Merge Sort
-A custom tree-based visualizer showing the array splitting into smaller chunks, descending into rows, and merging back together.
-![Merge Sort](public/screenshots/merge-sort.png)
-
-### Radix Sort
-A bucket-based visualizer with 10 animated buckets (0-9) where numbers drop down based on their place value.
-![Radix Sort](public/screenshots/radix-sort.png)
-
-### Counting Sort
-A 3-part layout displaying the flow from the input array, to the frequency counts, to the final output array.
-![Counting Sort](public/screenshots/counting-sort.png)
+<table>
+  <tr>
+    <td width="50%">
+      <b>Bar Visualizer (Sorting)</b><br/>
+      <i>Used in Quick, Bubble, Selection, and Insertion Sort. Features dynamic markers (MIN, PIVOT).</i><br/>
+      <img src="public/screenshots/quick-sort.png" />
+    </td>
+    <td width="50%">
+      <b>Merge Sort Visualizer</b><br/>
+      <i>A custom tree-based visualizer showing the array splitting into chunks and merging.</i><br/>
+      <img src="public/screenshots/merge-sort.png" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <b>Radix Sort Visualizer</b><br/>
+      <i>A 10-bucket system (0-9) where numbers drop down based on their place value.</i><br/>
+      <img src="public/screenshots/radix-sort.png" />
+    </td>
+    <td width="50%">
+      <b>Counting Sort Visualizer</b><br/>
+      <i>A 3-part layout visualizing frequencies, prefix sums, and the final output array.</i><br/>
+      <img src="public/screenshots/counting-sort.png" />
+    </td>
+  </tr>
+</table>
 
 ---
 
-## 🧠 Algorithms
+## 🧠 Supported Algorithms
 
-### Sorting
-
-1. **Bubble Sort** (Easy)
-2. **Selection Sort** (Easy)
-3. **Insertion Sort** (Easy)
-4. **Quick Sort** (Medium)
-5. **Merge Sort** (Medium)
-6. **Radix Sort** (Medium)
-7. **Counting Sort** (Medium)
-
-### Arrays
-
-1. **Two Sum** (Easy) — Visualizes the HashMap approach step by step with info cards and a dynamic table.
-
-### Searching
-
-1. **Linear Search** (Easy)
-2. **Binary Search** (Easy) — Visualizes divide and conquer by eliminating halves of the array.
-
-### Linked Lists
-
-1. **Singly Linked List Search** (Easy) — Visualizes pointer traversal across nodes.
+| Category | Algorithm | Difficulty | Key Visual Features |
+| :--- | :--- | :--- | :--- |
+| **Trees** | Pre / In / Post-order | Easy | Recursive Call Stack UI & Node Highlights |
+| | Level-order Traversal | Medium | Dynamic Queue & Layer Tracking |
+| **Arrays** | Two Sum | Easy | HashMap State & Dynamic Tables |
+| | Stock Buy and Sell | Medium | Min/Max Dynamic Pointers |
+| | Kadane's Algorithm | Medium | Contiguous Subarray Trackers |
+| | Majority Element 1 & 2| Easy/Hard | Moore's Voting & Candidate Frequencies |
+| **Sorting** | Bubble, Selection, Insertion | Easy | Array comparisons & swaps |
+| | Quick, Merge | Medium | Divide & Conquer strategies |
+| | Radix, Counting | Medium | Buckets, Frequencies, & Prefix Sums |
+| **Searching** | Linear, Binary Search | Easy | Array Traversal & Elimination bounds |
+| **Linked List** | Singly Linked List Search | Easy | Pointer Traversal & Object References |
 
 ## 🚀 Getting Started
 
@@ -238,9 +238,10 @@ The playback engine, pseudocode panel, explanation panel, and controls work auto
 
 ## 📋 Future Roadmap
 
+- [x] Trees (Pre-order, In-order, Post-order, Level-order)
 - [ ] Linked Lists (insertion, deletion)
 - [ ] Stack & Queue operations
-- [ ] Binary Search Trees
+- [ ] Binary Search Trees (insertion, deletion)
 - [ ] Graph traversal (BFS, DFS)
 - [ ] Dynamic Programming (Fibonacci, Knapsack)
 - [ ] Algorithm complexity annotations

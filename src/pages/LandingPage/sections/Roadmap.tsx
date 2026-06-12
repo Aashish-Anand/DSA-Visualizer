@@ -1,7 +1,15 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, Circle } from "lucide-react";
 
-const categories = [
+type RoadmapStatus = "live" | "next" | "planned";
+
+interface RoadmapCategory {
+  name: string;
+  status: RoadmapStatus;
+  items: string[];
+}
+
+const categories: RoadmapCategory[] = [
   {
     name: "Arrays & Searching",
     status: "live" as const,

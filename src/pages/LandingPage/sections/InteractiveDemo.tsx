@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { usePlaybackEngine } from "@/hooks/usePlaybackEngine";
-import { generateKadaneSteps } from "@/algorithms/Kadane/generator";
+import { generateKadaneSteps } from "@/algorithms/kadane/generator";
 import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
 import {
   Play,

@@ -45,14 +45,14 @@ import { singlyLinkedListSearchConfig } from "@/algorithms/singlyLinkedListSearc
 import { generateSinglyLinkedListSearchSteps } from "@/algorithms/singlyLinkedListSearch/generator";
 import { twoSumConfig } from "@/algorithms/twoSum/config";
 import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
-import { stockBuySellConfig } from "@/algorithms/StockBuySell/config";
-import { generateStockBuySellSteps, generateStockArray } from "@/algorithms/StockBuySell/generator";
-import { kadaneConfig } from "@/algorithms/Kadane/config";
-import { generateKadaneSteps, generateKadaneArray } from "@/algorithms/Kadane/generator";
-import { majorityElement1Config } from "@/algorithms/MajorityElement1/config";
-import { generateMajorityElement1Steps, generateMajorityElement1Array } from "@/algorithms/MajorityElement1/generator";
-import { majorityElement2Config } from "@/algorithms/MajorityElement2/config";
-import { generateMajorityElement2Steps, generateMajorityElement2Array } from "@/algorithms/MajorityElement2/generator";
+import { stockBuySellConfig } from "@/algorithms/stockBuySell/config";
+import { generateStockBuySellSteps, generateStockArray } from "@/algorithms/stockBuySell/generator";
+import { kadaneConfig } from "@/algorithms/kadane/config";
+import { generateKadaneSteps, generateKadaneArray } from "@/algorithms/kadane/generator";
+import { majorityElement1Config } from "@/algorithms/majorityElement1/config";
+import { generateMajorityElement1Steps, generateMajorityElement1Array } from "@/algorithms/majorityElement1/generator";
+import { majorityElement2Config } from "@/algorithms/majorityElement2/config";
+import { generateMajorityElement2Steps, generateMajorityElement2Array } from "@/algorithms/majorityElement2/generator";
 
 import { treePreorderConfig } from "@/algorithms/treePreorder/config";
 import { generateTreePreorderSteps } from "@/algorithms/treePreorder/generator";
