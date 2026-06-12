@@ -17,6 +17,9 @@ import { CountingSortVisualizer } from "@/visualizers/CountingSortVisualizer/Cou
 import { ArraySearchVisualizer } from "@/visualizers/ArraySearchVisualizer/ArraySearchVisualizer";
 import { LinkedListVisualizer } from "@/visualizers/LinkedListVisualizer/LinkedListVisualizer";
 import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualizer";
+import { StockBuySellVisualizer } from "@/visualizers/StockBuySellVisualizer/StockBuySellVisualizer";
+import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
+import { MajorityElementVisualizer } from "@/visualizers/MajorityElementVisualizer/MajorityElementVisualizer";
 
 // Generators & Configs
 import { bubbleSortConfig } from "@/algorithms/bubbleSort/config";
@@ -41,6 +44,14 @@ import { singlyLinkedListSearchConfig } from "@/algorithms/singlyLinkedListSearc
 import { generateSinglyLinkedListSearchSteps } from "@/algorithms/singlyLinkedListSearch/generator";
 import { twoSumConfig } from "@/algorithms/twoSum/config";
 import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
+import { stockBuySellConfig } from "@/algorithms/StockBuySell/config";
+import { generateStockBuySellSteps, generateStockArray } from "@/algorithms/StockBuySell/generator";
+import { kadaneConfig } from "@/algorithms/Kadane/config";
+import { generateKadaneSteps, generateKadaneArray } from "@/algorithms/Kadane/generator";
+import { majorityElement1Config } from "@/algorithms/MajorityElement1/config";
+import { generateMajorityElement1Steps, generateMajorityElement1Array } from "@/algorithms/MajorityElement1/generator";
+import { majorityElement2Config } from "@/algorithms/MajorityElement2/config";
+import { generateMajorityElement2Steps, generateMajorityElement2Array } from "@/algorithms/MajorityElement2/generator";
 
 import type { 
   SortingBarState, 
@@ -50,6 +61,10 @@ import type {
   ArraySearchState,
   LinkedListState,
   TwoSumState,
+  StockBuySellState,
+  KadaneState,
+  MajorityElement1State,
+  MajorityElement2State,
   AlgorithmConfig,
   VisualizationStep
 } from "@/types";
@@ -89,6 +104,14 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
     // Arrays
     case "two-sum":
       return <TwoSumPage />;
+    case "stock-buy-sell":
+      return <StockBuySellPage />;
+    case "kadane":
+      return <KadanePage />;
+    case "majority-element-1":
+      return <MajorityElement1Page />;
+    case "majority-element-2":
+      return <MajorityElement2Page />;
     default:
       return <div className="p-8">Algorithm not found</div>;
   }
@@ -430,6 +453,178 @@ function TwoSumPage() {
       visualizer={
         engine.currentStep ? (
           <TwoSumVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Stock Buy and Sell Page
+// ================================
+
+function StockBuySellPage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateStockArray(8)
+  );
+
+  const steps = useMemo(() => generateStockBuySellSteps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<StockBuySellState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateStockArray(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateStockArray(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={stockBuySellConfig}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <StockBuySellVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Kadane's Algorithm Page
+// ================================
+
+function KadanePage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateKadaneArray(8)
+  );
+
+  const steps = useMemo(() => generateKadaneSteps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<KadaneState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateKadaneArray(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateKadaneArray(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={kadaneConfig}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <KadaneVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Majority Element 1 Page
+// ================================
+
+function MajorityElement1Page() {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateMajorityElement1Array(8)
+  );
+
+  const steps = useMemo(() => generateMajorityElement1Steps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<MajorityElement1State>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateMajorityElement1Array(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateMajorityElement1Array(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={majorityElement1Config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <MajorityElementVisualizer state={engine.currentStep.state} variant="majority-1" />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Majority Element 2 Page
+// ================================
+
+function MajorityElement2Page() {
+  const [arraySize, setArraySize] = useState(9); // Default size 9 ensures 3 occurrences is majority
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateMajorityElement2Array(9)
+  );
+
+  const steps = useMemo(() => generateMajorityElement2Steps(inputArray), [inputArray]);
+  const engine = usePlaybackEngine<MajorityElement2State>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateMajorityElement2Array(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateMajorityElement2Array(size));
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={majorityElement2Config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <MajorityElementVisualizer state={engine.currentStep.state} variant="majority-2" />
         ) : null
       }
     />

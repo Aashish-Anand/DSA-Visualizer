@@ -150,6 +150,72 @@ export interface TwoSumState {
 }
 
 // ================================
+// Stock Buy and Sell Types
+// ================================
+
+export type StockBuySellPhase =
+  | "init"
+  | "scanning"
+  | "found-new-min"
+  | "found-new-max-profit"
+  | "complete";
+
+export interface StockBuySellState {
+  prices: number[];
+  currentIndex: number | null;
+  minPriceIndex: number | null;
+  buyIndex: number | null; // The index of the buy day that yields max profit
+  sellIndex: number | null; // The index of the sell day that yields max profit
+  maxProfit: number;
+  currentProfit: number | null;
+  phase: StockBuySellPhase;
+}
+
+// ================================
+// Kadane's Algorithm Types
+// ================================
+
+export type KadanePhase =
+  | "init"
+  | "adding"
+  | "resetting-sum"
+  | "new-max-found"
+  | "complete";
+
+export interface KadaneState {
+  array: number[];
+  currentIndex: number | null;
+  currentSum: number;
+  maxSum: number;
+  currentStartIndex: number;
+  maxStartIndex: number | null;
+  maxEndIndex: number | null;
+  phase: KadanePhase;
+}
+
+// ================================
+// Majority Element Types
+// ================================
+
+export interface MajorityElement1State {
+  array: number[];
+  currentIndex: number | null;
+  candidate: number | null;
+  count: number;
+  phase: "init" | "new-candidate" | "increment" | "decrement" | "complete";
+}
+
+export interface MajorityElement2State {
+  array: number[];
+  currentIndex: number | null;
+  candidate1: number | null;
+  count1: number;
+  candidate2: number | null;
+  count2: number;
+  phase: "init" | "vote-cand1" | "vote-cand2" | "decrement-both" | "new-cand1" | "new-cand2" | "verify" | "complete";
+}
+
+// ================================
 // Algorithm Config Types
 // ================================
 

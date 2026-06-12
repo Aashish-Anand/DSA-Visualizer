@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import type { UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import checker from 'vite-plugin-checker'
@@ -16,4 +17,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-})
+  test: {
+    pool: 'vmThreads',
+    isolate: false,
+    environment: 'node'
+  }
+} as UserConfig)

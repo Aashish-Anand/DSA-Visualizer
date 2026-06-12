@@ -42,7 +42,13 @@ const CATEGORIES: SidebarCategory[] = [
   {
     name: "Arrays",
     icon: "layers",
-    items: [{ id: "two-sum", title: "Two Sum", difficulty: "Easy" }],
+    items: [
+      { id: "two-sum", title: "Two Sum", difficulty: "Easy" },
+      { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
+      { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
+      { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
+      { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
+    ],
   },
   {
     name: "Sorting",
