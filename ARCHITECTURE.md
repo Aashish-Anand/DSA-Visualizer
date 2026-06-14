@@ -11,11 +11,11 @@ The visualizer operates on a strict **Generator/Engine/Visualizer** pattern. It 
 - **Rule:** Do NOT modify the engine to handle specific algorithm data. It is 100% agnostic. It simply takes an array of `PlaybackStep<T>` and manages the playback index.
 
 ### The Generators (`src/algorithms/*/generator.ts`)
-- **What it is:** Pure typescript functions that take an input (like an array to sort) and yield an array of `PlaybackStep<T>` objects.
+- **What it is:** Pure typescript functions that take an input (like an array to sort, or a graph to traverse) and yield an array of `PlaybackStep<T>` objects.
 - **Rule:** Generators must run *synchronously* upfront to generate the entire history of the algorithm (all steps from start to finish). Do NOT try to use `setInterval` or React state inside the generators.
 
 ### The Visualizers (`src/visualizers/*/`)
-- **What it is:** React components (`SortingBarVisualizer`, `LinkedListVisualizer`, etc.) that take a single snapshot of state (`state: T`) and render it.
+- **What it is:** React components (`SortingBarVisualizer`, `LinkedListVisualizer`, `GraphVisualizer`, etc.) that take a single snapshot of state (`state: T`) and render it.
 - **Rule:** Visualizers are stateless "dumb" components. They only render what the Generator tells them is happening at the current step. They use `framer-motion` (`layout` props) for smooth transitions.
 
 ---
