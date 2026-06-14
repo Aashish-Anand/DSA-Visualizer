@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useCallback, useMemo } from "react";
+import { createContext, useState, useCallback, useMemo, useContext } from "react";
 import type { FeedbackContext as FeedbackContextData } from "@/types/feedback";
 import type { PlaybackSpeed } from "@/types";
 
@@ -110,3 +110,18 @@ export function FeedbackProvider({ children }: { children: React.ReactNode }) {
 
   return <FeedbackCtx.Provider value={value}>{children}</FeedbackCtx.Provider>;
 }
+
+// ================================
+// Hook
+// ================================
+
+export function useFeedbackContext(): FeedbackContextValue {
+  const ctx = useContext(FeedbackCtx);
+  if (!ctx) {
+    throw new Error(
+      "useFeedbackContext must be used within a <FeedbackProvider>"
+    );
+  }
+  return ctx;
+}
+
