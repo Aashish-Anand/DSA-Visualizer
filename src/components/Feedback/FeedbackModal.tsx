@@ -42,7 +42,6 @@ export function FeedbackModal() {
     if (isModalOpen) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setModalState("form");
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError(null);
     }
   }, [isModalOpen]);

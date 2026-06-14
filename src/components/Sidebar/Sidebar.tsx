@@ -74,6 +74,14 @@ const CATEGORIES: SidebarCategory[] = [
       { id: "tree-levelorder", title: "Level-order Traversal", difficulty: "Medium" },
     ],
   },
+  {
+    name: "Graphs",
+    icon: "network",
+    items: [
+      { id: "graph-bfs", title: "Graph BFS", difficulty: "Medium" },
+      { id: "graph-dfs", title: "Graph DFS", difficulty: "Medium" },
+    ],
+  },
 ];
 
 const ICON_MAP: Record<string, React.ReactNode> = {

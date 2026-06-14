@@ -22,6 +22,7 @@ import { StockBuySellVisualizer } from "@/visualizers/StockBuySellVisualizer/Sto
 import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
 import { MajorityElementVisualizer } from "@/visualizers/MajorityElementVisualizer/MajorityElementVisualizer";
 import { TreeVisualizer } from "@/visualizers/TreeVisualizer/TreeVisualizer";
+import { GraphVisualizer } from "@/visualizers/GraphVisualizer/GraphVisualizer";
 
 // Generators & Configs
 import { bubbleSortConfig } from "@/algorithms/bubbleSort/config";
@@ -65,6 +66,12 @@ import { treeLevelorderConfig } from "@/algorithms/treeLevelorder/config";
 import { generateTreeLevelorderSteps } from "@/algorithms/treeLevelorder/generator";
 import { generateBinaryTree } from "@/algorithms/tree/utils";
 
+import { graphBfsConfig } from "@/algorithms/graphBfs/config";
+import { generateGraphBfsSteps } from "@/algorithms/graphBfs/generator";
+import { graphDfsConfig } from "@/algorithms/graphDfs/config";
+import { generateGraphDfsSteps } from "@/algorithms/graphDfs/generator";
+import { generateRandomGraph } from "@/algorithms/graph/utils";
+
 import type { 
   SortingBarState, 
   MergeSortState, 
@@ -78,6 +85,9 @@ import type {
   MajorityElement1State,
   MajorityElement2State,
   TreeTraversalState,
+  GraphTraversalState,
+  GraphNode,
+  GraphEdge,
   TreeNode,
   AlgorithmConfig,
   VisualizationStep
@@ -136,6 +146,12 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <TreeTraversalPage config={treePostorderConfig} generator={generateTreePostorderSteps} />;
     case "tree-levelorder":
       return <TreeTraversalPage config={treeLevelorderConfig} generator={generateTreeLevelorderSteps} />;
+
+    // Graphs
+    case "graph-bfs":
+      return <GraphTraversalPage config={graphBfsConfig} generator={generateGraphBfsSteps} />;
+    case "graph-dfs":
+      return <GraphTraversalPage config={graphDfsConfig} generator={generateGraphDfsSteps} />;
 
     default:
       return <div className="p-8">Algorithm not found</div>;
@@ -692,6 +708,48 @@ function TreeTraversalPage({ config, generator }: TreeTraversalPageProps) {
       visualizer={
         engine.currentStep ? (
           <TreeVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Graph Traversal Page
+// ================================
+
+interface GraphTraversalPageProps {
+  config: AlgorithmConfig;
+  generator: (nodes: GraphNode[], edges: GraphEdge[], startNodeId: string) => VisualizationStep<GraphTraversalState>[];
+}
+
+function GraphTraversalPage({ config, generator }: GraphTraversalPageProps) {
+  const [graphData, setGraphData] = useState(() => generateRandomGraph());
+
+  const steps = useMemo(() => generator(graphData.nodes, graphData.edges, graphData.startNodeId), [graphData, generator]);
+  const engine = usePlaybackEngine<GraphTraversalState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setGraphData(generateRandomGraph());
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRandomize}
+            className="px-3 py-1.5 text-xs font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          >
+            Reset Graph
+          </button>
+        </div>
+      }
+      visualizer={
+        engine.currentStep ? (
+          <GraphVisualizer state={engine.currentStep.state} />
         ) : null
       }
     />

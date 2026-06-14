@@ -69,6 +69,7 @@ A visual, interactive learning platform that helps beginners understand **Data S
 | | Radix, Counting | Medium | Buckets, Frequencies, & Prefix Sums |
 | **Searching** | Linear, Binary Search | Easy | Array Traversal & Elimination bounds |
 | **Linked List** | Singly Linked List Search | Easy | Pointer Traversal & Object References |
+| **Graphs** | BFS, DFS | Medium | Adjacency Lists, Queues, & Call Stacks |
 
 ## 🚀 Getting Started
 
@@ -242,7 +243,7 @@ The playback engine, pseudocode panel, explanation panel, and controls work auto
 - [ ] Linked Lists (insertion, deletion)
 - [ ] Stack & Queue operations
 - [ ] Binary Search Trees (insertion, deletion)
-- [ ] Graph traversal (BFS, DFS)
+- [x] Graph traversal (BFS, DFS)
 - [ ] Dynamic Programming (Fibonacci, Knapsack)
 - [ ] Algorithm complexity annotations
 - [ ] Shareable visualization links

@@ -239,6 +239,35 @@ export interface TreeTraversalState {
 }
 
 // ================================
+// Graph Types
+// ================================
+
+export interface GraphNode {
+  id: string;
+  value: number;
+  x: number;
+  y: number;
+  neighbors: string[]; // List of connected node IDs
+}
+
+export interface GraphEdge {
+  id: string;
+  source: string;
+  target: string;
+}
+
+export interface GraphTraversalState {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  startNodeId: string;
+  currentNodeId: string | null;
+  visitedNodeIds: string[];
+  queueIds?: string[]; // Used for BFS
+  callStackIds?: string[]; // Used for DFS
+  phase: "init" | "traversing" | "complete";
+}
+
+// ================================
 // Algorithm Config Types
 // ================================
 
