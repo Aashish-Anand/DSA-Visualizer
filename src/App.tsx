@@ -2,8 +2,11 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { AlgorithmPage } from "@/pages/AlgorithmPage";
 import { LandingPage } from "@/pages/LandingPage/LandingPage";
+import { FeedbackProvider, useFeedbackContext } from "@/hooks/useFeedbackContext";
+import { FeedbackButton } from "@/components/Feedback/FeedbackButton";
+import { FeedbackModal } from "@/components/Feedback/FeedbackModal";
 
-function App() {
+function AppContent() {
   const [currentView, setCurrentView] = useState<"landing" | "app">("landing");
   const [activeAlgorithm, setActiveAlgorithm] = useState("bubble-sort");
   
@@ -18,6 +21,8 @@ function App() {
     return true;
   });
 
+  const { setTheme } = useFeedbackContext();
+
   const toggleTheme = () => {
     setIsDark((prev) => {
       const newTheme = !prev;
@@ -25,6 +30,11 @@ function App() {
       return newTheme;
     });
   };
+
+  // Sync theme to feedback context
+  useEffect(() => {
+    setTheme(isDark ? "dark" : "light");
+  }, [isDark, setTheme]);
 
   // Setup Hash Routing
   useEffect(() => {
@@ -67,11 +77,15 @@ function App() {
 
   if (currentView === "landing") {
     return (
-      <LandingPage 
-        onLaunchApp={handleLaunchApp} 
-        isDark={isDark}
-        toggleTheme={toggleTheme} 
-      />
+      <>
+        <LandingPage 
+          onLaunchApp={handleLaunchApp} 
+          isDark={isDark}
+          toggleTheme={toggleTheme} 
+        />
+        <FeedbackButton />
+        <FeedbackModal />
+      </>
     );
   }
 
@@ -86,8 +100,19 @@ function App() {
       <main className="flex-1 min-w-0 lg:overflow-hidden">
         <AlgorithmPage key={activeAlgorithm} algorithmId={activeAlgorithm} />
       </main>
+      <FeedbackButton />
+      <FeedbackModal />
     </div>
   );
 }
 
+function App() {
+  return (
+    <FeedbackProvider>
+      <AppContent />
+    </FeedbackProvider>
+  );
+}
+
 export default App;
+

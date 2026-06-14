@@ -1,6 +1,9 @@
 import { Play } from "lucide-react";
+import { useFeedbackContext } from "@/hooks/useFeedbackContext";
 
 export function Footer() {
+  const { openModal } = useFeedbackContext();
+
   return (
     <footer className="border-t border-foreground/[0.04] px-6 md:px-10 py-10">
       <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -23,6 +26,12 @@ export function Footer() {
           <a href="#story" className="hover:text-foreground transition-colors">
             Story
           </a>
+          <button
+            onClick={openModal}
+            className="hover:text-foreground transition-colors cursor-pointer"
+          >
+            Feedback
+          </button>
         </div>
 
         <p className="text-[12px] text-muted-foreground/60">
@@ -32,3 +41,4 @@ export function Footer() {
     </footer>
   );
 }
+

@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Baby, GraduationCap } from "lucide-react";
+import { HelpfulRating } from "@/components/Feedback/HelpfulRating";
 
 interface ExplanationPanelProps {
   explanation: string;
   beginnerExplanation: string;
   currentStep: number;
   totalSteps: number;
+  algorithmName?: string;
 }
 
 export function ExplanationPanel({
@@ -16,6 +18,7 @@ export function ExplanationPanel({
   beginnerExplanation,
   currentStep,
   totalSteps,
+  algorithmName,
 }: ExplanationPanelProps) {
   const [isBeginnerMode, setIsBeginnerMode] = useState(false);
 
@@ -88,6 +91,15 @@ export function ExplanationPanel({
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Helpful Rating */}
+      {algorithmName && (
+        <HelpfulRating
+          algorithmName={algorithmName}
+          currentStep={currentStep}
+        />
+      )}
     </div>
   );
 }
+

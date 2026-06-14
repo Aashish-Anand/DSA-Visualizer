@@ -8,6 +8,7 @@ import { PlaybackControls } from "@/components/Controls/PlaybackControls";
 import { InputControls } from "@/components/Controls/InputControls";
 import { PseudocodePanel } from "@/components/PseudocodePanel/PseudocodePanel";
 import { ExplanationPanel } from "@/components/ExplanationPanel/ExplanationPanel";
+import { useFeedbackContext } from "@/hooks/useFeedbackContext";
 
 // Visualizers
 import { SortingBarVisualizer } from "@/visualizers/SortingBarVisualizer/SortingBarVisualizer";
@@ -721,6 +722,12 @@ function AlgorithmLayout({
     Hard: "bg-red-500/10 text-red-500 border-red-500/20",
   };
 
+  // Push algorithm context for feedback system
+  const { setAlgorithmInfo } = useFeedbackContext();
+  useEffect(() => {
+    setAlgorithmInfo(config.title, engine.currentStepIndex, engine.speed);
+  }, [config.title, engine.currentStepIndex, engine.speed, setAlgorithmInfo]);
+
   const [showDesktopToast, setShowDesktopToast] = useState(() => {
     return typeof window !== "undefined" && window.innerWidth < 1024;
   });
@@ -837,6 +844,7 @@ function AlgorithmLayout({
             beginnerExplanation={engine.currentStep.beginnerExplanation}
             currentStep={engine.currentStepIndex}
             totalSteps={engine.totalSteps}
+            algorithmName={config.title}
           />
         )}
       </motion.div>
