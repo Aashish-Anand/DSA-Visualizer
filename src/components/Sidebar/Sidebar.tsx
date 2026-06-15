@@ -37,6 +37,16 @@ const CATEGORIES: SidebarCategory[] = [
     ],
   },
   {
+    name: "Two Pointers",
+    icon: "brackets",
+    items: [
+      { id: "three-sum", title: "3 Sum", difficulty: "Medium" },
+      { id: "four-sum", title: "4 Sum", difficulty: "Medium" },
+      { id: "container-with-most-water", title: "Container With Most Water", difficulty: "Medium" },
+      { id: "trapping-rain-water", title: "Trapping Rain Water", difficulty: "Hard" },
+    ],
+  },
+  {
     name: "Searching",
     icon: "search",
     items: [

@@ -56,78 +56,36 @@ export function generateDisconnectedGraph(): {
   return { nodes: baseGraph.nodes, edges: baseGraph.edges, startNodeId: "node-9" };
 }
 
-export function generateDynamicGraph(): {
+export function generateLectureGraph(): {
   nodes: GraphNode[];
   edges: GraphEdge[];
   startNodeId: string;
 } {
-  const numNodes = Math.floor(Math.random() * 5) + 6; // 6 to 10 nodes
-  const nodes: GraphNode[] = [];
-  const edges: GraphEdge[] = [];
-  
-  // Create nodes in an ellipse layout
-  const centerX = 500;
-  const centerY = 200;
-  const radiusX = 350;
-  const radiusY = 130;
-  
-  for (let i = 0; i < numNodes; i++) {
-    const angle = (2 * Math.PI * i) / numNodes;
-    nodes.push({
-      id: `node-${i}`,
-      value: i,
-      x: centerX + radiusX * Math.cos(angle),
-      y: centerY + radiusY * Math.sin(angle),
-      neighbors: []
-    });
-  }
+  // A clean, planar graph commonly used in DSA lectures (e.g., Striver's A2Z series)
+  // Perfect for cycle detection, bipartite checks, DFS/BFS without crossing edges.
+  const nodes: GraphNode[] = [
+    { id: "node-1", value: 1, x: 200, y: 180, neighbors: ["node-2"] },
+    { id: "node-2", value: 2, x: 350, y: 180, neighbors: ["node-1", "node-3", "node-7"] },
+    { id: "node-3", value: 3, x: 450, y: 100, neighbors: ["node-2", "node-4"] },
+    { id: "node-4", value: 4, x: 650, y: 100, neighbors: ["node-3", "node-5"] },
+    { id: "node-5", value: 5, x: 750, y: 180, neighbors: ["node-4", "node-6"] },
+    { id: "node-6", value: 6, x: 650, y: 260, neighbors: ["node-5", "node-7"] },
+    { id: "node-7", value: 7, x: 450, y: 260, neighbors: ["node-6", "node-2", "node-8"] },
+    { id: "node-8", value: 8, x: 450, y: 340, neighbors: ["node-7"] },
+  ];
 
-  // Ensure it is a connected graph by creating a random spanning tree
-  const connected = new Set<number>([0]);
-  const unconnected = new Set<number>();
-  for (let i = 1; i < numNodes; i++) unconnected.add(i);
+  const edges: GraphEdge[] = [
+    { id: "e-1-2", source: "node-1", target: "node-2" },
+    { id: "e-2-3", source: "node-2", target: "node-3" },
+    { id: "e-3-4", source: "node-3", target: "node-4" },
+    { id: "e-4-5", source: "node-4", target: "node-5" },
+    { id: "e-5-6", source: "node-5", target: "node-6" },
+    { id: "e-6-7", source: "node-6", target: "node-7" },
+    { id: "e-7-2", source: "node-7", target: "node-2" },
+    { id: "e-7-8", source: "node-7", target: "node-8" },
+  ];
 
-  let edgeCounter = 0;
-  
-  // Build spanning tree
-  while (unconnected.size > 0) {
-    const connectedArray = Array.from(connected);
-    const u = connectedArray[Math.floor(Math.random() * connectedArray.length)];
-    
-    const unconnectedArray = Array.from(unconnected);
-    const v = unconnectedArray[Math.floor(Math.random() * unconnectedArray.length)];
-    
-    nodes[u].neighbors.push(`node-${v}`);
-    nodes[v].neighbors.push(`node-${u}`);
-    edges.push({
-      id: `edge-${edgeCounter++}`,
-      source: `node-${u}`,
-      target: `node-${v}`
-    });
-    
-    connected.add(v);
-    unconnected.delete(v);
-  }
-
-  // Add some random extra edges for complexity
-  const extraEdges = Math.floor(numNodes * 0.5) + 1; // 4 to 6 extra edges
-  for (let i = 0; i < extraEdges; i++) {
-    const u = Math.floor(Math.random() * numNodes);
-    const v = Math.floor(Math.random() * numNodes);
-    
-    if (u !== v && !nodes[u].neighbors.includes(`node-${v}`)) {
-      nodes[u].neighbors.push(`node-${v}`);
-      nodes[v].neighbors.push(`node-${u}`);
-      edges.push({
-        id: `edge-${edgeCounter++}`,
-        source: `node-${u}`,
-        target: `node-${v}`
-      });
-    }
-  }
-
-  const startNodeId = `node-${Math.floor(Math.random() * numNodes)}`;
-  return { nodes, edges, startNodeId };
+  return { nodes, edges, startNodeId: "node-1" };
 }
 
 export function generateStarGraph(): {
@@ -205,6 +163,6 @@ export function generateRandomGraph() {
   } else if (rand < 0.8) {
     return generateCycleGraph();
   } else {
-    return generateDynamicGraph();
+    return generateLectureGraph();
   }
 }

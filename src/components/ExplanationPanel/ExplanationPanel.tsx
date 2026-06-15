@@ -40,32 +40,46 @@ export function ExplanationPanel({
           </Badge>
         </div>
 
-        {/* Beginner Mode Toggle */}
-        <div className="flex items-center gap-2">
-          <GraduationCap
-            size={14}
-            className={`transition-colors ${
-              !isBeginnerMode ? "text-primary" : "text-muted-foreground/40"
-            }`}
-          />
-          <Switch
-            checked={isBeginnerMode}
-            onCheckedChange={setIsBeginnerMode}
-            className="data-[state=checked]:bg-amber-500"
-          />
-          <Baby
-            size={14}
-            className={`transition-colors ${
-              isBeginnerMode ? "text-amber-500" : "text-muted-foreground/40"
-            }`}
-          />
-          <span
-            className={`text-[11px] font-medium transition-colors ${
-              isBeginnerMode ? "text-amber-500" : "text-muted-foreground"
-            }`}
-          >
-            {isBeginnerMode ? "ELI12 On" : "ELI12"}
-          </span>
+        {/* Right Side Header Controls */}
+        <div className="flex items-center gap-3">
+          {/* Helpful Rating */}
+          {algorithmName && (
+            <HelpfulRating
+              algorithmName={algorithmName}
+              currentStep={currentStep}
+            />
+          )}
+
+          {/* Vertical Divider */}
+          <div className="w-px h-4 bg-border mx-1" />
+
+          {/* Beginner Mode Toggle */}
+          <div className="flex items-center gap-2">
+            <GraduationCap
+              size={14}
+              className={`transition-colors ${
+                !isBeginnerMode ? "text-primary" : "text-muted-foreground/40"
+              }`}
+            />
+            <Switch
+              checked={isBeginnerMode}
+              onCheckedChange={setIsBeginnerMode}
+              className="data-[state=checked]:bg-amber-500"
+            />
+            <Baby
+              size={14}
+              className={`transition-colors ${
+                isBeginnerMode ? "text-amber-500" : "text-muted-foreground/40"
+              }`}
+            />
+            <span
+              className={`text-[11px] font-medium transition-colors ${
+                isBeginnerMode ? "text-amber-500" : "text-muted-foreground"
+              }`}
+            >
+              {isBeginnerMode ? "ELI12 On" : "ELI12"}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -92,13 +106,6 @@ export function ExplanationPanel({
         </AnimatePresence>
       </div>
 
-      {/* Helpful Rating */}
-      {algorithmName && (
-        <HelpfulRating
-          algorithmName={algorithmName}
-          currentStep={currentStep}
-        />
-      )}
     </div>
   );
 }

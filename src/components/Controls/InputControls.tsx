@@ -14,6 +14,7 @@ interface SearchInputControlsProps {
   type: "search";
   arraySize: number;
   target: number;
+  maxSize?: number;
   onArraySizeChange: (size: number) => void;
   onTargetChange: (target: number) => void;
   onRandomize: () => void;
@@ -75,6 +76,7 @@ function SortingInputs({
 function SearchInputs({
   arraySize,
   target,
+  maxSize = 20,
   onArraySizeChange,
   onTargetChange,
   onRandomize,
@@ -99,7 +101,7 @@ function SearchInputs({
           value={[arraySize]}
           onValueChange={([v]) => onArraySizeChange(v)}
           min={5}
-          max={20}
+          max={maxSize}
           step={1}
           className="w-20"
         />

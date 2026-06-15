@@ -23,6 +23,8 @@ import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualize
 import { MajorityElementVisualizer } from "@/visualizers/MajorityElementVisualizer/MajorityElementVisualizer";
 import { TreeVisualizer } from "@/visualizers/TreeVisualizer/TreeVisualizer";
 import { GraphVisualizer } from "@/visualizers/GraphVisualizer/GraphVisualizer";
+import { TwoPointersVisualizer } from "@/visualizers/TwoPointersVisualizer/TwoPointersVisualizer";
+import { WaterVisualizer } from "@/visualizers/WaterVisualizer/WaterVisualizer";
 
 // Generators & Configs
 import { bubbleSortConfig } from "@/algorithms/bubbleSort/config";
@@ -72,6 +74,15 @@ import { graphDfsConfig } from "@/algorithms/graphDfs/config";
 import { generateGraphDfsSteps } from "@/algorithms/graphDfs/generator";
 import { generateRandomGraph } from "@/algorithms/graph/utils";
 
+import { threeSumConfig } from "@/algorithms/threeSum/config";
+import { generateThreeSumSteps, generateRandomThreeSumInput } from "@/algorithms/threeSum/generator";
+import { fourSumConfig } from "@/algorithms/fourSum/config";
+import { generateFourSumSteps, generateRandomFourSumInput } from "@/algorithms/fourSum/generator";
+import { containerWithMostWaterConfig } from "@/algorithms/containerWithMostWater/config";
+import { generateContainerSteps, generateRandomContainerInput } from "@/algorithms/containerWithMostWater/generator";
+import { trappingRainWaterConfig } from "@/algorithms/trappingRainWater/config";
+import { generateTrappingRainWaterSteps, generateRandomTrappingInput } from "@/algorithms/trappingRainWater/generator";
+
 import type { 
   SortingBarState, 
   MergeSortState, 
@@ -86,6 +97,8 @@ import type {
   MajorityElement2State,
   TreeTraversalState,
   GraphTraversalState,
+  TwoPointersState,
+  WaterState,
   GraphNode,
   GraphEdge,
   TreeNode,
@@ -136,6 +149,16 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <MajorityElement1Page />;
     case "majority-element-2":
       return <MajorityElement2Page />;
+
+    // Two Pointers
+    case "three-sum":
+      return <TwoPointersPage config={threeSumConfig} generator={generateThreeSumSteps} generateInput={generateRandomThreeSumInput} />;
+    case "four-sum":
+      return <TwoPointersPage config={fourSumConfig} generator={generateFourSumSteps} generateInput={generateRandomFourSumInput} />;
+    case "container-with-most-water":
+      return <WaterPage config={containerWithMostWaterConfig} generator={generateContainerSteps} generateInput={generateRandomContainerInput} />;
+    case "trapping-rain-water":
+      return <WaterPage config={trappingRainWaterConfig} generator={generateTrappingRainWaterSteps} generateInput={generateRandomTrappingInput} />;
       
     // Trees
     case "tree-preorder":
@@ -156,6 +179,124 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
     default:
       return <div className="p-8">Algorithm not found</div>;
   }
+}
+
+// ================================
+// Generic Two Pointers Page
+// ================================
+
+interface TwoPointersPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[], target: number) => VisualizationStep<TwoPointersState>[];
+  generateInput: (size: number) => { nums: number[]; target: number };
+}
+
+function TwoPointersPage({ config, generator, generateInput }: TwoPointersPageProps) {
+  const [arraySize, setArraySize] = useState(8);
+  const [input, setInput] = useState(() => generateInput(8));
+
+  const steps = useMemo(
+    () => generator(input.nums, input.target),
+    [input, generator]
+  );
+
+  const engine = usePlaybackEngine<TwoPointersState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInput(generateInput(arraySize));
+  }, [generateInput, arraySize]);
+
+  const handleArraySizeChange = useCallback(
+    (size: number) => {
+      setArraySize(size);
+      setInput(generateInput(size));
+    },
+    [generateInput]
+  );
+
+  const handleTargetChange = useCallback(
+    (target: number) => {
+      setInput((prev) => ({ ...prev, target }));
+    },
+    []
+  );
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="search"
+          arraySize={arraySize}
+          maxSize={12}
+          target={input.target}
+          onArraySizeChange={handleArraySizeChange}
+          onTargetChange={handleTargetChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <TwoPointersVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Generic Water Page
+// ================================
+
+interface WaterPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[]) => VisualizationStep<WaterState>[];
+  generateInput: (size: number) => { nums: number[]; target: number };
+}
+
+function WaterPage({ config, generator, generateInput }: WaterPageProps) {
+  const [arraySize, setArraySize] = useState(12);
+  const [input, setInput] = useState(() => generateInput(12));
+
+  const steps = useMemo(
+    () => generator(input.nums),
+    [input, generator]
+  );
+
+  const engine = usePlaybackEngine<WaterState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInput(generateInput(arraySize));
+  }, [generateInput, arraySize]);
+
+  const handleArraySizeChange = useCallback(
+    (size: number) => {
+      setArraySize(size);
+      setInput(generateInput(size));
+    },
+    [generateInput]
+  );
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <WaterVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
 }
 
 // ================================

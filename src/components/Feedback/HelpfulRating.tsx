@@ -35,12 +35,8 @@ export function HelpfulRating({
   );
 
   return (
-    <div className="flex items-center gap-3 pt-2 border-t border-border/50 mt-auto">
-      <span className="text-[11px] text-muted-foreground/70">
-        Was this helpful?
-      </span>
-
-      <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
         <button
           onClick={() => handleRate(true)}
           disabled={submitted !== null}

@@ -150,6 +150,69 @@ export interface TwoSumState {
 }
 
 // ================================
+// Two Pointers Types (3Sum, 4Sum)
+// ================================
+
+export type TwoPointersPhase =
+  | "init"
+  | "sorting"
+  | "outer-loop"
+  | "inner-loop"
+  | "moving-left"
+  | "moving-right"
+  | "checking-sum"
+  | "found"
+  | "skipping-duplicates"
+  | "complete";
+
+export interface TwoPointersState {
+  array: number[];
+  target: number;
+  pointers: {
+    i: number | null;
+    j: number | null; // used in 4sum
+    left: number | null;
+    right: number | null;
+  };
+  currentSum: number | null;
+  foundSets: number[][]; // e.g., [[-1, 0, 1], [-2, 0, 1, 1]]
+  phase: TwoPointersPhase;
+}
+
+// ================================
+// Water Problems Types (Container, Trapping Rain)
+// ================================
+
+export type WaterPhase = 
+  | "init" 
+  | "scanning" 
+  | "found-new-max" 
+  | "moving-pointer" 
+  | "calculating-water" 
+  | "complete";
+
+export interface WaterState {
+  type: "container" | "trapping";
+  heights: number[];
+  left: number | null;
+  right: number | null;
+  
+  // Container With Most Water specific
+  currentArea: number | null;
+  maxArea: number;
+  bestLeft: number | null;
+  bestRight: number | null;
+  
+  // Trapping Rain Water specific
+  leftMax: number;
+  rightMax: number;
+  waterLevels: number[]; // Amount of water trapped at each index
+  totalWater: number;
+  
+  phase: WaterPhase;
+}
+
+// ================================
 // Stock Buy and Sell Types
 // ================================
 
