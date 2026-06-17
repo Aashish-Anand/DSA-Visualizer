@@ -25,6 +25,8 @@ interface PlaybackControlsProps {
   onPrevious: () => void;
   onReset: () => void;
   onSpeedChange: (speed: PlaybackSpeed) => void;
+  isDryRunMode?: boolean;
+  onToggleDryRunMode?: () => void;
 }
 
 const SPEEDS: PlaybackSpeed[] = [0.5, 1, 2, 4];
@@ -43,6 +45,8 @@ export function PlaybackControls({
   onPrevious,
   onReset,
   onSpeedChange,
+  isDryRunMode = false,
+  onToggleDryRunMode,
 }: PlaybackControlsProps) {
   // Keyboard shortcuts
   useEffect(() => {
@@ -179,6 +183,30 @@ export function PlaybackControls({
             </button>
           ))}
         </div>
+
+        {/* Separator */}
+        <div className="w-px h-6 bg-border" />
+
+        {/* Dry Run Toggle */}
+        {onToggleDryRunMode && (
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+              Dry Run
+            </span>
+            <button
+              onClick={onToggleDryRunMode}
+              className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                isDryRunMode ? "bg-primary" : "bg-input"
+              }`}
+            >
+              <span
+                className={`inline-block h-3 w-3 transform rounded-full bg-background transition-transform ${
+                  isDryRunMode ? "translate-x-3.5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+          </div>
+        )}
 
         {/* Separator */}
         <div className="w-px h-6 bg-border" />

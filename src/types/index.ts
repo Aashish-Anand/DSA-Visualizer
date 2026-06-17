@@ -2,6 +2,12 @@
 // Core Visualization Types
 // ================================
 
+export interface DryRunPrompt {
+  question: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
 /**
  * A single step in an algorithm visualization.
  * Generic over T to support any algorithm-specific state shape.
@@ -9,12 +15,28 @@
 export interface VisualizationStep<T = Record<string, unknown>> {
   /** The algorithm-specific state at this step */
   state: T;
-  /** Index of the currently active pseudocode line (0-based) */
+  /** Index of the currently active pseudocode line (0-based). -1 for pre-steps or problem walkthroughs. */
   activeLine: number;
   /** Technical explanation of what's happening */
   explanation: string;
   /** Beginner-friendly explanation ("Explain Like I'm 12") */
   beginnerExplanation: string;
+  /** Optional interactive prompt for Dry Run mode */
+  dryRunPrompt?: DryRunPrompt;
+  /** Phase of the step: either explaining the problem or executing the algorithm */
+  phase?: "problem" | "algorithm";
+}
+
+// ================================
+// Problem Statement Types
+// ================================
+
+export interface FrogJumpProblemState {
+  heights: number[];
+  frogPosition: number;
+  jump1Target: number | null; // index the frog might jump to (1 step)
+  jump2Target: number | null; // index the frog might jump to (2 steps)
+  energyCost: number | null;
 }
 
 // ================================
@@ -279,6 +301,46 @@ export interface MajorityElement2State {
 }
 
 // ================================
+// Dynamic Programming Types
+// ================================
+
+export interface DP1DState {
+  dpArray: (number | null)[];
+  inputArray?: number[]; // Used for problems like Frog Jump with costs
+  currentIndex: number | null;
+  dependencies: number[]; // Indices that the current state depends on
+  phase: "init" | "calculating" | "complete";
+  result: number | null;
+}
+
+// ================================
+// Recursion Tree Types (For DP)
+// ================================
+
+export interface RecursionNode {
+  id: string;      // Unique identifier (e.g., "node-1")
+  label: string;   // The function signature (e.g., "f(3)")
+  value?: number;  // The computed result (populated when the function returns)
+  x: number;       // Layout coordinate
+  y: number;       // Layout coordinate
+}
+
+export interface RecursionEdge {
+  source: string;
+  target: string;
+}
+
+export interface RecursionTreeState {
+  nodes: RecursionNode[];         // All nodes discovered so far
+  edges: RecursionEdge[];         // Edges between callers and callees
+  currentNodeId: string | null;   // The node currently executing
+  computedNodeIds: string[];      // Nodes that have finished computing
+  memoizedNodeIds: string[];      // Nodes that hit the cache (for Memoization variant)
+  callStackIds: string[];         // Bottom-to-top representation of the call stack
+  memoArray: (number | null)[];   // Array representing the memoization cache
+}
+
+// ================================
 // Tree Types
 // ================================
 
@@ -334,6 +396,28 @@ export interface GraphTraversalState {
 // Algorithm Config Types
 // ================================
 
+export interface ComplexityAnalysis {
+  time?: string;
+  space?: string;
+  timeComplexity?: string;
+  spaceComplexity?: string;
+  timeExplanation?: string[];
+  spaceExplanation?: string[];
+  timeAnimationId?: string;
+  spaceAnimationId?: string;
+}
+
+export interface AlgorithmVariant {
+  id: string;
+  title: string;
+  description: string;
+  pseudocode: PseudocodeLine[];
+  python?: PseudocodeLine[];
+  java?: PseudocodeLine[];
+  cpp?: PseudocodeLine[];
+  complexity?: ComplexityAnalysis;
+}
+
 export interface AlgorithmConfig {
   id: string;
   title: string;
@@ -341,7 +425,12 @@ export interface AlgorithmConfig {
   categoryIcon: string;
   description: string;
   pseudocode: PseudocodeLine[];
+  python?: PseudocodeLine[];
+  java?: PseudocodeLine[];
+  cpp?: PseudocodeLine[];
   difficulty: "Easy" | "Medium" | "Hard";
+  complexity?: ComplexityAnalysis;
+  variants?: AlgorithmVariant[];
 }
 
 export interface PseudocodeLine {
@@ -373,6 +462,7 @@ export interface PlaybackState<T> {
   isFirstStep: boolean;
   isLastStep: boolean;
   progress: number;
+  isDryRunMode: boolean;
 }
 
 export interface PlaybackControls {
@@ -383,4 +473,5 @@ export interface PlaybackControls {
   reset: () => void;
   setSpeed: (speed: PlaybackSpeed) => void;
   goToStep: (index: number) => void;
+  toggleDryRunMode: () => void;
 }

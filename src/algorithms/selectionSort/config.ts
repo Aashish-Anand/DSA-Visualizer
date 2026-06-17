@@ -17,4 +17,20 @@ export const selectionSortConfig: AlgorithmConfig = {
     { code: "minIndex = j", indent: 4 },
     { code: "swap(arr[i], arr[minIndex])", indent: 2 },
   ],
+  complexity: {
+    time: "O(n²)",
+    space: "O(1)",
+    timeComplexity: "O(n²)",
+    spaceComplexity: "O(1)",
+    timeExplanation: [
+      "Selection Sort has two nested loops.",
+      "The outer loop runs 'n' times, and the inner loop searches the remaining unsorted portion.",
+      "This results in roughly n²/2 comparisons, making the time complexity O(n²) in all cases."
+    ],
+    spaceExplanation: [
+      "Selection Sort sorts the array in-place.",
+      "It only uses a few pointers to track indices and perform swaps, requiring O(1) extra space."
+    ],
+    timeAnimationId: "quadratic"
+  }
 };

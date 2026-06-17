@@ -1,9 +1,8 @@
 import type { WaterState, VisualizationStep } from "@/types";
 
-export function generateRandomContainerInput(length: number = 10) {
+export function generateRandomContainerInput(length: number = 10): number[] {
   // Generate random heights between 1 and 10
-  const arr = Array.from({ length }, () => Math.floor(Math.random() * 9) + 1);
-  return { nums: arr, target: 0 };
+  return Array.from({ length }, () => Math.floor(Math.random() * 9) + 1);
 }
 
 export function generateContainerSteps(

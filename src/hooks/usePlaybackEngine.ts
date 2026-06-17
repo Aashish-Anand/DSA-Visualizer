@@ -20,9 +20,12 @@ export function usePlaybackEngine<T>(
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeedState] = useState<PlaybackSpeed>(1);
 
+  const [isDryRunMode, setIsDryRunMode] = useState(false);
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const stepsRef = useRef(steps);
   const speedRef = useRef(speed);
+  const isDryRunModeRef = useRef(isDryRunMode);
 
   // Keep refs in sync
   useEffect(() => {
@@ -33,19 +36,21 @@ export function usePlaybackEngine<T>(
     speedRef.current = speed;
   }, [speed]);
 
+  useEffect(() => {
+    isDryRunModeRef.current = isDryRunMode;
+  }, [isDryRunMode]);
+
   const clearTimer = useCallback(() => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-     
   }, []);
 
   // Reset when steps change (new algorithm input)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line
     setCurrentStepIndex(0);
-     
     setIsPlaying(false);
     clearTimer();
   }, [steps, clearTimer]);
@@ -62,7 +67,16 @@ export function usePlaybackEngine<T>(
           setIsPlaying(false);
           return prev;
         }
-        return prev + 1;
+        
+        const nextIndex = prev + 1;
+        
+        // Auto-pause if next step is a dry run prompt
+        if (isDryRunModeRef.current && stepsRef.current[nextIndex]?.dryRunPrompt) {
+          clearTimer();
+          setIsPlaying(false);
+        }
+        
+        return nextIndex;
       });
     }, intervalMs);
   }, [clearTimer]);
@@ -119,6 +133,10 @@ export function usePlaybackEngine<T>(
     },
     [steps.length, pause]
   );
+  
+  const toggleDryRunMode = useCallback(() => {
+    setIsDryRunMode((prev) => !prev);
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -141,6 +159,7 @@ export function usePlaybackEngine<T>(
     isFirstStep,
     isLastStep,
     progress,
+    isDryRunMode,
     // Controls
     play,
     pause,
@@ -149,5 +168,6 @@ export function usePlaybackEngine<T>(
     reset,
     setSpeed,
     goToStep,
+    toggleDryRunMode,
   };
 }

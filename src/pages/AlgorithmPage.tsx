@@ -1,13 +1,15 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info } from "lucide-react";
+import { Info, BarChart2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { usePlaybackEngine } from "@/hooks/usePlaybackEngine";
 import { PlaybackControls } from "@/components/Controls/PlaybackControls";
 import { InputControls } from "@/components/Controls/InputControls";
-import { PseudocodePanel } from "@/components/PseudocodePanel/PseudocodePanel";
+import { CodePanel } from "@/components/CodePanel/CodePanel";
 import { ExplanationPanel } from "@/components/ExplanationPanel/ExplanationPanel";
+import { ComplexityDrawer } from "@/components/ComplexityDrawer/ComplexityDrawer";
 import { useFeedbackContext } from "@/hooks/useFeedbackContext";
 
 // Visualizers
@@ -21,8 +23,13 @@ import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualize
 import { StockBuySellVisualizer } from "@/visualizers/StockBuySellVisualizer/StockBuySellVisualizer";
 import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
 import { MajorityElementVisualizer } from "@/visualizers/MajorityElementVisualizer/MajorityElementVisualizer";
+import type { DP1DState, RecursionTreeState } from "@/types";
 import { TreeVisualizer } from "@/visualizers/TreeVisualizer/TreeVisualizer";
 import { GraphVisualizer } from "@/visualizers/GraphVisualizer/GraphVisualizer";
+import { DP1DVisualizer } from "@/visualizers/DP1DVisualizer/DP1DVisualizer";
+import { RecursionTreeVisualizer } from "@/visualizers/RecursionTreeVisualizer/RecursionTreeVisualizer";
+import { FrogJumpProblemVisualizer } from "@/visualizers/ProblemVisualizer/FrogJumpProblemVisualizer";
+import { ClimbingStairsProblemVisualizer } from "@/visualizers/ProblemVisualizer/ClimbingStairsProblemVisualizer";
 import { TwoPointersVisualizer } from "@/visualizers/TwoPointersVisualizer/TwoPointersVisualizer";
 import { WaterVisualizer } from "@/visualizers/WaterVisualizer/WaterVisualizer";
 
@@ -49,6 +56,13 @@ import { singlyLinkedListSearchConfig } from "@/algorithms/singlyLinkedListSearc
 import { generateSinglyLinkedListSearchSteps } from "@/algorithms/singlyLinkedListSearch/generator";
 import { twoSumConfig } from "@/algorithms/twoSum/config";
 import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
+
+import { climbingStairsConfig } from "@/algorithms/climbingStairs/config";
+import { generateClimbingStairsSteps, generateClimbingStairsMemoizedSteps, generateClimbingStairsRecursiveSteps } from "@/algorithms/climbingStairs/generator";
+
+import { frogJumpConfig } from "@/algorithms/frogJump/config";
+import { generateFrogJumpSteps, generateFrogJumpRecursiveSteps, generateFrogJumpMemoizedSteps, generateRandomHeights } from "@/algorithms/frogJump/generator";
+
 import { stockBuySellConfig } from "@/algorithms/stockBuySell/config";
 import { generateStockBuySellSteps, generateStockArray } from "@/algorithms/stockBuySell/generator";
 import { kadaneConfig } from "@/algorithms/kadane/config";
@@ -103,7 +117,9 @@ import type {
   GraphEdge,
   TreeNode,
   AlgorithmConfig,
-  VisualizationStep
+  VisualizationStep,
+  PlaybackState,
+  PlaybackControls as PlaybackControlsType
 } from "@/types";
 
 interface AlgorithmPageProps {
@@ -112,15 +128,19 @@ interface AlgorithmPageProps {
 
 export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
   switch (algorithmId) {
+    case "climbing-stairs":
+      return <ClimbingStairsPage />;
+    case "frog-jump":
+      return <FrogJumpPage />;
     // Sorting
     case "bubble-sort":
-      return <BarSortPage config={bubbleSortConfig} generator={generateBubbleSortSteps} />;
+      return <SortingPage config={bubbleSortConfig} generator={generateBubbleSortSteps} />;
     case "selection-sort":
-      return <BarSortPage config={selectionSortConfig} generator={generateSelectionSortSteps} />;
+      return <SortingPage config={selectionSortConfig} generator={generateSelectionSortSteps} />;
     case "insertion-sort":
-      return <BarSortPage config={insertionSortConfig} generator={generateInsertionSortSteps} />;
+      return <SortingPage config={insertionSortConfig} generator={generateInsertionSortSteps} />;
     case "quick-sort":
-      return <BarSortPage config={quickSortConfig} generator={generateQuickSortSteps} />;
+      return <SortingPage config={quickSortConfig} generator={generateQuickSortSteps} />;
     case "merge-sort":
       return <MergeSortPage />;
     case "radix-sort":
@@ -221,6 +241,11 @@ function TwoPointersPage({ config, generator, generateInput }: TwoPointersPagePr
     []
   );
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInput((prev) => ({ ...prev, nums: arr }));
+  }, []);
+
   return (
     <AlgorithmLayout
       config={config}
@@ -231,9 +256,11 @@ function TwoPointersPage({ config, generator, generateInput }: TwoPointersPagePr
           arraySize={arraySize}
           maxSize={12}
           target={input.target}
-          onArraySizeChange={handleArraySizeChange}
           onTargetChange={handleTargetChange}
+          onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={input.nums}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -252,28 +279,28 @@ function TwoPointersPage({ config, generator, generateInput }: TwoPointersPagePr
 interface WaterPageProps {
   config: AlgorithmConfig;
   generator: (arr: number[]) => VisualizationStep<WaterState>[];
-  generateInput: (size: number) => { nums: number[]; target: number };
+  generateInput: (size: number) => number[];
 }
 
 function WaterPage({ config, generator, generateInput }: WaterPageProps) {
   const [arraySize, setArraySize] = useState(12);
-  const [input, setInput] = useState(() => generateInput(12));
+  const [inputArray, setInputArray] = useState(() => generateInput(12));
 
   const steps = useMemo(
-    () => generator(input.nums),
-    [input, generator]
+    () => generator(inputArray),
+    [inputArray, generator]
   );
 
   const engine = usePlaybackEngine<WaterState>(steps);
 
   const handleRandomize = useCallback(() => {
-    setInput(generateInput(arraySize));
+    setInputArray(generateInput(arraySize));
   }, [generateInput, arraySize]);
 
   const handleArraySizeChange = useCallback(
     (size: number) => {
       setArraySize(size);
-      setInput(generateInput(size));
+      setInputArray(generateInput(size));
     },
     [generateInput]
   );
@@ -300,7 +327,62 @@ function WaterPage({ config, generator, generateInput }: WaterPageProps) {
 }
 
 // ================================
-// Generic Array Search Page (Linear, Binary)
+// Generic Sorting Page
+// ================================
+
+interface SortingPageProps {
+  config: AlgorithmConfig;
+  generator: (arr: number[]) => VisualizationStep<SortingBarState>[];
+}
+
+function SortingPage({ config, generator }: SortingPageProps) {
+  const [arraySize, setArraySize] = useState(8);
+  const [inputArray, setInputArray] = useState<number[]>(() =>
+    generateRandomArray(8)
+  );
+
+  const steps = useMemo(() => generator(inputArray), [inputArray, generator]);
+  const engine = usePlaybackEngine<SortingBarState>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setInputArray(generateRandomArray(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInputArray(generateRandomArray(size));
+  }, []);
+
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={
+        <InputControls
+          type="sorting"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
+        />
+      }
+      visualizer={
+        engine.currentStep ? (
+          <SortingBarVisualizer state={engine.currentStep.state} />
+        ) : null
+      }
+    />
+  );
+}
+
+// ================================
+// Generic Search Page
 // ================================
 
 interface ArraySearchPageProps {
@@ -335,6 +417,11 @@ function ArraySearchPage({ config, generator }: ArraySearchPageProps) {
     setTarget(newTarget);
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={config}
@@ -344,9 +431,11 @@ function ArraySearchPage({ config, generator }: ArraySearchPageProps) {
           type="search"
           arraySize={arraySize}
           target={target}
-          onArraySizeChange={handleArraySizeChange}
           onTargetChange={handleTargetChange}
+          onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -394,6 +483,11 @@ function LinkedListSearchPage({ config, generator }: LinkedListSearchPageProps) 
     setTarget(newTarget);
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={config}
@@ -403,62 +497,16 @@ function LinkedListSearchPage({ config, generator }: LinkedListSearchPageProps) 
           type="search"
           arraySize={arraySize}
           target={target}
-          onArraySizeChange={handleArraySizeChange}
           onTargetChange={handleTargetChange}
+          onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
         engine.currentStep ? (
           <LinkedListVisualizer state={engine.currentStep.state} />
-        ) : null
-      }
-    />
-  );
-}
-
-// ================================
-// Generic Bar Sort Page (Bubble, Selection, Insertion, Quick)
-// ================================
-
-interface BarSortPageProps {
-  config: AlgorithmConfig;
-  generator: (arr: number[]) => VisualizationStep<SortingBarState>[];
-}
-
-function BarSortPage({ config, generator }: BarSortPageProps) {
-  const [arraySize, setArraySize] = useState(8);
-  const [inputArray, setInputArray] = useState<number[]>(() =>
-    generateRandomArray(8)
-  );
-
-  const steps = useMemo(() => generator(inputArray), [inputArray, generator]);
-  const engine = usePlaybackEngine<SortingBarState>(steps);
-
-  const handleRandomize = useCallback(() => {
-    setInputArray(generateRandomArray(arraySize));
-  }, [arraySize]);
-
-  const handleArraySizeChange = useCallback((size: number) => {
-    setArraySize(size);
-    setInputArray(generateRandomArray(size));
-  }, []);
-
-  return (
-    <AlgorithmLayout
-      config={config}
-      engine={engine}
-      inputControls={
-        <InputControls
-          type="sorting"
-          arraySize={arraySize}
-          onArraySizeChange={handleArraySizeChange}
-          onRandomize={handleRandomize}
-        />
-      }
-      visualizer={
-        engine.currentStep ? (
-          <SortingBarVisualizer state={engine.currentStep.state} />
         ) : null
       }
     />
@@ -487,6 +535,11 @@ function MergeSortPage() {
     setInputArray(generateRandomArray(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={mergeSortConfig}
@@ -497,6 +550,8 @@ function MergeSortPage() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -515,7 +570,7 @@ function MergeSortPage() {
 function RadixSortPage() {
   const [arraySize, setArraySize] = useState(8);
   const [inputArray, setInputArray] = useState<number[]>(() =>
-    generateRandomArray(8).map(x => x * Math.floor(Math.random() * 10)) // make numbers larger for better visualization
+    generateRandomArray(8).map(x => x * Math.floor(Math.random() * 10))
   );
 
   const steps = useMemo(() => generateRadixSortSteps(inputArray), [inputArray]);
@@ -530,6 +585,11 @@ function RadixSortPage() {
     setInputArray(generateRandomArray(size).map(x => x * Math.floor(Math.random() * 10)));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={radixSortConfig}
@@ -540,6 +600,8 @@ function RadixSortPage() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -573,6 +635,11 @@ function CountingSortPage() {
     setInputArray(generateCountingSortArray(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={countingSortConfig}
@@ -583,6 +650,8 @@ function CountingSortPage() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -599,37 +668,47 @@ function CountingSortPage() {
 // ================================
 
 function TwoSumPage() {
-  const config = twoSumConfig;
-  const [input, setInput] = useState(() => generateRandomTwoSumInput());
+  const [arraySize, setArraySize] = useState(8);
+  const [input, setInput] = useState(() => generateRandomTwoSumInput(8));
 
   const steps = useMemo(
     () => generateTwoSumSteps(input.nums, input.target),
     [input]
   );
-
   const engine = usePlaybackEngine<TwoSumState>(steps);
 
   const handleRandomize = useCallback(() => {
-    setInput(generateRandomTwoSumInput());
+    setInput(generateRandomTwoSumInput(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setInput(generateRandomTwoSumInput(size));
   }, []);
 
-  const handleTargetChange = useCallback(
-    (target: number) => {
-      setInput({ nums: input.nums, target });
-    },
-    [input.nums]
-  );
+  const handleTargetChange = useCallback((target: number) => {
+    setInput((prev) => ({ ...prev, target }));
+  }, []);
+
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInput((prev) => ({ ...prev, nums: arr }));
+  }, []);
 
   return (
     <AlgorithmLayout
-      config={config}
+      config={twoSumConfig}
       engine={engine}
       inputControls={
         <InputControls
-          type="two-sum"
+          type="search"
+          arraySize={arraySize}
+          onArraySizeChange={handleArraySizeChange}
+          onRandomize={handleRandomize}
           target={input.target}
           onTargetChange={handleTargetChange}
-          onRandomize={handleRandomize}
+          currentArray={input.nums}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -638,6 +717,195 @@ function TwoSumPage() {
         ) : null
       }
     />
+  );
+}
+
+// ================================
+// DP: Climbing Stairs
+// ================================
+
+function ClimbingStairsPage() {
+  const [n, setN] = useState(5);
+  const [activeVariantId, setActiveVariantId] = useState("iterative");
+  const [viewMode, setViewMode] = useState<"problem" | "algorithm">("problem");
+
+  const steps = useMemo(() => {
+    if (activeVariantId === "recursive") return generateClimbingStairsRecursiveSteps(n);
+    if (activeVariantId === "memoized") return generateClimbingStairsMemoizedSteps(n);
+    return generateClimbingStairsSteps(n);
+  }, [n, activeVariantId]);
+
+  const engine = usePlaybackEngine<unknown>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setN(Math.floor(Math.random() * 8) + 3);
+  }, []);
+
+  const handleNChange = useCallback((newN: number) => {
+    setN(newN);
+  }, []);
+
+  useEffect(() => {
+    if (activeVariantId === "recursive" && n > 8) {
+      // eslint-disable-next-line
+      setN(8);
+    } else if (activeVariantId !== "recursive" && n > 20) {
+       
+      setN(20);
+    }
+  }, [activeVariantId, n]);
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+        <button
+          onClick={() => setViewMode("problem")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
+            viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          🏃 Problem Simulation
+        </button>
+        <button
+          onClick={() => setViewMode("algorithm")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
+            viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          💻 Algorithm Execution
+        </button>
+      </div>
+
+      {viewMode === "problem" ? (
+        <div className="flex-1 overflow-hidden relative">
+          <ClimbingStairsProblemVisualizer n={n} onSwitchToAlgorithm={() => setViewMode("algorithm")} />
+        </div>
+      ) : (
+        <AlgorithmLayout
+          config={climbingStairsConfig}
+          engine={engine}
+          activeVariantId={activeVariantId}
+          onVariantChange={setActiveVariantId}
+          inputControls={
+            <InputControls
+              type="two-sum"
+              target={n}
+              onTargetChange={handleNChange}
+              onRandomize={handleRandomize}
+            />
+          }
+          visualizer={
+            engine.currentStep ? (
+              activeVariantId === "iterative" ? (
+                <DP1DVisualizer state={engine.currentStep.state as DP1DState} />
+              ) : (
+                <RecursionTreeVisualizer state={engine.currentStep.state as RecursionTreeState} />
+              )
+            ) : null
+          }
+        />
+      )}
+    </div>
+  );
+}
+
+// ================================
+// DP: Frog Jump
+// ================================
+
+function FrogJumpPage() {
+  const [arraySize, setArraySize] = useState(8);
+  const [heights, setHeights] = useState(() => generateRandomHeights(8));
+  
+  const [activeVariantId, setActiveVariantId] = useState("iterative");
+  const [viewMode, setViewMode] = useState<"problem" | "algorithm">("problem");
+
+  const steps = useMemo(() => {
+    if (activeVariantId === "recursive") return generateFrogJumpRecursiveSteps(heights);
+    if (activeVariantId === "memoized") return generateFrogJumpMemoizedSteps(heights);
+    return generateFrogJumpSteps(heights);
+  }, [heights, activeVariantId]);
+
+  const engine = usePlaybackEngine<unknown>(steps);
+
+  const handleRandomize = useCallback(() => {
+    setHeights(generateRandomHeights(arraySize));
+  }, [arraySize]);
+
+  const handleArraySizeChange = useCallback((size: number) => {
+    setArraySize(size);
+    setHeights(generateRandomHeights(size));
+  }, []);
+
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setHeights(arr);
+  }, []);
+
+  // Effect to automatically limit array size for recursive approach
+  useEffect(() => {
+    if (activeVariantId === "recursive" && arraySize > 6) {
+      // eslint-disable-next-line
+      setArraySize(6);
+       
+      setHeights((prev) => prev.slice(0, 6));
+    }
+  }, [activeVariantId, arraySize]);
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+        <button
+          onClick={() => setViewMode("problem")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
+            viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          🐸 Problem Simulation
+        </button>
+        <button
+          onClick={() => setViewMode("algorithm")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
+            viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          💻 Algorithm Execution
+        </button>
+      </div>
+
+      {viewMode === "problem" ? (
+        <div className="flex-1 overflow-hidden relative">
+          <FrogJumpProblemVisualizer heights={heights} onSwitchToAlgorithm={() => setViewMode("algorithm")} />
+        </div>
+      ) : (
+        <AlgorithmLayout
+          config={frogJumpConfig}
+          engine={engine}
+          activeVariantId={activeVariantId}
+          onVariantChange={setActiveVariantId}
+          inputControls={
+            <InputControls
+              type="sorting"
+              arraySize={arraySize}
+              maxSize={activeVariantId === "recursive" ? 6 : 12}
+              onArraySizeChange={handleArraySizeChange}
+              onRandomize={handleRandomize}
+              currentArray={heights}
+              onCustomArrayChange={handleCustomArrayChange}
+            />
+          }
+          visualizer={
+            engine.currentStep ? (
+              activeVariantId === "iterative" ? (
+                <DP1DVisualizer state={engine.currentStep.state as import("@/types").DP1DState} />
+              ) : (
+                <RecursionTreeVisualizer state={engine.currentStep.state as import("@/types").RecursionTreeState} />
+              )
+            ) : null
+          }
+        />
+      )}
+    </div>
   );
 }
 
@@ -663,6 +931,11 @@ function StockBuySellPage() {
     setInputArray(generateStockArray(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={stockBuySellConfig}
@@ -673,6 +946,8 @@ function StockBuySellPage() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -706,6 +981,11 @@ function KadanePage() {
     setInputArray(generateKadaneArray(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={kadaneConfig}
@@ -716,6 +996,8 @@ function KadanePage() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -749,6 +1031,11 @@ function MajorityElement1Page() {
     setInputArray(generateMajorityElement1Array(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={majorityElement1Config}
@@ -759,6 +1046,8 @@ function MajorityElement1Page() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -775,7 +1064,7 @@ function MajorityElement1Page() {
 // ================================
 
 function MajorityElement2Page() {
-  const [arraySize, setArraySize] = useState(9); // Default size 9 ensures 3 occurrences is majority
+  const [arraySize, setArraySize] = useState(9); 
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateMajorityElement2Array(9)
   );
@@ -792,6 +1081,11 @@ function MajorityElement2Page() {
     setInputArray(generateMajorityElement2Array(size));
   }, []);
 
+  const handleCustomArrayChange = useCallback((arr: number[]) => {
+    setArraySize(arr.length);
+    setInputArray(arr);
+  }, []);
+
   return (
     <AlgorithmLayout
       config={majorityElement2Config}
@@ -802,6 +1096,8 @@ function MajorityElement2Page() {
           arraySize={arraySize}
           onArraySizeChange={handleArraySizeChange}
           onRandomize={handleRandomize}
+          currentArray={inputArray}
+          onCustomArrayChange={handleCustomArrayChange}
         />
       }
       visualizer={
@@ -901,31 +1197,49 @@ function GraphTraversalPage({ config, generator }: GraphTraversalPageProps) {
 // Shared Algorithm Layout
 // ================================
 
-interface AlgorithmLayoutProps {
+interface AlgorithmLayoutProps<T> {
   config: AlgorithmConfig;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  engine: ReturnType<typeof usePlaybackEngine<any>>; // Using any here because it's a generic wrapper and layout doesn't care about specific state.
+  engine: PlaybackState<T> & PlaybackControlsType;
   inputControls: React.ReactNode;
   visualizer: React.ReactNode;
+  activeVariantId?: string;
+  onVariantChange?: (id: string) => void;
 }
 
-function AlgorithmLayout({
+function AlgorithmLayout<T>({
   config,
   engine,
   inputControls,
   visualizer,
-}: AlgorithmLayoutProps) {
+  activeVariantId,
+  onVariantChange,
+}: AlgorithmLayoutProps<T>) {
+  const activeVariant = useMemo(() => {
+    return config.variants?.find((v) => v.id === activeVariantId) || null;
+  }, [config.variants, activeVariantId]);
+
+  const displayConfig = useMemo(() => {
+    if (!activeVariant) return config;
+    return {
+      ...config,
+      ...activeVariant,
+    };
+  }, [config, activeVariant]);
+
   const DIFFICULTY_COLORS: Record<string, string> = {
     Easy: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     Medium: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-    Hard: "bg-red-500/10 text-red-500 border-red-500/20",
+    Hard: "bg-rose-500/10 text-rose-500 border-rose-500/20",
   };
 
   // Push algorithm context for feedback system
   const { setAlgorithmInfo } = useFeedbackContext();
+
+  const [isComplexityDrawerOpen, setIsComplexityDrawerOpen] = useState(false);
+
   useEffect(() => {
-    setAlgorithmInfo(config.title, engine.currentStepIndex, engine.speed);
-  }, [config.title, engine.currentStepIndex, engine.speed, setAlgorithmInfo]);
+    setAlgorithmInfo(displayConfig.title, engine.currentStepIndex, engine.speed);
+  }, [displayConfig.title, engine.currentStepIndex, engine.speed, setAlgorithmInfo]);
 
   const [showDesktopToast, setShowDesktopToast] = useState(() => {
     return typeof window !== "undefined" && window.innerWidth < 1024;
@@ -973,8 +1287,21 @@ function AlgorithmLayout({
           <Badge variant="secondary" className="text-[10px]">
             {config.category}
           </Badge>
+
+          {/* Complexity Analysis Button */}
+          {config.complexity && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="ml-auto text-xs h-7 gap-1"
+              onClick={() => setIsComplexityDrawerOpen(true)}
+            >
+              <BarChart2 size={14} />
+              Complexity
+            </Button>
+          )}
         </div>
-        <p className="text-xs text-muted-foreground max-w-2xl leading-relaxed">
+        <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
           {config.description}
         </p>
       </motion.header>
@@ -995,6 +1322,8 @@ function AlgorithmLayout({
           onPrevious={engine.previous}
           onReset={engine.reset}
           onSpeedChange={engine.setSpeed}
+          isDryRunMode={engine.isDryRunMode}
+          onToggleDryRunMode={engine.toggleDryRunMode}
         />
         <Separator orientation="vertical" className="h-6 hidden lg:block" />
         <div className="w-full sm:w-auto">
@@ -1002,7 +1331,7 @@ function AlgorithmLayout({
         </div>
       </div>
 
-      {/* Main content — Visualizer + Pseudocode */}
+      {/* Main content — Visualizer + Right Sidebar */}
       <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden min-h-0">
         {/* Visualizer */}
         <motion.div
@@ -1014,39 +1343,79 @@ function AlgorithmLayout({
           {visualizer}
         </motion.div>
 
-        {/* Pseudocode */}
-        <motion.div
-          className="lg:flex-[2] lg:max-w-sm xl:max-w-md lg:overflow-hidden border-b lg:border-b-0 border-border bg-card/30 min-h-[300px] lg:min-h-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {engine.currentStep && (
-            <PseudocodePanel
-              lines={config.pseudocode}
-              activeLine={engine.currentStep.activeLine}
-            />
+        {/* Right Sidebar (Code + Explanation) */}
+        <div className="lg:flex-[2] lg:max-w-sm xl:max-w-md flex flex-col bg-card/30 lg:overflow-hidden">
+          
+          {/* Variant Switcher */}
+          {config.variants && config.variants.length > 0 && activeVariantId && onVariantChange && (
+            <div className="p-2 border-b border-border bg-card/50">
+              <div className="flex bg-secondary/50 p-1 rounded-lg">
+                {config.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => onVariantChange(v.id)}
+                    className={`flex-1 text-xs font-semibold py-1.5 px-2 rounded-md transition-all duration-200 capitalize ${
+                      activeVariantId === v.id
+                        ? "bg-background shadow-sm text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                    }`}
+                  >
+                    {v.id}
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
-        </motion.div>
-      </div>
 
-      {/* Explanation Panel */}
-      <motion.div
-        className="shrink-0 border-t border-border bg-card/50 lg:min-h-[100px] lg:max-h-[140px]"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        {engine.currentStep && (
-          <ExplanationPanel
-            explanation={engine.currentStep.explanation}
-            beginnerExplanation={engine.currentStep.beginnerExplanation}
-            currentStep={engine.currentStepIndex}
-            totalSteps={engine.totalSteps}
-            algorithmName={config.title}
-          />
-        )}
-      </motion.div>
+          {/* Pseudocode */}
+          <motion.div
+            className="flex-1 border-b lg:border-b-0 border-border min-h-[300px] lg:min-h-0 overflow-hidden flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {engine.currentStep && (
+              <CodePanel
+                config={displayConfig}
+                activeLine={engine.currentStep.activeLine}
+              />
+            )}
+          </motion.div>
+
+          {/* Explanation Panel */}
+          <motion.div
+            className={`shrink-0 border-t border-border bg-card/50 transition-all duration-300 ${
+              engine.isDryRunMode && engine.currentStep?.dryRunPrompt
+                ? "lg:h-[350px]"
+                : "lg:h-[180px]"
+            }`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            {engine.currentStep && (
+              <ExplanationPanel
+                explanation={engine.currentStep.explanation}
+                beginnerExplanation={engine.currentStep.beginnerExplanation}
+                currentStep={engine.currentStepIndex}
+                totalSteps={engine.totalSteps}
+                algorithmName={displayConfig.title}
+                isDryRunMode={engine.isDryRunMode}
+                dryRunPrompt={engine.currentStep.dryRunPrompt}
+              />
+            )}
+          </motion.div>
+        </div>
+      </div>
+      {/* Complexity Drawer */}
+      {displayConfig.complexity && (
+        <ComplexityDrawer
+          isOpen={isComplexityDrawerOpen}
+          onClose={() => setIsComplexityDrawerOpen(false)}
+          complexity={displayConfig.complexity}
+          algorithmName={displayConfig.title}
+        />
+      )}
     </div>
   );
 }

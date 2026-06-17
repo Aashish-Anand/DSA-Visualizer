@@ -1,14 +1,20 @@
 import { motion } from "framer-motion";
-import type { PseudocodeLine } from "@/types";
-import { useEffect, useRef } from "react";
+import type { AlgorithmConfig, PseudocodeLine } from "@/types";
+import { useEffect, useRef, useState } from "react";
 
-interface PseudocodePanelProps {
-  lines: PseudocodeLine[];
+interface CodePanelProps {
+  config: AlgorithmConfig;
   activeLine: number;
 }
 
-export function PseudocodePanel({ lines, activeLine }: PseudocodePanelProps) {
+type Language = "pseudocode" | "python" | "java" | "cpp";
+
+export function CodePanel({ config, activeLine }: CodePanelProps) {
   const activeRef = useRef<HTMLDivElement>(null);
+  const [language, setLanguage] = useState<Language>("pseudocode");
+
+  // Fallback to pseudocode if selected language is not available in config
+  const lines: PseudocodeLine[] = config[language] || config.pseudocode;
 
   // Scroll active line into view
   useEffect(() => {
@@ -18,15 +24,28 @@ export function PseudocodePanel({ lines, activeLine }: PseudocodePanelProps) {
         block: "nearest",
       });
     }
-  }, [activeLine]);
+  }, [activeLine, language]);
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 py-2.5 border-b border-border flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Pseudocode
-        </span>
+      <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Code
+          </span>
+        </div>
+        
+        <select
+          className="text-[11px] bg-secondary text-secondary-foreground border border-border rounded px-2 py-1 outline-none focus:ring-1 focus:ring-primary cursor-pointer font-medium"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value as Language)}
+        >
+          <option value="pseudocode">Pseudocode</option>
+          {config.python && <option value="python">Python</option>}
+          {config.java && <option value="java">Java</option>}
+          {config.cpp && <option value="cpp">C++</option>}
+        </select>
       </div>
       <div className="flex-1 overflow-y-auto py-2">
         {lines.map((line, index) => {

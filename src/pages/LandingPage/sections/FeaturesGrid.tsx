@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Maximize, TerminalSquare, MessageSquare, FastForward, SlidersHorizontal, Moon } from "lucide-react";
+import { Maximize, TerminalSquare, MessageSquare, FastForward, SlidersHorizontal, Moon, BarChart2, PlayCircle } from "lucide-react";
 
 const features = [
   {
@@ -47,8 +47,24 @@ const features = [
     description: "Built from the ground up for night owls. Easy on the eyes for those 2 AM cram sessions.",
     icon: Moon,
     colSpan: "md:col-span-1",
-    bgClass: "bg-gradient-to-b from-slate-800 to-slate-900 border-slate-700",
-    iconColor: "text-slate-300"
+    bgClass: "bg-card",
+    iconColor: "text-slate-500 dark:text-slate-300"
+  },
+  {
+    title: "Complexity Animations",
+    description: "Watch interactive visualizations of time complexity. See O(log n) halve its search space, or O(n²) loop through a grid.",
+    icon: BarChart2,
+    colSpan: "md:col-span-1",
+    bgClass: "bg-card",
+    iconColor: "text-pink-500"
+  },
+  {
+    title: "Problem Simulations",
+    description: "Understand the 'why' before the 'how'. Watch a greedy frog jump or a person climb stairs before diving into the actual DP code.",
+    icon: PlayCircle,
+    colSpan: "md:col-span-2",
+    bgClass: "bg-gradient-to-l from-indigo-500/20 to-indigo-500/5",
+    iconColor: "text-indigo-500"
   }
 ];
 

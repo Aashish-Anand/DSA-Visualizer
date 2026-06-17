@@ -32,13 +32,13 @@ const categories: RoadmapCategory[] = [
   },
   {
     name: "Graphs",
-    status: "planned" as const,
+    status: "live" as const,
     items: ["BFS", "DFS", "Dijkstra", "Topological Sort"],
   },
   {
     name: "Dynamic Programming",
-    status: "planned" as const,
-    items: ["Fibonacci", "Knapsack", "LCS", "Coin Change"],
+    status: "live" as const,
+    items: ["Frog Jump", "Climbing Stairs", "Knapsack", "LCS"],
   },
 ];
 

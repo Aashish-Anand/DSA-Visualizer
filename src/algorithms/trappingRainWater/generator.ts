@@ -1,12 +1,11 @@
 import type { WaterState, VisualizationStep } from "@/types";
 
-export function generateRandomTrappingInput(length: number = 12) {
+export function generateRandomTrappingInput(length: number = 12): number[] {
   // A classic test case is [0,1,0,2,1,0,1,3,2,1,2,1]
   if (Math.random() > 0.5) {
-    return { nums: [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1], target: 0 };
+    return [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1];
   }
-  const arr = Array.from({ length }, () => Math.floor(Math.random() * 6));
-  return { nums: arr, target: 0 };
+  return Array.from({ length }, () => Math.floor(Math.random() * 6));
 }
 
 export function generateTrappingRainWaterSteps(

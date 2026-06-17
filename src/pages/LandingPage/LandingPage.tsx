@@ -3,6 +3,7 @@ import { HeroSection } from "./sections/HeroSection";
 import { ProblemSection } from "./sections/ProblemSection";
 import { HowItWorks } from "./sections/HowItWorks";
 import { InteractiveDemo } from "./sections/InteractiveDemo";
+import { FeaturesGrid } from "./sections/FeaturesGrid";
 import { Roadmap } from "./sections/Roadmap";
 import { FounderStory } from "./sections/FounderStory";
 import { FinalCTA } from "./sections/FinalCTA";
@@ -32,6 +33,7 @@ export function LandingPage({ onLaunchApp, isDark, toggleTheme }: LandingPagePro
         <HeroSection onLaunchApp={onLaunchApp} />
         <ProblemSection />
         <HowItWorks />
+        <FeaturesGrid />
         <InteractiveDemo />
         <Roadmap />
         <FounderStory />

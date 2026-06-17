@@ -18,4 +18,20 @@ export const bubbleSortConfig: AlgorithmConfig = {
     "Bubble Sort repeatedly steps through the array, compares adjacent elements, and swaps them if they are in the wrong order. The largest unsorted element \"bubbles up\" to its correct position in each pass.",
   pseudocode: bubbleSortPseudocode,
   difficulty: "Easy",
+  complexity: {
+    time: "O(n²)",
+    space: "O(1)",
+    timeComplexity: "O(n²)",
+    spaceComplexity: "O(1)",
+    timeExplanation: [
+      "Bubble Sort has two nested loops.",
+      "The outer loop runs 'n' times, and the inner loop runs up to 'n' times for each outer iteration.",
+      "This means it performs roughly n * n = n² operations, making it extremely inefficient for large datasets."
+    ],
+    spaceExplanation: [
+      "Bubble Sort sorts the array in-place.",
+      "It only requires a small constant amount of extra memory space for variables like loop counters and temporary variables for swapping."
+    ],
+    timeAnimationId: "quadratic"
+  }
 };

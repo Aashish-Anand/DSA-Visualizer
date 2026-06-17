@@ -9,6 +9,9 @@ import {
   Menu,
   X,
   Sparkles,
+  Layers,
+  Search,
+  Network
 } from "lucide-react";
 import { useState } from "react";
 
@@ -34,6 +37,15 @@ const CATEGORIES: SidebarCategory[] = [
       { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
       { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
       { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
+    ],
+  },
+  {
+    name: "Dynamic Programming",
+    icon: "layers",
+    items: [
+      { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy" },
+      { id: "frog-jump", title: "Frog Jump", difficulty: "Easy" },
+      { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
     ],
   },
   {
@@ -94,9 +106,103 @@ const CATEGORIES: SidebarCategory[] = [
   },
 ];
 
+const PATTERNS: SidebarCategory[] = [
+  {
+    name: "Two Pointers",
+    icon: "brackets",
+    items: [
+      { id: "two-sum", title: "Two Sum", difficulty: "Easy" },
+      { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
+      { id: "three-sum", title: "3 Sum", difficulty: "Medium" },
+      { id: "container-with-most-water", title: "Container With Most Water", difficulty: "Medium" },
+      { id: "four-sum", title: "4 Sum", difficulty: "Medium" },
+      { id: "trapping-rain-water", title: "Trapping Rain Water", difficulty: "Hard" },
+    ],
+  },
+  {
+    name: "Sliding Window",
+    icon: "brackets",
+    items: [
+      { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
+    ],
+  },
+  {
+    name: "Binary Search",
+    icon: "search",
+    items: [
+      { id: "binary-search", title: "Binary Search", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "Fast & Slow Pointers",
+    icon: "network",
+    items: [
+      { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "Tree DFS",
+    icon: "network",
+    items: [
+      { id: "tree-inorder", title: "In-order Traversal", difficulty: "Easy" },
+      { id: "tree-postorder", title: "Post-order Traversal", difficulty: "Easy" },
+      { id: "tree-preorder", title: "Pre-order Traversal", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "Tree BFS",
+    icon: "network",
+    items: [
+      { id: "tree-levelorder", title: "Level-order Traversal", difficulty: "Medium" },
+    ],
+  },
+  {
+    name: "Graph DFS / BFS",
+    icon: "network",
+    items: [
+      { id: "graph-bfs", title: "Graph BFS", difficulty: "Medium" },
+      { id: "graph-dfs", title: "Graph DFS", difficulty: "Medium" },
+    ],
+  },
+  {
+    name: "Arrays & Hashing",
+    icon: "layers",
+    items: [
+      { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
+      { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
+      { id: "linear-search", title: "Linear Search", difficulty: "Easy" },
+    ],
+  },
+  {
+    name: "1D Dynamic Programming",
+    icon: "layers",
+    items: [
+      { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy" },
+      { id: "frog-jump", title: "Frog Jump", difficulty: "Easy" },
+      { id: "kadane", title: "Kadane's Algorithm", difficulty: "Medium" },
+    ],
+  },
+  {
+    name: "Sorting",
+    icon: "arrow-up-down",
+    items: [
+      { id: "bubble-sort", title: "Bubble Sort", difficulty: "Easy" },
+      { id: "insertion-sort", title: "Insertion Sort", difficulty: "Easy" },
+      { id: "selection-sort", title: "Selection Sort", difficulty: "Easy" },
+      { id: "counting-sort", title: "Counting Sort", difficulty: "Medium" },
+      { id: "merge-sort", title: "Merge Sort", difficulty: "Medium" },
+      { id: "quick-sort", title: "Quick Sort", difficulty: "Medium" },
+      { id: "radix-sort", title: "Radix Sort", difficulty: "Medium" },
+    ],
+  },
+];
+
 const ICON_MAP: Record<string, React.ReactNode> = {
   brackets: <Brackets size={15} />,
   "arrow-up-down": <ArrowUpDown size={15} />,
+  layers: <Layers size={15} />,
+  search: <Search size={15} />,
+  network: <Network size={15} />,
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -113,13 +219,23 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleTheme }: SidebarProps) {
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+  const [viewMode, setViewMode] = useState<"topics" | "patterns">("topics");
+  
+  const [expandedTopics, setExpandedTopics] = useState<Set<string>>(
     new Set(CATEGORIES.map((c) => c.name))
   );
+  const [expandedPatterns, setExpandedPatterns] = useState<Set<string>>(
+    new Set(PATTERNS.map((c) => c.name))
+  );
+  
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const activeData = viewMode === "topics" ? CATEGORIES : PATTERNS;
+  const activeExpanded = viewMode === "topics" ? expandedTopics : expandedPatterns;
+  const setActiveExpanded = viewMode === "topics" ? setExpandedTopics : setExpandedPatterns;
+
   const toggleCategory = (name: string) => {
-    setExpandedCategories((prev) => {
+    setActiveExpanded((prev) => {
       const next = new Set(prev);
       if (next.has(name)) {
         next.delete(name);
@@ -149,15 +265,37 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleThem
         </div>
         <ThemeToggle isDark={isDark} onToggle={toggleTheme} className="text-muted-foreground hover:text-foreground" />
       </div>
+      
+      {/* View Mode Toggle */}
+      <div className="px-4 py-3 border-b border-border">
+        <div className="flex bg-muted/50 p-1 rounded-md border border-border">
+          <button
+            onClick={() => setViewMode("topics")}
+            className={`flex-1 text-xs font-medium py-1.5 rounded-sm transition-all ${
+              viewMode === "topics" 
+                ? "bg-background shadow-sm text-foreground" 
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Topics
+          </button>
+          <button
+            onClick={() => setViewMode("patterns")}
+            className={`flex-1 text-xs font-medium py-1.5 rounded-sm transition-all ${
+              viewMode === "patterns" 
+                ? "bg-background shadow-sm text-foreground" 
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Patterns
+          </button>
+        </div>
+      </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3 px-2">
-        <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-2 mb-2">
-          Topics
-        </div>
-
-        {CATEGORIES.map((category) => {
-          const isExpanded = expandedCategories.has(category.name);
+        {activeData.map((category) => {
+          const isExpanded = activeExpanded.has(category.name);
           return (
             <div key={category.name} className="mb-1">
               {/* Category Header */}

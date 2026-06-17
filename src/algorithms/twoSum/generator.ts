@@ -71,6 +71,16 @@ export function generateTwoSumSteps(
       activeLine: 2,
       explanation: `Complement needed: ${target} - ${num} = ${complement}. Checking if ${complement} exists in the HashMap.`,
       beginnerExplanation: `If we have ${num}, what other number do we need to reach ${target}? That's ${target} - ${num} = ${complement}. Let's check if we've already seen ${complement}!`,
+      dryRunPrompt: {
+        question: `The current number is ${num} and our target is ${target}. What number must we find in our HashMap to solve the problem?`,
+        options: [
+          `${num}`,
+          `${target}`,
+          `${complement} (Target - Current)`,
+          `0`
+        ],
+        correctOptionIndex: 2
+      }
     });
 
     if (hashMap.has(complement)) {
