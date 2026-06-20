@@ -1,15 +1,14 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info, BarChart2 } from "lucide-react";
+import { Info, BarChart2, Code2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { usePlaybackEngine } from "@/hooks/usePlaybackEngine";
 import { PlaybackControls } from "@/components/Controls/PlaybackControls";
 import { InputControls } from "@/components/Controls/InputControls";
 import { CodePanel } from "@/components/CodePanel/CodePanel";
 import { ExplanationPanel } from "@/components/ExplanationPanel/ExplanationPanel";
-import { ComplexityDrawer } from "@/components/ComplexityDrawer/ComplexityDrawer";
+import { ComplexityExplorer } from "@/components/Complexity/ComplexityExplorer";
 import { useFeedbackContext } from "@/hooks/useFeedbackContext";
 
 // Visualizers
@@ -97,10 +96,10 @@ import { generateContainerSteps, generateRandomContainerInput } from "@/algorith
 import { trappingRainWaterConfig } from "@/algorithms/trappingRainWater/config";
 import { generateTrappingRainWaterSteps, generateRandomTrappingInput } from "@/algorithms/trappingRainWater/generator";
 
-import type { 
-  SortingBarState, 
-  MergeSortState, 
-  RadixSortState, 
+import type {
+  SortingBarState,
+  MergeSortState,
+  RadixSortState,
   CountingSortState,
   ArraySearchState,
   LinkedListState,
@@ -147,17 +146,17 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <RadixSortPage />;
     case "counting-sort":
       return <CountingSortPage />;
-      
+
     // Searching
     case "linear-search":
       return <ArraySearchPage config={linearSearchConfig} generator={generateLinearSearchSteps} />;
     case "binary-search":
       return <ArraySearchPage config={binarySearchConfig} generator={generateBinarySearchSteps} />;
-      
+
     // Linked Lists
     case "sll-search":
       return <LinkedListSearchPage config={singlyLinkedListSearchConfig} generator={generateSinglyLinkedListSearchSteps} />;
-      
+
     // Arrays
     case "two-sum":
       return <TwoSumPage />;
@@ -179,7 +178,7 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
       return <WaterPage config={containerWithMostWaterConfig} generator={generateContainerSteps} generateInput={generateRandomContainerInput} />;
     case "trapping-rain-water":
       return <WaterPage config={trappingRainWaterConfig} generator={generateTrappingRainWaterSteps} generateInput={generateRandomTrappingInput} />;
-      
+
     // Trees
     case "tree-preorder":
       return <TreeTraversalPage config={treePreorderConfig} generator={generateTreePreorderSteps} />;
@@ -340,6 +339,7 @@ function SortingPage({ config, generator }: SortingPageProps) {
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateRandomArray(8)
   );
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generator(inputArray), [inputArray, generator]);
   const engine = usePlaybackEngine<SortingBarState>(steps);
@@ -357,6 +357,60 @@ function SortingPage({ config, generator }: SortingPageProps) {
     setArraySize(arr.length);
     setInputArray(arr);
   }, []);
+
+  // If this algorithm has a complexity explorer config, show the mode toggle
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <SortingBarVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <AlgorithmLayout
@@ -670,6 +724,7 @@ function CountingSortPage() {
 function TwoSumPage() {
   const [arraySize, setArraySize] = useState(8);
   const [input, setInput] = useState(() => generateRandomTwoSumInput(8));
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(
     () => generateTwoSumSteps(input.nums, input.target),
@@ -696,27 +751,57 @@ function TwoSumPage() {
   }, []);
 
   return (
-    <AlgorithmLayout
-      config={twoSumConfig}
-      engine={engine}
-      inputControls={
-        <InputControls
-          type="search"
-          arraySize={arraySize}
-          onArraySizeChange={handleArraySizeChange}
-          onRandomize={handleRandomize}
-          target={input.target}
-          onTargetChange={handleTargetChange}
-          currentArray={input.nums}
-          onCustomArrayChange={handleCustomArrayChange}
+    <div className="flex flex-col h-full">
+      <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+        <button
+          onClick={() => setViewMode("algorithm")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
+        >
+          <Code2 className="w-4 h-4" /> Algorithm View
+        </button>
+        <button
+          onClick={() => setViewMode("complexity")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
+        >
+          <BarChart2 className="w-4 h-4" /> Complexity Explorer
+          <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+        </button>
+      </div>
+
+      {viewMode === "algorithm" ? (
+        <AlgorithmLayout
+          config={twoSumConfig}
+          engine={engine}
+          inputControls={
+            <InputControls
+              type="search"
+              arraySize={arraySize}
+              onArraySizeChange={handleArraySizeChange}
+              onRandomize={handleRandomize}
+              target={input.target}
+              onTargetChange={handleTargetChange}
+              currentArray={input.nums}
+              onCustomArrayChange={handleCustomArrayChange}
+            />
+          }
+          visualizer={
+            engine.currentStep ? (
+              <TwoSumVisualizer state={engine.currentStep.state} />
+            ) : null
+          }
         />
-      }
-      visualizer={
-        engine.currentStep ? (
-          <TwoSumVisualizer state={engine.currentStep.state} />
-        ) : null
-      }
-    />
+      ) : (
+        <ComplexityExplorer
+          config={twoSumConfig.complexityExplorer!}
+          algorithmName={twoSumConfig.title}
+          currentMetrics={engine.currentStep?.complexityMetrics}
+          currentArray={input.nums}
+          currentTarget={input.target}
+        />
+      )}
+    </div>
   );
 }
 
@@ -750,7 +835,7 @@ function ClimbingStairsPage() {
       // eslint-disable-next-line
       setN(8);
     } else if (activeVariantId !== "recursive" && n > 20) {
-       
+
       setN(20);
     }
   }, [activeVariantId, n]);
@@ -760,17 +845,15 @@ function ClimbingStairsPage() {
       <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
         <button
           onClick={() => setViewMode("problem")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
-            viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
-          }`}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
         >
           🏃 Problem Simulation
         </button>
         <button
           onClick={() => setViewMode("algorithm")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
-            viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
-          }`}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
         >
           💻 Algorithm Execution
         </button>
@@ -816,7 +899,7 @@ function ClimbingStairsPage() {
 function FrogJumpPage() {
   const [arraySize, setArraySize] = useState(8);
   const [heights, setHeights] = useState(() => generateRandomHeights(8));
-  
+
   const [activeVariantId, setActiveVariantId] = useState("iterative");
   const [viewMode, setViewMode] = useState<"problem" | "algorithm">("problem");
 
@@ -847,7 +930,7 @@ function FrogJumpPage() {
     if (activeVariantId === "recursive" && arraySize > 6) {
       // eslint-disable-next-line
       setArraySize(6);
-       
+
       setHeights((prev) => prev.slice(0, 6));
     }
   }, [activeVariantId, arraySize]);
@@ -857,17 +940,15 @@ function FrogJumpPage() {
       <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
         <button
           onClick={() => setViewMode("problem")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
-            viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
-          }`}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "problem" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
         >
           🐸 Problem Simulation
         </button>
         <button
           onClick={() => setViewMode("algorithm")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${
-            viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
-          }`}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+            }`}
         >
           💻 Algorithm Execution
         </button>
@@ -1064,7 +1145,7 @@ function MajorityElement1Page() {
 // ================================
 
 function MajorityElement2Page() {
-  const [arraySize, setArraySize] = useState(9); 
+  const [arraySize, setArraySize] = useState(9);
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateMajorityElement2Array(9)
   );
@@ -1235,8 +1316,6 @@ function AlgorithmLayout<T>({
   // Push algorithm context for feedback system
   const { setAlgorithmInfo } = useFeedbackContext();
 
-  const [isComplexityDrawerOpen, setIsComplexityDrawerOpen] = useState(false);
-
   useEffect(() => {
     setAlgorithmInfo(displayConfig.title, engine.currentStepIndex, engine.speed);
   }, [displayConfig.title, engine.currentStepIndex, engine.speed, setAlgorithmInfo]);
@@ -1287,19 +1366,6 @@ function AlgorithmLayout<T>({
           <Badge variant="secondary" className="text-[10px]">
             {config.category}
           </Badge>
-
-          {/* Complexity Analysis Button */}
-          {config.complexity && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="ml-auto text-xs h-7 gap-1"
-              onClick={() => setIsComplexityDrawerOpen(true)}
-            >
-              <BarChart2 size={14} />
-              Complexity
-            </Button>
-          )}
         </div>
         <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
           {config.description}
@@ -1345,7 +1411,7 @@ function AlgorithmLayout<T>({
 
         {/* Right Sidebar (Code + Explanation) */}
         <div className="lg:flex-[2] lg:max-w-sm xl:max-w-md flex flex-col bg-card/30 lg:overflow-hidden">
-          
+
           {/* Variant Switcher */}
           {config.variants && config.variants.length > 0 && activeVariantId && onVariantChange && (
             <div className="p-2 border-b border-border bg-card/50">
@@ -1354,11 +1420,10 @@ function AlgorithmLayout<T>({
                   <button
                     key={v.id}
                     onClick={() => onVariantChange(v.id)}
-                    className={`flex-1 text-xs font-semibold py-1.5 px-2 rounded-md transition-all duration-200 capitalize ${
-                      activeVariantId === v.id
+                    className={`flex-1 text-xs font-semibold py-1.5 px-2 rounded-md transition-all duration-200 capitalize ${activeVariantId === v.id
                         ? "bg-background shadow-sm text-primary"
                         : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                    }`}
+                      }`}
                   >
                     {v.id}
                   </button>
@@ -1384,11 +1449,10 @@ function AlgorithmLayout<T>({
 
           {/* Explanation Panel */}
           <motion.div
-            className={`shrink-0 border-t border-border bg-card/50 transition-all duration-300 ${
-              engine.isDryRunMode && engine.currentStep?.dryRunPrompt
+            className={`shrink-0 border-t border-border bg-card/50 transition-all duration-300 ${engine.isDryRunMode && engine.currentStep?.dryRunPrompt
                 ? "lg:h-[350px]"
                 : "lg:h-[180px]"
-            }`}
+              }`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -1407,15 +1471,6 @@ function AlgorithmLayout<T>({
           </motion.div>
         </div>
       </div>
-      {/* Complexity Drawer */}
-      {displayConfig.complexity && (
-        <ComplexityDrawer
-          isOpen={isComplexityDrawerOpen}
-          onClose={() => setIsComplexityDrawerOpen(false)}
-          complexity={displayConfig.complexity}
-          algorithmName={displayConfig.title}
-        />
-      )}
     </div>
   );
 }

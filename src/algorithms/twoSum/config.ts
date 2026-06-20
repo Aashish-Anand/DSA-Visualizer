@@ -1,4 +1,5 @@
 import type { AlgorithmConfig, PseudocodeLine } from "@/types";
+import { runTwoSumExperiment } from "./generator";
 
 export const twoSumPseudocode: PseudocodeLine[] = [
   { code: "function twoSum(nums, target):", indent: 0 },
@@ -46,18 +47,20 @@ export const twoSumConfig: AlgorithmConfig = {
     { code: "return {};", indent: 1 },
   ],
   difficulty: "Easy",
-  complexity: {
-    timeComplexity: "O(n)",
-    spaceComplexity: "O(n)",
-    timeExplanation: [
-      "We traverse the list containing n elements exactly once.",
-      "Each lookup in the hash map costs only O(1) time.",
-      "Therefore, the overall time complexity is strictly linear, O(n)."
+  complexityExplorer: {
+    trackedMetrics: ["hashmapLookups", "hashmapInserts", "comparisons", "operations"],
+    storyParagraphs: [
+      "Why is Two Sum so efficient with a HashMap?",
+      "The brute-force approach would check every possible pair — that's n × (n-1) / 2 checks, giving us O(n²) time.",
+      "But with a HashMap, we trade space for speed. Each lookup and insert takes constant time — O(1).",
+      "We only loop through the array once. For each element, we ask: \"Have I seen my complement before?\" That single lookup replaces an entire inner loop.",
+      "Double the input? Double the work. That's the beauty of O(n) — linear growth instead of quadratic explosion.",
+      "The cost is memory: we might store up to n entries in the HashMap. But this space-time tradeoff is almost always worth it."
     ],
-    spaceExplanation: [
-      "The extra space required depends on the number of items stored in the hash map.",
-      "In the worst case, we might need to insert up to n elements into the map before finding a pair.",
-      "Thus, the space complexity scales linearly as O(n)."
-    ]
-  }
+    timeCases: { best: "O(1)", average: "O(n)", worst: "O(n)" },
+    spaceCases: { best: "O(1)", average: "O(n)", worst: "O(n)" },
+    visualExplanationId: "hashmap-lookup",
+    inputSizeRange: { min: 5, max: 100, default: 10 },
+    runExperiment: runTwoSumExperiment,
+  },
 };

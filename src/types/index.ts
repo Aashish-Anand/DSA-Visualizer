@@ -2,6 +2,47 @@
 // Core Visualization Types
 // ================================
 
+// ================================
+// Complexity Explorer Types
+// ================================
+
+export interface ComplexityMetrics {
+  operations: number;
+  comparisons: number;
+  swaps?: number;
+  reads?: number;
+  writes?: number;
+  hashmapLookups?: number;
+  hashmapInserts?: number;
+}
+
+export interface ComplexityCaseSummary {
+  best: string;
+  average: string;
+  worst: string;
+}
+
+export interface GrowthDataPoint {
+  inputSize: number;
+  operations: number;
+}
+
+export interface ComplexityExplorerConfig {
+  /** Which metrics to display for this algorithm */
+  trackedMetrics: (keyof ComplexityMetrics)[];
+  /** Educational story paragraphs (the "why" explanation) */
+  storyParagraphs: string[];
+  /** Best/average/worst case breakdown */
+  timeCases: ComplexityCaseSummary;
+  spaceCases: ComplexityCaseSummary;
+  /** ID for the custom visual explanation (e.g., "nested-loops", "hashmap-lookup") */
+  visualExplanationId?: string;
+  /** Input size range for the growth experiment */
+  inputSizeRange: { min: number; max: number; default: number };
+  /** Runs the algorithm at a given size and returns total metrics (no steps) */
+  runExperiment: (inputSize: number) => ComplexityMetrics;
+}
+
 export interface DryRunPrompt {
   question: string;
   options: string[];
@@ -25,6 +66,8 @@ export interface VisualizationStep<T = Record<string, unknown>> {
   dryRunPrompt?: DryRunPrompt;
   /** Phase of the step: either explaining the problem or executing the algorithm */
   phase?: "problem" | "algorithm";
+  /** Running complexity metrics at this step (for Complexity Explorer) */
+  complexityMetrics?: ComplexityMetrics;
 }
 
 // ================================
@@ -396,16 +439,6 @@ export interface GraphTraversalState {
 // Algorithm Config Types
 // ================================
 
-export interface ComplexityAnalysis {
-  time?: string;
-  space?: string;
-  timeComplexity?: string;
-  spaceComplexity?: string;
-  timeExplanation?: string[];
-  spaceExplanation?: string[];
-  timeAnimationId?: string;
-  spaceAnimationId?: string;
-}
 
 export interface AlgorithmVariant {
   id: string;
@@ -415,7 +448,6 @@ export interface AlgorithmVariant {
   python?: PseudocodeLine[];
   java?: PseudocodeLine[];
   cpp?: PseudocodeLine[];
-  complexity?: ComplexityAnalysis;
 }
 
 export interface AlgorithmConfig {
@@ -429,8 +461,9 @@ export interface AlgorithmConfig {
   java?: PseudocodeLine[];
   cpp?: PseudocodeLine[];
   difficulty: "Easy" | "Medium" | "Hard";
-  complexity?: ComplexityAnalysis;
   variants?: AlgorithmVariant[];
+  /** Configuration for the Complexity Explorer feature */
+  complexityExplorer?: ComplexityExplorerConfig;
 }
 
 export interface PseudocodeLine {

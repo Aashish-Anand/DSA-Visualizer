@@ -18,20 +18,4 @@ export const insertionSortConfig: AlgorithmConfig = {
     { code: "j = j - 1", indent: 3 },
     { code: "arr[j + 1] = key", indent: 2 },
   ],
-  complexity: {
-    time: "O(n²)",
-    space: "O(1)",
-    timeComplexity: "O(n²)",
-    spaceComplexity: "O(1)",
-    timeExplanation: [
-      "Insertion Sort has two nested loops in the worst case (reverse sorted array).",
-      "The outer loop runs 'n' times, and the inner loop shifts elements one by one.",
-      "This results in roughly n²/2 comparisons and shifts, making the worst-case time complexity O(n²)."
-    ],
-    spaceExplanation: [
-      "Insertion Sort sorts the array in-place.",
-      "It only requires O(1) extra space to hold the 'key' variable and loop counters."
-    ],
-    timeAnimationId: "quadratic"
-  }
 };

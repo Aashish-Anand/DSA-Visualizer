@@ -1,8 +1,8 @@
-import type { VisualizationStep, TwoSumState } from "@/types";
+import type { VisualizationStep, TwoSumState, ComplexityMetrics } from "@/types";
 
 /**
  * Generates a complete sequence of visualization steps for the Two Sum algorithm
- * using the hashmap approach.
+ * using the hashmap approach. Steps include cumulative complexityMetrics.
  */
 export function generateTwoSumSteps(
   nums: number[],
@@ -11,6 +11,18 @@ export function generateTwoSumSteps(
   const steps: VisualizationStep<TwoSumState>[] = [];
   const hashMap = new Map<number, number>();
   const checkedIndices: number[] = [];
+
+  // Running complexity counters
+  let comparisons = 0;
+  let hashmapLookups = 0;
+  let hashmapInserts = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    operations: comparisons + hashmapLookups + hashmapInserts,
+    comparisons,
+    hashmapLookups,
+    hashmapInserts,
+  });
 
   // Initial state
   steps.push({
@@ -29,6 +41,7 @@ export function generateTwoSumSteps(
     activeLine: 0,
     explanation: `Starting Two Sum. Array: [${nums.join(", ")}], Target: ${target}. We'll use a HashMap to find two numbers that add up to ${target}.`,
     beginnerExplanation: `We need to find two numbers in [${nums.join(", ")}] that add up to ${target}. Instead of checking every pair (which would be slow), we'll use a clever trick with a HashMap! 🧠`,
+    complexityMetrics: getMetrics(),
   });
 
   for (let i = 0; i < nums.length; i++) {
@@ -52,9 +65,13 @@ export function generateTwoSumSteps(
       activeLine: 1,
       explanation: `Looking at index ${i}: value is ${num}.`,
       beginnerExplanation: `Let's look at the number at position ${i}. It's ${num}! 👀`,
+      complexityMetrics: getMetrics(),
     });
 
-    // Computing complement
+    // Computing complement — count comparison + lookup
+    comparisons++;
+    hashmapLookups++;
+
     steps.push({
       state: {
         array: [...nums],
@@ -80,7 +97,8 @@ export function generateTwoSumSteps(
           `0`
         ],
         correctOptionIndex: 2
-      }
+      },
+      complexityMetrics: getMetrics(),
     });
 
     if (hashMap.has(complement)) {
@@ -103,6 +121,7 @@ export function generateTwoSumSteps(
         activeLine: 3,
         explanation: `Found ${complement} at index ${complementIndex} in the HashMap! The pair is [${complementIndex}, ${i}] → (${nums[complementIndex]} + ${num} = ${target}).`,
         beginnerExplanation: `YES! We found ${complement} in our HashMap at position ${complementIndex}! 🎉 So ${nums[complementIndex]} + ${num} = ${target}. The answer is indices [${complementIndex}, ${i}]!`,
+        complexityMetrics: getMetrics(),
       });
 
       // Complete state
@@ -122,6 +141,7 @@ export function generateTwoSumSteps(
         activeLine: 4,
         explanation: `Two Sum solved! Answer: [${complementIndex}, ${i}]. Values: ${nums[complementIndex]} + ${num} = ${target}.`,
         beginnerExplanation: `We solved it! 🏆 The two numbers that add up to ${target} are ${nums[complementIndex]} (at position ${complementIndex}) and ${num} (at position ${i}). The HashMap trick saved us from checking every possible pair!`,
+        complexityMetrics: getMetrics(),
       });
 
       return steps;
@@ -144,11 +164,13 @@ export function generateTwoSumSteps(
       activeLine: 3,
       explanation: `${complement} is not in the HashMap yet. We haven't seen our complement.`,
       beginnerExplanation: `Hmm, ${complement} is not in our HashMap yet. That means we haven't seen it before. No match yet! 🤔`,
+      complexityMetrics: getMetrics(),
     });
 
     // Add current to hashmap
     hashMap.set(num, i);
     checkedIndices.push(i);
+    hashmapInserts++;
 
     steps.push({
       state: {
@@ -166,6 +188,7 @@ export function generateTwoSumSteps(
       activeLine: 5,
       explanation: `Adding ${num} → ${i} to the HashMap. HashMap now has ${hashMap.size} ${hashMap.size === 1 ? "entry" : "entries"}.`,
       beginnerExplanation: `Let's remember this number! We'll store "${num} is at position ${i}" in our HashMap. This way, if a future number needs ${num} as its complement, we'll find it instantly! 📝`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -186,6 +209,7 @@ export function generateTwoSumSteps(
     activeLine: 6,
     explanation: `No two numbers sum to ${target}. No solution exists for this input.`,
     beginnerExplanation: `We checked every number but couldn't find a pair that adds up to ${target}. There's no solution for this input! 😢`,
+    complexityMetrics: getMetrics(),
   });
 
   return steps;
@@ -209,4 +233,37 @@ export function generateRandomTwoSumInput(size: number = 6): {
   if (idx2 >= idx1) idx2++;
   const target = nums[idx1] + nums[idx2];
   return { nums, target };
+}
+
+/**
+ * Runs Two Sum on a random input of the given size and returns
+ * the final complexity metrics. Used by the Growth Chart experiment.
+ */
+export function runTwoSumExperiment(inputSize: number): ComplexityMetrics {
+  const { nums, target } = generateRandomTwoSumInput(inputSize);
+  const hashMap = new Map<number, number>();
+  let comparisons = 0;
+  let hashmapLookups = 0;
+  let hashmapInserts = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    const num = nums[i];
+    const complement = target - num;
+    comparisons++;
+    hashmapLookups++;
+
+    if (hashMap.has(complement)) {
+      break;
+    }
+
+    hashMap.set(num, i);
+    hashmapInserts++;
+  }
+
+  return {
+    operations: comparisons + hashmapLookups + hashmapInserts,
+    comparisons,
+    hashmapLookups,
+    hashmapInserts,
+  };
 }

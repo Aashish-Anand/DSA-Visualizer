@@ -13,13 +13,14 @@ A visual, interactive learning platform that helps beginners understand **Data S
 ## ✨ Features
 
 - **Step-by-step visualization** — Every algorithm generates a sequence of states. The UI renders them one at a time so you can see exactly what happens at each step.
+- **Complexity Explorer [BETA]** — Go beyond Big-O notation. Watch live empirical experiments, real-time comparison metrics, and interactive growth charts to truly understand *why* an algorithm performs the way it does.
+- **Multi-Language Code Sync** — Follow along in Python, Java, C++, or Pseudocode with line-by-line execution tracking.
+- **Interactive Dry Run** — Active learning mode that quizzes you at critical decision points during execution.
 - **Animated visualizations** — Smooth Framer Motion animations for bar swaps, cell highlights, and HashMap entries.
-- **Pseudocode tracking** — See which line of pseudocode is executing at every step.
 - **"Explain Like I'm 12" mode** — Toggle beginner-friendly explanations with a single switch.
 - **Playback controls** — Play, Pause, Step Forward, Step Backward, Reset, and adjustable speed (0.5x–4x).
 - **Keyboard shortcuts** — `Space` (play/pause), `←` / `→` (step), `R` (reset).
 - **Dark mode** — Automatic system preference detection.
-- **Responsive** — Desktop sidebar, mobile hamburger drawer.
 
 ---
 
@@ -118,12 +119,12 @@ We use **Vitest** to mathematically verify the core logic of the algorithm gener
 npm run test
 ```
 
-### Run Static Analysis & Type Checking
-To check for ESLint warnings and TypeScript type errors:
+### Complete Validation Check
+To run unit tests, check for ESLint warnings, and verify TypeScript types all at once in a single command:
 ```bash
-npm run lint
-npm run typecheck
+npm run validate
 ```
+*(This is a shortcut that automatically runs `npm run typecheck && npm run lint && npm run test` in sequence)*
 
 > **Note on Committing:** 
 > We use **Husky** and **lint-staged**. Whenever you run `git commit`, it will automatically run the linters and type checkers on your staged files. If there are any errors (like unused variables or type mismatches), the commit will be aborted to keep the `main` branch clean!
@@ -204,7 +205,9 @@ src/
 
 ## 🔮 Adding a New Algorithm
 
-The architecture is designed for easy extension. To add a new algorithm:
+The architecture is designed for easy extension. To add a new algorithm, please first read our comprehensive **[Algorithm Onboarding Standards](./ALGORITHM_ONBOARDING.md)** document.
+
+A quick summary of the steps:
 
 1. **Create the generator** in `src/algorithms/<name>/generator.ts`:
    ```typescript
@@ -240,12 +243,12 @@ The playback engine, pseudocode panel, explanation panel, and controls work auto
 ## 📋 Future Roadmap
 
 - [x] Trees (Pre-order, In-order, Post-order, Level-order)
+- [x] Graph traversal (BFS, DFS)
+- [x] 1D Dynamic Programming (Climbing Stairs, Frog Jump)
+- [x] Algorithm complexity metrics & explorer
 - [ ] Linked Lists (insertion, deletion)
 - [ ] Stack & Queue operations
 - [ ] Binary Search Trees (insertion, deletion)
-- [x] Graph traversal (BFS, DFS)
-- [ ] Dynamic Programming (Fibonacci, Knapsack)
-- [ ] Algorithm complexity annotations
 - [ ] Shareable visualization links
 
 ---

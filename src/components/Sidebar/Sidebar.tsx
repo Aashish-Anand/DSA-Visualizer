@@ -11,7 +11,14 @@ import {
   Sparkles,
   Layers,
   Search,
-  Network
+  Network,
+  List,
+  Zap,
+  Link,
+  FolderTree,
+  Scan,
+  FastForward,
+  Hash
 } from "lucide-react";
 import { useState } from "react";
 
@@ -30,7 +37,7 @@ interface SidebarCategory {
 const CATEGORIES: SidebarCategory[] = [
   {
     name: "Arrays",
-    icon: "layers",
+    icon: "list",
     items: [
       { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
       { id: "two-sum", title: "Two Sum", difficulty: "Easy" },
@@ -41,7 +48,7 @@ const CATEGORIES: SidebarCategory[] = [
   },
   {
     name: "Dynamic Programming",
-    icon: "layers",
+    icon: "zap",
     items: [
       { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy" },
       { id: "frog-jump", title: "Frog Jump", difficulty: "Easy" },
@@ -81,14 +88,14 @@ const CATEGORIES: SidebarCategory[] = [
   },
   {
     name: "Linked Lists",
-    icon: "network",
+    icon: "link",
     items: [
       { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
     ],
   },
   {
     name: "Trees",
-    icon: "network",
+    icon: "folder-tree",
     items: [
       { id: "tree-inorder", title: "In-order Traversal", difficulty: "Easy" },
       { id: "tree-postorder", title: "Post-order Traversal", difficulty: "Easy" },
@@ -121,7 +128,7 @@ const PATTERNS: SidebarCategory[] = [
   },
   {
     name: "Sliding Window",
-    icon: "brackets",
+    icon: "scan",
     items: [
       { id: "stock-buy-sell", title: "Stock Buy and Sell", difficulty: "Medium" },
     ],
@@ -135,14 +142,14 @@ const PATTERNS: SidebarCategory[] = [
   },
   {
     name: "Fast & Slow Pointers",
-    icon: "network",
+    icon: "fast-forward",
     items: [
       { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
     ],
   },
   {
     name: "Tree DFS",
-    icon: "network",
+    icon: "folder-tree",
     items: [
       { id: "tree-inorder", title: "In-order Traversal", difficulty: "Easy" },
       { id: "tree-postorder", title: "Post-order Traversal", difficulty: "Easy" },
@@ -151,7 +158,7 @@ const PATTERNS: SidebarCategory[] = [
   },
   {
     name: "Tree BFS",
-    icon: "network",
+    icon: "folder-tree",
     items: [
       { id: "tree-levelorder", title: "Level-order Traversal", difficulty: "Medium" },
     ],
@@ -166,7 +173,7 @@ const PATTERNS: SidebarCategory[] = [
   },
   {
     name: "Arrays & Hashing",
-    icon: "layers",
+    icon: "hash",
     items: [
       { id: "majority-element-1", title: "Majority Element 1", difficulty: "Easy" },
       { id: "majority-element-2", title: "Majority Element 2", difficulty: "Hard" },
@@ -175,7 +182,7 @@ const PATTERNS: SidebarCategory[] = [
   },
   {
     name: "1D Dynamic Programming",
-    icon: "layers",
+    icon: "zap",
     items: [
       { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy" },
       { id: "frog-jump", title: "Frog Jump", difficulty: "Easy" },
@@ -203,6 +210,13 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   layers: <Layers size={15} />,
   search: <Search size={15} />,
   network: <Network size={15} />,
+  list: <List size={15} />,
+  zap: <Zap size={15} />,
+  link: <Link size={15} />,
+  "folder-tree": <FolderTree size={15} />,
+  scan: <Scan size={15} />,
+  "fast-forward": <FastForward size={15} />,
+  hash: <Hash size={15} />,
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {

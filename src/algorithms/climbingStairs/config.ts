@@ -30,11 +30,6 @@ export const climbingStairsConfig: AlgorithmConfig = {
         { code: "return climbStairs(n-1) + climbStairs(n-2);", indent: 1 },
         { code: "}", indent: 0 }
       ],
-      complexity: {
-        time: "O(2^n)",
-        space: "O(n)",
-        timeAnimationId: "exponential"
-      }
     },
     {
       id: "memoized",
@@ -62,11 +57,6 @@ export const climbingStairsConfig: AlgorithmConfig = {
         { code: "return memo[n];", indent: 1 },
         { code: "}", indent: 0 }
       ],
-      complexity: {
-        time: "O(n)",
-        space: "O(n)",
-        timeAnimationId: "linear"
-      }
     },
     {
       id: "iterative",
@@ -100,11 +90,6 @@ export const climbingStairsConfig: AlgorithmConfig = {
         { code: "return dp[n];", indent: 1 },
         { code: "}", indent: 0 }
       ],
-      complexity: {
-        time: "O(n)",
-        space: "O(n)",
-        timeAnimationId: "linear"
-      }
     }
   ]
 };

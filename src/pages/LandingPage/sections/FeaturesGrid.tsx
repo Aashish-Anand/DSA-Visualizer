@@ -51,11 +51,12 @@ const features = [
     iconColor: "text-slate-500 dark:text-slate-300"
   },
   {
-    title: "Complexity Animations",
-    description: "Watch interactive visualizations of time complexity. See O(log n) halve its search space, or O(n²) loop through a grid.",
+    title: "Complexity Explorer",
+    badge: "Beta",
+    description: "Go beyond Big-O notation. Run live experiments, view interactive charts, and watch exactly why an algorithm performs the way it does.",
     icon: BarChart2,
     colSpan: "md:col-span-1",
-    bgClass: "bg-card",
+    bgClass: "bg-gradient-to-br from-pink-500/10 to-transparent",
     iconColor: "text-pink-500"
   },
   {
@@ -95,7 +96,14 @@ export function FeaturesGrid() {
                 <div className={`w-12 h-12 rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform ${feature.iconColor}`}>
                   <feature.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <h3 className="text-2xl font-bold">{feature.title}</h3>
+                  {feature.badge && (
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider">
+                      {feature.badge}
+                    </span>
+                  )}
+                </div>
                 <p className="text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>

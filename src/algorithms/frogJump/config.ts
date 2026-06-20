@@ -58,21 +58,6 @@ export const frogJumpConfig: AlgorithmConfig = {
         { code: "return min(jump1, jump2)", indent: 2 },
         { code: "return jump1", indent: 1 }
       ],
-      complexity: {
-        timeComplexity: "O(2^n)",
-        spaceComplexity: "O(n)",
-        timeAnimationId: "exponential",
-        timeExplanation: [
-          "Without memoization, the recursive tree explores both the 1-step jump and 2-step jump at almost every stone.",
-          "This causes the number of recursive calls to grow exponentially, similar to computing Fibonacci numbers.",
-          "The worst-case time complexity is bounded by O(2^n)."
-        ],
-        spaceExplanation: [
-          "The space complexity is defined by the maximum depth of the recursion tree.",
-          "In the worst case (always taking 1-step jumps), the maximum depth of the call stack will be n.",
-          "Thus, the space complexity is O(n)."
-        ]
-      }
     },
     {
       id: "memoized",
@@ -109,18 +94,4 @@ export const frogJumpConfig: AlgorithmConfig = {
       ]
     }
   ],
-  complexity: {
-    timeComplexity: "O(n)",
-    spaceComplexity: "O(n)",
-    timeAnimationId: "linear",
-    timeExplanation: [
-      "In the optimized DP approaches (Iterative & Memoized), we calculate the minimum energy for each stone exactly once.",
-      "Since there are n stones, and computing the minimum energy for a single stone takes O(1) time (just checking the previous 1 or 2 stones).",
-      "The total time complexity scales linearly, O(n)."
-    ],
-    spaceExplanation: [
-      "We use an array (or memoization table) of size n to store the minimum energy to reach each stone.",
-      "In the iterative bottom-up approach, we can optimize space to O(1) by only keeping track of the last two stones, but the standard DP array uses O(n)."
-    ]
-  }
 };
