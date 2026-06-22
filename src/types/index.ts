@@ -188,6 +188,25 @@ export interface LinkedListState {
 }
 
 // ================================
+// Advanced Linked List Types
+// ================================
+
+export interface AdvancedLinkedListNode {
+  id: string; // Unique ID for animations
+  value: number;
+  nextId: string | null;
+  x: number;
+  y: number;
+}
+
+export interface AdvancedLinkedListState {
+  nodes: AdvancedLinkedListNode[];
+  pointers: Record<string, string | null>;
+  phase?: string;
+  extraInfo?: string;
+}
+
+// ================================
 // Two Sum Types
 // ================================
 

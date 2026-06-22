@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info, BarChart2, Code2 } from "lucide-react";
+import { Info, BarChart2, Code2, Shuffle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { usePlaybackEngine } from "@/hooks/usePlaybackEngine";
 import { PlaybackControls } from "@/components/Controls/PlaybackControls";
@@ -18,6 +19,7 @@ import { RadixSortVisualizer } from "@/visualizers/RadixSortVisualizer/RadixSort
 import { CountingSortVisualizer } from "@/visualizers/CountingSortVisualizer/CountingSortVisualizer";
 import { ArraySearchVisualizer } from "@/visualizers/ArraySearchVisualizer/ArraySearchVisualizer";
 import { LinkedListVisualizer } from "@/visualizers/LinkedListVisualizer/LinkedListVisualizer";
+import { AdvancedLinkedListVisualizer } from "@/visualizers/AdvancedLinkedListVisualizer/AdvancedLinkedListVisualizer";
 import { TwoSumVisualizer } from "@/visualizers/TwoSumVisualizer/TwoSumVisualizer";
 import { StockBuySellVisualizer } from "@/visualizers/StockBuySellVisualizer/StockBuySellVisualizer";
 import { KadaneVisualizer } from "@/visualizers/KadaneVisualizer/KadaneVisualizer";
@@ -53,6 +55,22 @@ import { binarySearchConfig } from "@/algorithms/binarySearch/config";
 import { generateBinarySearchSteps } from "@/algorithms/binarySearch/generator";
 import { singlyLinkedListSearchConfig } from "@/algorithms/singlyLinkedListSearch/config";
 import { generateSinglyLinkedListSearchSteps } from "@/algorithms/singlyLinkedListSearch/generator";
+
+import { reverseLinkedListConfig } from "@/algorithms/reverseLinkedList/config";
+import { generateReverseLinkedListSteps, generateRandomLinkedListInput } from "@/algorithms/reverseLinkedList/generator";
+
+import { middleOfLinkedListConfig } from "@/algorithms/middleOfLinkedList/config";
+import { generateMiddleOfLinkedListSteps } from "@/algorithms/middleOfLinkedList/generator";
+
+import { mergeTwoSortedListsConfig } from "@/algorithms/mergeTwoSortedLists/config";
+import { generateMergeTwoSortedListsSteps, generateRandomMergeListsInput } from "@/algorithms/mergeTwoSortedLists/generator";
+
+import { addTwoNumbersConfig } from "@/algorithms/addTwoNumbers/config";
+import { generateAddTwoNumbersSteps, generateRandomAddTwoNumbersInput } from "@/algorithms/addTwoNumbers/generator";
+
+import { deleteNodeLinkedListConfig } from "@/algorithms/deleteNodeLinkedList/config";
+import { generateDeleteNodeLinkedListSteps, generateRandomDeleteNodeInput } from "@/algorithms/deleteNodeLinkedList/generator";
+
 import { twoSumConfig } from "@/algorithms/twoSum/config";
 import { generateTwoSumSteps, generateRandomTwoSumInput } from "@/algorithms/twoSum/generator";
 
@@ -103,6 +121,7 @@ import type {
   CountingSortState,
   ArraySearchState,
   LinkedListState,
+  AdvancedLinkedListState,
   TwoSumState,
   StockBuySellState,
   KadaneState,
@@ -156,6 +175,16 @@ export function AlgorithmPage({ algorithmId }: AlgorithmPageProps) {
     // Linked Lists
     case "sll-search":
       return <LinkedListSearchPage config={singlyLinkedListSearchConfig} generator={generateSinglyLinkedListSearchSteps} />;
+    case "reverse-linked-list":
+      return <AdvancedLinkedListPage config={reverseLinkedListConfig} generator={generateReverseLinkedListSteps} type="standard" />;
+    case "middle-of-linked-list":
+      return <AdvancedLinkedListPage config={middleOfLinkedListConfig} generator={generateMiddleOfLinkedListSteps} type="standard" />;
+    case "merge-two-sorted-lists":
+      return <AdvancedLinkedListPage config={mergeTwoSortedListsConfig} generator={generateMergeTwoSortedListsSteps} type="two-lists" />;
+    case "add-two-numbers":
+      return <AdvancedLinkedListPage config={addTwoNumbersConfig} generator={generateAddTwoNumbersSteps} type="two-lists" />;
+    case "delete-node-linked-list":
+      return <AdvancedLinkedListPage config={deleteNodeLinkedListConfig} generator={generateDeleteNodeLinkedListSteps} type="delete" />;
 
     // Arrays
     case "two-sum":
@@ -1472,5 +1501,75 @@ function AlgorithmLayout<T>({
         </div>
       </div>
     </div>
+  );
+}
+
+// --------------------------------------------------------
+// ADVANCED LINKED LIST VISUALIZATION (Multiple rows, explicit x, y)
+// --------------------------------------------------------
+interface AdvancedLinkedListPageProps {
+  config: AlgorithmConfig;
+  generator: (...args: never[]) => Generator<VisualizationStep<AdvancedLinkedListState>>;
+  type: "standard" | "two-lists" | "delete";
+}
+
+function AdvancedLinkedListPage({ config, generator, type }: AdvancedLinkedListPageProps) {
+  const [array1, setArray1] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [array2, setArray2] = useState<number[]>([1, 3, 5]);
+  const [target, setTarget] = useState<number>(2);
+
+  const steps = useMemo(() => {
+    if (type === "two-lists") {
+      return Array.from(generator(array1 as never, array2 as never));
+    } else if (type === "delete") {
+      return Array.from(generator(array1 as never, target as never));
+    } else {
+      return Array.from(generator(array1 as never));
+    }
+  }, [array1, array2, target, type, generator]);
+
+  const engine = usePlaybackEngine<AdvancedLinkedListState>(steps);
+
+  const handleRandomize = () => {
+    if (config.id === "merge-two-sorted-lists") {
+      const { arr1, arr2 } = generateRandomMergeListsInput(8);
+      setArray1(arr1);
+      setArray2(arr2);
+    } else if (config.id === "add-two-numbers") {
+      const { arr1, arr2 } = generateRandomAddTwoNumbersInput(8);
+      setArray1(arr1);
+      setArray2(arr2);
+    } else if (type === "delete") {
+      const { array, k } = generateRandomDeleteNodeInput(6);
+      setArray1(array);
+      setTarget(k);
+    } else {
+      setArray1(generateRandomLinkedListInput(6));
+    }
+    engine.reset();
+  };
+
+  const controls = (
+    <div className="flex gap-2 items-center">
+      <Button variant="outline" size="sm" onClick={handleRandomize} className="h-8 text-xs gap-1.5">
+        <Shuffle size={13} />
+        Randomize Arrays
+      </Button>
+    </div>
+  );
+
+  return (
+    <AlgorithmLayout
+      config={config}
+      engine={engine}
+      inputControls={controls}
+      visualizer={
+        <div className="w-full h-full p-4 flex items-center justify-center">
+          {engine.currentStep?.state && (
+            <AdvancedLinkedListVisualizer state={engine.currentStep.state} />
+          )}
+        </div>
+      }
+    />
   );
 }

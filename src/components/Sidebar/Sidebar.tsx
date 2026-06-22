@@ -91,6 +91,11 @@ const CATEGORIES: SidebarCategory[] = [
     icon: "link",
     items: [
       { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
+      { id: "reverse-linked-list", title: "Reverse Linked List", difficulty: "Easy" },
+      { id: "middle-of-linked-list", title: "Middle of the Linked List", difficulty: "Easy" },
+      { id: "merge-two-sorted-lists", title: "Merge Two Sorted Lists", difficulty: "Easy" },
+      { id: "delete-node-linked-list", title: "Delete K-th Node", difficulty: "Easy" },
+      { id: "add-two-numbers", title: "Add Two Numbers", difficulty: "Medium" },
     ],
   },
   {
@@ -145,6 +150,7 @@ const PATTERNS: SidebarCategory[] = [
     icon: "fast-forward",
     items: [
       { id: "sll-search", title: "Search in Singly Linked List", difficulty: "Easy" },
+      { id: "middle-of-linked-list", title: "Middle of the Linked List", difficulty: "Easy" },
     ],
   },
   {
