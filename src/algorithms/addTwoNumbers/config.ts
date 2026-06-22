@@ -86,7 +86,7 @@ export const addTwoNumbersConfig: AlgorithmConfig = {
     { code: "}", indent: 0 }
   ],
   complexityExplorer: {
-    trackedMetrics: ["operations", "reads", "writes"],
+    trackedMetrics: ["operations", "comparisons", "reads", "writes"],
     timeCases: {
       best: "O(max(N, M))",
       average: "O(max(N, M))",
@@ -127,7 +127,7 @@ export const addTwoNumbersConfig: AlgorithmConfig = {
         }
         writes += 3; 
       }
-      return { operations, reads, writes };
+      return { operations, comparisons: 0, reads, writes };
     }
   }
 };

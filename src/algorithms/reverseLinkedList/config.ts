@@ -56,7 +56,7 @@ export const reverseLinkedListConfig: AlgorithmConfig = {
     { code: "}", indent: 0 }
   ],
   complexityExplorer: {
-    trackedMetrics: ["operations", "reads", "writes"],
+    trackedMetrics: ["operations", "comparisons", "reads", "writes"],
     timeCases: {
       best: "O(N)",
       average: "O(N)",
@@ -84,7 +84,7 @@ export const reverseLinkedListConfig: AlgorithmConfig = {
         reads += 4;
         writes += 3;
       }
-      return { operations, reads, writes };
+      return { operations, comparisons: 0, reads, writes };
     }
   }
 };

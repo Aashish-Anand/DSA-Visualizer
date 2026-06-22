@@ -8,7 +8,7 @@ export function* generateAddTwoNumbersSteps(arr1: number[], arr2: number[]): Gen
       id: `l1-${i}`,
       value: arr1[i],
       nextId: i < arr1.length - 1 ? `l1-${i + 1}` : null,
-      x: 100 + i * 120,
+      x: 100 + i * 160,
       y: 100
     });
   }
@@ -18,7 +18,7 @@ export function* generateAddTwoNumbersSteps(arr1: number[], arr2: number[]): Gen
       id: `l2-${i}`,
       value: arr2[i],
       nextId: i < arr2.length - 1 ? `l2-${i + 1}` : null,
-      x: 100 + i * 120,
+      x: 100 + i * 160,
       y: 220
     });
   }
@@ -42,7 +42,7 @@ export function* generateAddTwoNumbersSteps(arr1: number[], arr2: number[]): Gen
     extraInfo: "Carry: 0, Sum: 0"
   };
 
-  const metrics = { operations: 0, reads: 0, writes: 0 };
+  const metrics = { operations: 0, comparisons: 0, reads: 0, writes: 0 };
 
   yield {
     state: JSON.parse(JSON.stringify(state)),
@@ -202,7 +202,7 @@ export function* generateAddTwoNumbersSteps(arr1: number[], arr2: number[]): Gen
 
     const digit = sum % 10;
     const newNodeId = `res-${newNodeIdx++}`;
-    currX += 120;
+    currX += 160;
     
     const newNode: AdvancedLinkedListNode = {
       id: newNodeId,

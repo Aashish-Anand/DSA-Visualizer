@@ -9,7 +9,7 @@ export function* generateMergeTwoSortedListsSteps(arr1: number[], arr2: number[]
       id: `l1-${i}`,
       value: arr1[i],
       nextId: i < arr1.length - 1 ? `l1-${i + 1}` : null,
-      x: 100 + i * 120,
+      x: 100 + i * 160,
       y: 100
     });
   }
@@ -20,7 +20,7 @@ export function* generateMergeTwoSortedListsSteps(arr1: number[], arr2: number[]
       id: `l2-${i}`,
       value: arr2[i],
       nextId: i < arr2.length - 1 ? `l2-${i + 1}` : null,
-      x: 100 + i * 120,
+      x: 100 + i * 160,
       y: 200
     });
   }
@@ -163,7 +163,7 @@ export function* generateMergeTwoSortedListsSteps(arr1: number[], arr2: number[]
     currId = chosenId;
     state.pointers.curr = currId;
     metrics.writes++;
-    currX += 120;
+    currX += 160;
     
     // Visually move the chosen node down to the merged list row
     const chosenNodeState = state.nodes.find(n => n.id === chosenId)!;
@@ -190,7 +190,7 @@ export function* generateMergeTwoSortedListsSteps(arr1: number[], arr2: number[]
     let tempId: string | null = state.pointers.l1;
     let localCurrX = currX;
     while (tempId) {
-      localCurrX += 120;
+      localCurrX += 160;
       const n = state.nodes.find(x => x.id === tempId)!;
       n.y = 320;
       n.x = localCurrX;
@@ -216,7 +216,7 @@ export function* generateMergeTwoSortedListsSteps(arr1: number[], arr2: number[]
     let tempId: string | null = state.pointers.l2;
     let localCurrX = currX;
     while (tempId) {
-      localCurrX += 120;
+      localCurrX += 160;
       const n = state.nodes.find(x => x.id === tempId)!;
       n.y = 320;
       n.x = localCurrX;

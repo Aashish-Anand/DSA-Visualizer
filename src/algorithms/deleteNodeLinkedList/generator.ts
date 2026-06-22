@@ -5,7 +5,7 @@ export function* generateDeleteNodeLinkedListSteps(array: number[], k: number): 
     id: `node-${idx}`,
     value: val,
     nextId: idx < array.length - 1 ? `node-${idx + 1}` : null,
-    x: 100 + idx * 120, 
+    x: 100 + idx * 160, 
     y: 200
   }));
 
@@ -21,12 +21,12 @@ export function* generateDeleteNodeLinkedListSteps(array: number[], k: number): 
     activeLine: 0,
     explanation: `We want to delete the node at index ${k} (0-indexed).`,
     beginnerExplanation: `We want to remove the node at position ${k}.`,
-    complexityMetrics: { operations: 0, reads: 0, writes: 0 }
+    complexityMetrics: { operations: 0, comparisons: 0, reads: 0, writes: 0 }
   };
 
   if (nodes.length === 0) return;
 
-  const metrics = { operations: 0, reads: 0, writes: 0 };
+  const metrics = { operations: 0, comparisons: 0, reads: 0, writes: 0 };
 
   metrics.reads++; 
   yield {

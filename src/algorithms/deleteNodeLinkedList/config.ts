@@ -61,7 +61,7 @@ export const deleteNodeLinkedListConfig: AlgorithmConfig = {
     { code: "}", indent: 0 }
   ],
   complexityExplorer: {
-    trackedMetrics: ["operations", "reads", "writes"],
+    trackedMetrics: ["operations", "comparisons", "reads", "writes"],
     timeCases: {
       best: "O(1)",
       average: "O(K)",
@@ -97,7 +97,7 @@ export const deleteNodeLinkedListConfig: AlgorithmConfig = {
         reads += 2;
         writes += 1;
       }
-      return { operations, reads, writes };
+      return { operations, comparisons: 0, reads, writes };
     }
   }
 };

@@ -47,7 +47,7 @@ export const middleOfLinkedListConfig: AlgorithmConfig = {
     { code: "}", indent: 0 }
   ],
   complexityExplorer: {
-    trackedMetrics: ["operations", "reads", "writes"],
+    trackedMetrics: ["operations", "comparisons", "reads", "writes"],
     timeCases: {
       best: "O(N)",
       average: "O(N)",
@@ -78,7 +78,7 @@ export const middleOfLinkedListConfig: AlgorithmConfig = {
         writes += 2; 
         fast += 2;
       }
-      return { operations, reads, writes };
+      return { operations, comparisons: 0, reads, writes };
     }
   }
 };

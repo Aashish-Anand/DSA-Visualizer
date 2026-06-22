@@ -5,7 +5,7 @@ export function* generateReverseLinkedListSteps(array: number[]): Generator<Visu
     id: `node-${idx}`,
     value: val,
     nextId: idx < array.length - 1 ? `node-${idx + 1}` : null,
-    x: 100 + idx * 120, 
+    x: 100 + idx * 160, 
     y: 200
   }));
 
@@ -20,7 +20,7 @@ export function* generateReverseLinkedListSteps(array: number[]): Generator<Visu
     activeLine: 0,
     explanation: "Initialize the reversing process.",
     beginnerExplanation: "We are ready to reverse the linked list. The 'head' points to the first node.",
-    complexityMetrics: { operations: 0, reads: 0, writes: 0 }
+    complexityMetrics: { operations: 0, comparisons: 0, reads: 0, writes: 0 }
   };
 
   if (nodes.length === 0) return;
@@ -31,7 +31,7 @@ export function* generateReverseLinkedListSteps(array: number[]): Generator<Visu
     activeLine: 1,
     explanation: "Set prev to null. This will become the new tail of the reversed list.",
     beginnerExplanation: "We need a variable 'prev' to keep track of the node behind us. Initially, there is nothing behind the first node, so we set it to null.",
-    complexityMetrics: { operations: 1, reads: 0, writes: 1 }
+    complexityMetrics: { operations: 1, comparisons: 0, reads: 0, writes: 1 }
   };
 
   state.pointers.curr = state.pointers.head;
@@ -40,11 +40,11 @@ export function* generateReverseLinkedListSteps(array: number[]): Generator<Visu
     activeLine: 2,
     explanation: "Set curr to head.",
     beginnerExplanation: "We use 'curr' to keep track of the node we are currently looking at. We start at the beginning (the head).",
-    complexityMetrics: { operations: 2, reads: 1, writes: 2 }
+    complexityMetrics: { operations: 2, comparisons: 0, reads: 1, writes: 2 }
   };
 
   let currIdx = 0;
-  const metrics = { operations: 2, reads: 1, writes: 2 };
+  const metrics = { operations: 2, comparisons: 0, reads: 1, writes: 2 };
 
   while (currIdx < nodes.length) {
     metrics.operations++;

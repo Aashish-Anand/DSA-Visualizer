@@ -5,7 +5,7 @@ export function* generateMiddleOfLinkedListSteps(array: number[]): Generator<Vis
     id: `node-${idx}`,
     value: val,
     nextId: idx < array.length - 1 ? `node-${idx + 1}` : null,
-    x: 100 + idx * 120, 
+    x: 100 + idx * 160, 
     y: 200
   }));
 
@@ -20,7 +20,7 @@ export function* generateMiddleOfLinkedListSteps(array: number[]): Generator<Vis
     activeLine: 0,
     explanation: "Initialize to find the middle node.",
     beginnerExplanation: "We have our linked list ready. The 'head' points to the first node.",
-    complexityMetrics: { operations: 0, reads: 0, writes: 0 }
+    complexityMetrics: { operations: 0, comparisons: 0, reads: 0, writes: 0 }
   };
 
   if (nodes.length === 0) return;
@@ -31,7 +31,7 @@ export function* generateMiddleOfLinkedListSteps(array: number[]): Generator<Vis
     activeLine: 1,
     explanation: "Initialize the slow pointer at head.",
     beginnerExplanation: "The 'slow' pointer starts at the beginning.",
-    complexityMetrics: { operations: 1, reads: 1, writes: 1 }
+    complexityMetrics: { operations: 1, comparisons: 0, reads: 1, writes: 1 }
   };
 
   state.pointers.fast = state.pointers.head;
@@ -40,12 +40,12 @@ export function* generateMiddleOfLinkedListSteps(array: number[]): Generator<Vis
     activeLine: 2,
     explanation: "Initialize the fast pointer at head.",
     beginnerExplanation: "The 'fast' pointer also starts at the beginning. It will move twice as fast as the slow pointer.",
-    complexityMetrics: { operations: 2, reads: 2, writes: 2 }
+    complexityMetrics: { operations: 2, comparisons: 0, reads: 2, writes: 2 }
   };
 
   let slowIdx = 0;
   let fastIdx = 0;
-  const metrics = { operations: 2, reads: 2, writes: 2 };
+  const metrics = { operations: 2, comparisons: 0, reads: 2, writes: 2 };
 
   while (fastIdx < nodes.length && fastIdx + 1 < nodes.length) {
     metrics.operations++;
