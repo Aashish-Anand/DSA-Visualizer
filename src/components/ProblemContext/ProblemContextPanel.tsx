@@ -154,9 +154,11 @@ export function ProblemContextPanel({ context, onStartVisualization }: ProblemCo
                 </div>
                 {/* Arrow between approaches */}
                 {i < context.approaches.length - 1 && (
-                  <div className="flex items-center gap-1 pl-[11px] pb-3 -mt-1">
-                    <ChevronRight size={10} className="text-muted-foreground/50" />
-                    <span className="text-[10px] text-muted-foreground/50 italic">Can we do better?</span>
+                  <div className="flex items-center gap-2 pl-2 pb-4 -mt-1 relative z-10">
+                    <div className="w-4 h-4 rounded-full bg-background border border-border flex items-center justify-center text-primary shadow-sm -ml-[1px]">
+                      <ChevronRight size={12} className="text-primary stroke-[3]" />
+                    </div>
+                    <span className="text-xs font-semibold text-foreground/90 italic">Can we do better?</span>
                   </div>
                 )}
               </div>
