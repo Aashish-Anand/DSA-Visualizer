@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="100%" height="100%">
+  <defs>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.9" />
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="320" rx="16" fill="#0f172a" />
+
+  <!-- Title & Legend -->
+  <text x="50" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="bold" fill="#f8fafc">
+    Input: [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+  </text>
+
+  <g transform="translate(420, 25)">
+    <rect x="0" y="0" width="16" height="16" rx="4" fill="url(#barGrad)" />
+    <text x="24" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" fill="#94a3b8">Elevation Bar</text>
+
+    <rect x="140" y="0" width="16" height="16" rx="4" fill="url(#waterGrad)" />
+    <text x="164" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" fill="#38bdf8">Trapped Water (6)</text>
+  </g>
+
+  <!-- Grid Lines & Y-Axis -->
+  <g font-family="monospace" font-size="13" fill="#64748b" text-anchor="end">
+    <!-- Y = 3 -->
+    <text x="38" y="65">3</text>
+    <line x1="50" y1="60" x2="680" y2="60" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 2 -->
+    <text x="38" y="125">2</text>
+    <line x1="50" y1="120" x2="680" y2="120" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 1 -->
+    <text x="38" y="185">1</text>
+    <line x1="50" y1="180" x2="680" y2="180" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 0 (Base line) -->
+    <text x="38" y="245">0</text>
+    <line x1="50" y1="240" x2="680" y2="240" stroke="#475569" stroke-width="2" />
+  </g>
+
+  <!-- Bars & Water -->
+  <!-- Base X = 55, Bar Width = 44, Step = 52 -->
+  <g>
+    <!-- i=0: h=0 -->
+
+    <!-- i=1: h=1 -->
+    <rect x="107" y="180" width="44" height="60" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=2: h=0, w=1 -->
+    <rect x="159" y="180" width="44" height="60" rx="4" fill="url(#waterGrad)" />
+
+    <!-- i=3: h=2 -->
+    <rect x="211" y="120" width="44" height="120" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=4: h=1, w=1 -->
+    <rect x="263" y="180" width="44" height="60" rx="4" fill="url(#barGrad)" />
+    <rect x="263" y="120" width="44" height="64" rx="4" fill="url(#waterGrad)" />
+
+    <!-- i=5: h=0, w=2 -->
+    <rect x="315" y="120" width="44" height="120" rx="4" fill="url(#waterGrad)" />
+
+    <!-- i=6: h=1, w=1 -->
+    <rect x="367" y="180" width="44" height="60" rx="4" fill="url(#barGrad)" />
+    <rect x="367" y="120" width="44" height="64" rx="4" fill="url(#waterGrad)" />
+
+    <!-- i=7: h=3 -->
+    <rect x="419" y="60" width="44" height="180" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=8: h=2 -->
+    <rect x="471" y="120" width="44" height="120" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=9: h=1, w=1 -->
+    <rect x="523" y="180" width="44" height="60" rx="4" fill="url(#barGrad)" />
+    <rect x="523" y="120" width="44" height="64" rx="4" fill="url(#waterGrad)" />
+
+    <!-- i=10: h=2 -->
+    <rect x="575" y="120" width="44" height="120" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=11: h=1 -->
+    <rect x="627" y="180" width="44" height="60" rx="4" fill="url(#barGrad)" />
+  </g>
+
+  <!-- X-Axis Indices -->
+  <g font-family="monospace" font-size="13" font-weight="bold" fill="#94a3b8" text-anchor="middle">
+    <text x="77" y="265">0</text>
+    <text x="129" y="265">1</text>
+    <text x="181" y="265">2</text>
+    <text x="233" y="265">3</text>
+    <text x="285" y="265">4</text>
+    <text x="337" y="265">5</text>
+    <text x="389" y="265">6</text>
+    <text x="441" y="265">7</text>
+    <text x="493" y="265">8</text>
+    <text x="545" y="265">9</text>
+    <text x="597" y="265">10</text>
+    <text x="649" y="265">11</text>
+  </g>
+
+  <!-- X-Axis Label -->
+  <text x="363" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" fill="#64748b" text-anchor="middle">
+    Array Index
+  </text>
+</svg>
