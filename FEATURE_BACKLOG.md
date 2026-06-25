@@ -11,20 +11,20 @@ Below is the current completion status for all 29 algorithm directories in the p
 | **Bubble Sort** | ✅ | ✅ | ❌ | ❌ |
 | **Insertion Sort** | ❌ | ❌ | ❌ | ❌ |
 | **Selection Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Container With Most Water** | ❌ | ❌ | ❌ | ❌ |
+| **Container With Most Water** | ✅ | ❌ | ❌ | ❌ |
 | **Counting Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Four Sum** | ❌ | ❌ | ❌ | ❌ |
+| **Four Sum** | ✅ | ❌ | ❌ | ❌ |
 | **Graph BFS / DFS** | ⚠️ (BFS only) | ❌ | ❌ | ❌ |
-| **Kadane's Algorithm** | ❌ | ❌ | ❌ | ❌ |
+| **Kadane's Algorithm** | ✅ | ❌ | ❌ | ❌ |
 | **Linear Search** | ❌ | ❌ | ❌ | ❌ |
-| **Majority Element I & II** | ❌ | ❌ | ❌ | ❌ |
+| **Majority Element I & II** | ✅ | ❌ | ❌ | ❌ |
 | **Merge Sort** | ✅ | ❌ | ❌ | ❌ |
 | **Quick Sort** | ❌ | ❌ | ❌ | ❌ |
 | **Radix Sort** | ❌ | ❌ | ❌ | ❌ |
 | **Singly Linked List Search** | ❌ | ❌ | ❌ | ❌ |
-| **Stock Buy Sell** | ❌ | ❌ | ❌ | ❌ |
-| **Three Sum** | ❌ | ❌ | ❌ | ❌ |
-| **Trapping Rain Water** | ❌ | ❌ | ❌ | ❌ |
+| **Stock Buy Sell** | ✅ | ❌ | ❌ | ❌ |
+| **Three Sum** | ✅ | ❌ | ❌ | ❌ |
+| **Trapping Rain Water** | ✅ | ❌ | ❌ | ❌ |
 | **Tree Traversal (In/Pre/Post/Level)** | ❌ | ❌ | ❌ | ❌ |
 
 ## Legend
