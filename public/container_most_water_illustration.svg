@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.8" />
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    <linearGradient id="highlightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="340" rx="16" fill="#0f172a" />
+
+  <!-- Title & Legend -->
+  <text x="50" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="bold" fill="#f8fafc">
+    Input: [1, 8, 6, 2, 5, 4, 8, 3, 7]
+  </text>
+
+  <g transform="translate(340, 25)">
+    <rect x="0" y="0" width="16" height="16" rx="4" fill="url(#barGrad)" />
+    <text x="22" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" fill="#94a3b8">Line</text>
+
+    <rect x="75" y="0" width="16" height="16" rx="4" fill="url(#highlightGrad)" />
+    <text x="97" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" fill="#f59e0b">Optimal Pair</text>
+
+    <rect x="210" y="0" width="16" height="16" rx="4" fill="url(#waterGrad)" />
+    <text x="232" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" fill="#38bdf8">Max Water (49)</text>
+  </g>
+
+  <!-- Grid Lines & Y-Axis -->
+  <g font-family="monospace" font-size="13" fill="#64748b" text-anchor="end">
+    <!-- Y = 8 -->
+    <text x="38" y="55">8</text>
+    <line x1="50" y1="50" x2="680" y2="50" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 7 -->
+    <text x="38" y="85">7</text>
+    <line x1="50" y1="80" x2="680" y2="80" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 6 -->
+    <text x="38" y="115">6</text>
+    <line x1="50" y1="110" x2="680" y2="110" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 5 -->
+    <text x="38" y="145">5</text>
+    <line x1="50" y1="140" x2="680" y2="140" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 4 -->
+    <text x="38" y="175">4</text>
+    <line x1="50" y1="170" x2="680" y2="170" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 3 -->
+    <text x="38" y="205">3</text>
+    <line x1="50" y1="200" x2="680" y2="200" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 2 -->
+    <text x="38" y="235">2</text>
+    <line x1="50" y1="230" x2="680" y2="230" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 1 -->
+    <text x="38" y="265">1</text>
+    <line x1="50" y1="260" x2="680" y2="260" stroke="#334155" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- Y = 0 (Base line) -->
+    <text x="38" y="295">0</text>
+    <line x1="50" y1="290" x2="680" y2="290" stroke="#475569" stroke-width="2" />
+  </g>
+
+  <!-- Max Water Container Area -->
+  <g>
+    <!-- Span from x=150 (i=1) to x=640 (i=8), width=490, height from y=80 (h=7) to y=290, h=210 -->
+    <rect x="150" y="80" width="490" height="210" fill="url(#waterGrad)" opacity="0.35" />
+    <line x1="150" y1="80" x2="640" y2="80" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" />
+    
+    <text x="395" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="bold" fill="#38bdf8" text-anchor="middle">
+      Max Area = Width (7) × Height (7) = 49
+    </text>
+  </g>
+
+  <!-- Vertical Lines -->
+  <!-- Base X = 80, Step = 70, Line Width = 8 (shifted -4) -->
+  <g>
+    <!-- i=0: h=1 (y=260, h=30) -->
+    <rect x="76" y="260" width="8" height="30" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=1: h=8 (y=50, h=240) -> OPTIMAL LEFT POINTER -->
+    <rect x="146" y="50" width="8" height="240" rx="4" fill="url(#highlightGrad)" />
+    <text x="150" y="42" font-family="monospace" font-size="12" font-weight="bold" fill="#f59e0b" text-anchor="middle">Left (h=8)</text>
+
+    <!-- i=2: h=6 (y=110, h=180) -->
+    <rect x="216" y="110" width="8" height="180" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=3: h=2 (y=230, h=60) -->
+    <rect x="286" y="230" width="8" height="60" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=4: h=5 (y=140, h=150) -->
+    <rect x="356" y="140" width="8" height="150" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=5: h=4 (y=170, h=120) -->
+    <rect x="426" y="170" width="8" height="120" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=6: h=8 (y=50, h=240) -->
+    <rect x="496" y="50" width="8" height="240" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=7: h=3 (y=200, h=90) -->
+    <rect x="566" y="200" width="8" height="90" rx="4" fill="url(#barGrad)" />
+
+    <!-- i=8: h=7 (y=80, h=210) -> OPTIMAL RIGHT POINTER -->
+    <rect x="636" y="80" width="8" height="210" rx="4" fill="url(#highlightGrad)" />
+    <text x="640" y="72" font-family="monospace" font-size="12" font-weight="bold" fill="#f59e0b" text-anchor="middle">Right (h=7)</text>
+  </g>
+
+  <!-- X-Axis Indices -->
+  <g font-family="monospace" font-size="13" font-weight="bold" fill="#94a3b8" text-anchor="middle">
+    <text x="80" y="315">0</text>
+    <text x="150" y="315">1</text>
+    <text x="220" y="315">2</text>
+    <text x="290" y="315">3</text>
+    <text x="360" y="315">4</text>
+    <text x="430" y="315">5</text>
+    <text x="500" y="315">6</text>
+    <text x="570" y="315">7</text>
+    <text x="640" y="315">8</text>
+  </g>
+
+  <!-- X-Axis Label -->
+  <text x="360" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">
+    Array Index (Container Width = Right Index - Left Index)
+  </text>
+</svg>
