@@ -35,9 +35,9 @@ export function ProblemContextPanel({ context, onStartVisualization }: ProblemCo
       variants={container}
       initial="hidden"
       animate="show"
-      className="h-full overflow-y-auto"
+      className="w-full"
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-24 space-y-5">
         {/* Problem Statement */}
         <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
           <div className="flex items-center gap-2 mb-3">
