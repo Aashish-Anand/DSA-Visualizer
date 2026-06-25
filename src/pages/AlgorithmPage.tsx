@@ -1405,7 +1405,7 @@ function AlgorithmLayout<T>({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="flex items-center gap-3 mb-1">
+        <div className={`flex items-center gap-3 ${activeTab === "visualizer" ? "mb-1" : ""}`}>
           <h1 className="text-lg font-bold text-foreground">{config.title}</h1>
           <Badge
             variant="outline"
@@ -1476,9 +1476,11 @@ function AlgorithmLayout<T>({
             </AnimatePresence>
           </button>
         </div>
-        <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
-          {config.description}
-        </p>
+        {activeTab === "visualizer" && (
+          <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
+            {config.description}
+          </p>
+        )}
       </motion.header>
 
       {/* Controls Bar */}
