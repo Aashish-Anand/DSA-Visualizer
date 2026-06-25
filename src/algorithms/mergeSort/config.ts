@@ -25,4 +25,43 @@ export const mergeSortConfig: AlgorithmConfig = {
     { code: "arr[k++] = rightArr[j++]", indent: 3 },
     { code: "copy remaining elements of leftArr and rightArr", indent: 1 },
   ],
+  problemContext: {
+    statement: "Given an array of integers `arr`, sort the array in non-decreasing order using the Merge Sort algorithm. You must divide the array into two halves, recursively sort each half, and then merge the two sorted halves into a single sorted array.",
+    examples: [
+      {
+        input: "arr = [38, 27, 43, 3, 9, 82, 10]",
+        output: "[3, 9, 10, 27, 38, 43, 82]",
+        explanation: "The array is divided into [38, 27, 43, 3] and [9, 82, 10]. These are recursively split down to single elements, which are then merged step-by-step: [27, 38], [3, 43], [9, 82], [10]. Merging further yields [3, 27, 38, 43] and [9, 10, 82], and finally the fully sorted array."
+      },
+      {
+        input: "arr = [5, 2, 3, 1]",
+        output: "[1, 2, 3, 5]",
+        explanation: "Split into [5, 2] and [3, 1]. Sorted to [2, 5] and [1, 3]. Merged to [1, 2, 3, 5]."
+      }
+    ],
+    intuitionPrompt: "If you were handed two stacks of test papers that are already perfectly sorted alphabetically, how would you combine them into one sorted master stack? You'd just look at the top paper of each stack, pick the earlier name, and place it in the master stack. Merge Sort works by breaking the whole problem down until you're just merging simple sorted stacks!",
+    approaches: [
+      {
+        name: "Recursive Top-Down Merge Sort",
+        complexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+        description: "Divide the array in half recursively until sub-arrays have 1 element (which are inherently sorted). Then merge them back up using temporary sub-arrays. Excellent predictable O(n log n) performance regardless of initial ordering.",
+        isOptimal: true
+      },
+      {
+        name: "Iterative Bottom-Up Merge Sort",
+        complexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+        description: "Treat the array as `n` sub-arrays of size 1. Merge adjacent pairs into sub-arrays of size 2, then size 4, 8, etc., until the whole array is sorted. Avoids recursion call-stack overhead.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "External Sorting: Sorting massive datasets that do not fit into RAM (e.g., merging sorted chunks stored on a hard drive or database shards).",
+      "E-commerce & Enterprise databases where stable sorting is required (preserving the relative order of items with equal keys).",
+      "Base algorithm for Timsort (used in Python's `sort()` and Java's `Arrays.sort()`)."
+    ],
+    patterns: ["Divide and Conquer", "Recursion", "Stable Sorting", "O(n log n)"]
+  }
 };
+

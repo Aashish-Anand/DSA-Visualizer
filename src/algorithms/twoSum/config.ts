@@ -63,4 +63,50 @@ export const twoSumConfig: AlgorithmConfig = {
     inputSizeRange: { min: 5, max: 100, default: 10 },
     runExperiment: runTwoSumExperiment,
   },
+  problemContext: {
+    statement: "Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.",
+    examples: [
+      {
+        input: "nums = [2, 7, 11, 15], target = 9",
+        output: "[0, 1]",
+        explanation: "nums[0] + nums[1] == 2 + 7 == 9, so we return [0, 1]."
+      },
+      {
+        input: "nums = [3, 2, 4], target = 6",
+        output: "[1, 2]",
+        explanation: "nums[1] + nums[2] == 2 + 4 == 6, so we return [1, 2]."
+      }
+    ],
+    intuitionPrompt: "If you were scanning the array by hand, for every number you look at, you instantly know what 'partner' number you need to reach the target. What if you wrote down every number you've seen so far in a notepad? Then you could instantly check if the required partner is already in your notes!",
+    approaches: [
+      {
+        name: "Brute Force (Two Loops)",
+        complexity: "O(n²)",
+        spaceComplexity: "O(1)",
+        description: "Check every possible pair of numbers in the array using nested loops. If `nums[i] + nums[j] == target`, return `[i, j]`. This is very slow for large arrays.",
+        isOptimal: false
+      },
+      {
+        name: "Two Pointers (Sorting)",
+        complexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+        description: "Store original indices, sort the array, and use two pointers (left and right) to find the sum. Faster than brute force, but sorting modifies the order and takes O(n log n) time.",
+        isOptimal: false
+      },
+      {
+        name: "One-Pass Hash Map",
+        complexity: "O(n)",
+        spaceComplexity: "O(n)",
+        description: "As we iterate through the array, we calculate `complement = target - nums[i]`. We check if this complement exists in our Hash Map. If it does, we found our pair! If not, we store `nums[i]` and its index in the map. This achieves blazing fast linear time.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Financial systems matching buy and sell orders that equal a specific target transaction amount.",
+      "Game development for pair matching mechanics or inventory weight optimization.",
+      "Data deduplication and two-factor correlation in analytics engines."
+    ],
+    patterns: ["Hash Map", "Array", "Space-Time Tradeoff"]
+  }
 };
+

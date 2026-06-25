@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info, BarChart2, Code2, Shuffle, Share2, Check } from "lucide-react";
+import { Info, BarChart2, Code2, Shuffle, Share2, Check, BookOpen, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -11,6 +11,7 @@ import { CodePanel } from "@/components/CodePanel/CodePanel";
 import { ExplanationPanel } from "@/components/ExplanationPanel/ExplanationPanel";
 import { ComplexityExplorer } from "@/components/Complexity/ComplexityExplorer";
 import { useFeedbackContext } from "@/hooks/useFeedbackContext";
+import { ProblemContextPanel } from "@/components/ProblemContext/ProblemContextPanel";
 
 // Visualizers
 import { SortingBarVisualizer } from "@/visualizers/SortingBarVisualizer/SortingBarVisualizer";
@@ -1353,6 +1354,16 @@ function AlgorithmLayout<T>({
     return typeof window !== "undefined" && window.innerWidth < 1024;
   });
 
+  const [activeTab, setActiveTab] = useState<"context" | "visualizer">(
+    config.problemContext ? "context" : "visualizer"
+  );
+  const [prevConfigId, setPrevConfigId] = useState(config.id);
+
+  if (config.id !== prevConfigId) {
+    setPrevConfigId(config.id);
+    setActiveTab(config.problemContext ? "context" : "visualizer");
+  }
+
   const [showCopied, setShowCopied] = useState(false);
 
   const handleShare = useCallback(() => {
@@ -1405,9 +1416,35 @@ function AlgorithmLayout<T>({
           <Badge variant="secondary" className="text-[10px]">
             {config.category}
           </Badge>
+          {config.problemContext && (
+            <div className="ml-auto flex bg-muted/50 p-1 rounded-lg border border-border">
+              <button
+                onClick={() => setActiveTab("context")}
+                className={`flex items-center gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-md transition-all duration-200 ${
+                  activeTab === "context"
+                    ? "bg-background shadow-sm text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                }`}
+              >
+                <BookOpen size={13} />
+                Understand First
+              </button>
+              <button
+                onClick={() => setActiveTab("visualizer")}
+                className={`flex items-center gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-md transition-all duration-200 ${
+                  activeTab === "visualizer"
+                    ? "bg-background shadow-sm text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                }`}
+              >
+                <Play size={13} />
+                Visualization
+              </button>
+            </div>
+          )}
           <button
             onClick={handleShare}
-            className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 border border-border bg-card/50 hover:bg-primary/10 hover:border-primary/30 hover:text-primary text-muted-foreground"
+            className={`${config.problemContext ? "ml-2" : "ml-auto"} flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 border border-border bg-card/50 hover:bg-primary/10 hover:border-primary/30 hover:text-primary text-muted-foreground`}
             title="Copy shareable link"
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -1445,103 +1482,116 @@ function AlgorithmLayout<T>({
       </motion.header>
 
       {/* Controls Bar */}
-      <div className="shrink-0 px-4 lg:px-6 py-2.5 border-b border-border bg-card/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <PlaybackControls
-          isPlaying={engine.isPlaying}
-          speed={engine.speed}
-          currentStep={engine.currentStepIndex}
-          totalSteps={engine.totalSteps}
-          isFirstStep={engine.isFirstStep}
-          isLastStep={engine.isLastStep}
-          progress={engine.progress}
-          onPlay={engine.play}
-          onPause={engine.pause}
-          onNext={engine.next}
-          onPrevious={engine.previous}
-          onReset={engine.reset}
-          onSpeedChange={engine.setSpeed}
-          isDryRunMode={engine.isDryRunMode}
-          onToggleDryRunMode={engine.toggleDryRunMode}
-        />
-        <Separator orientation="vertical" className="h-6 hidden lg:block" />
-        <div className="w-full sm:w-auto">
-          {inputControls}
+      {activeTab === "visualizer" && (
+        <div className="shrink-0 px-4 lg:px-6 py-2.5 border-b border-border bg-card/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <PlaybackControls
+            isPlaying={engine.isPlaying}
+            speed={engine.speed}
+            currentStep={engine.currentStepIndex}
+            totalSteps={engine.totalSteps}
+            isFirstStep={engine.isFirstStep}
+            isLastStep={engine.isLastStep}
+            progress={engine.progress}
+            onPlay={engine.play}
+            onPause={engine.pause}
+            onNext={engine.next}
+            onPrevious={engine.previous}
+            onReset={engine.reset}
+            onSpeedChange={engine.setSpeed}
+            isDryRunMode={engine.isDryRunMode}
+            onToggleDryRunMode={engine.toggleDryRunMode}
+          />
+          <Separator orientation="vertical" className="h-6 hidden lg:block" />
+          <div className="w-full sm:w-auto">
+            {inputControls}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main content — Visualizer + Right Sidebar */}
       <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden min-h-0">
-        {/* Visualizer */}
-        <motion.div
-          className="min-h-[40vh] lg:min-h-0 flex-1 lg:flex-[3] lg:overflow-auto border-b lg:border-b-0 lg:border-r border-border"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          {visualizer}
-        </motion.div>
+        {activeTab === "context" && config.problemContext ? (
+          <div className="flex-1 h-full overflow-y-auto bg-background/50">
+            <ProblemContextPanel
+              context={config.problemContext}
+              onStartVisualization={() => setActiveTab("visualizer")}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Visualizer */}
+            <motion.div
+              className="min-h-[40vh] lg:min-h-0 flex-1 lg:flex-[3] lg:overflow-auto border-b lg:border-b-0 lg:border-r border-border"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              {visualizer}
+            </motion.div>
 
-        {/* Right Sidebar (Code + Explanation) */}
-        <div className="lg:flex-[2] lg:max-w-sm xl:max-w-md flex flex-col bg-card/30 lg:overflow-hidden">
+            {/* Right Sidebar (Code + Explanation) */}
+            <div className="lg:flex-[2] lg:max-w-sm xl:max-w-md flex flex-col bg-card/30 lg:overflow-hidden">
 
-          {/* Variant Switcher */}
-          {config.variants && config.variants.length > 0 && activeVariantId && onVariantChange && (
-            <div className="p-2 border-b border-border bg-card/50">
-              <div className="flex bg-secondary/50 p-1 rounded-lg">
-                {config.variants.map((v) => (
-                  <button
-                    key={v.id}
-                    onClick={() => onVariantChange(v.id)}
-                    className={`flex-1 text-xs font-semibold py-1.5 px-2 rounded-md transition-all duration-200 capitalize ${activeVariantId === v.id
-                        ? "bg-background shadow-sm text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                      }`}
-                  >
-                    {v.id}
-                  </button>
-                ))}
-              </div>
+              {/* Variant Switcher */}
+              {config.variants && config.variants.length > 0 && activeVariantId && onVariantChange && (
+                <div className="p-2 border-b border-border bg-card/50">
+                  <div className="flex bg-secondary/50 p-1 rounded-lg">
+                    {config.variants.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => onVariantChange(v.id)}
+                        className={`flex-1 text-xs font-semibold py-1.5 px-2 rounded-md transition-all duration-200 capitalize ${activeVariantId === v.id
+                            ? "bg-background shadow-sm text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                          }`}
+                      >
+                        {v.id}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Pseudocode */}
+              <motion.div
+                className="flex-1 border-b lg:border-b-0 border-border min-h-[300px] lg:min-h-0 overflow-hidden flex flex-col"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {engine.currentStep && (
+                  <CodePanel
+                    config={displayConfig}
+                    activeLine={engine.currentStep.activeLine}
+                  />
+                )}
+              </motion.div>
+
+              {/* Explanation Panel */}
+              <motion.div
+                className={`shrink-0 border-t border-border bg-card/50 transition-all duration-300 ${engine.isDryRunMode && engine.currentStep?.dryRunPrompt
+                    ? "lg:h-[350px]"
+                    : "lg:h-[180px]"
+                  }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                {engine.currentStep && (
+                  <ExplanationPanel
+                    explanation={engine.currentStep.explanation}
+                    beginnerExplanation={engine.currentStep.beginnerExplanation}
+                    currentStep={engine.currentStepIndex}
+                    totalSteps={engine.totalSteps}
+                    algorithmName={displayConfig.title}
+                    isDryRunMode={engine.isDryRunMode}
+                    dryRunPrompt={engine.currentStep.dryRunPrompt}
+                  />
+                )}
+              </motion.div>
             </div>
-          )}
-
-          {/* Pseudocode */}
-          <motion.div
-            className="flex-1 border-b lg:border-b-0 border-border min-h-[300px] lg:min-h-0 overflow-hidden flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            {engine.currentStep && (
-              <CodePanel
-                config={displayConfig}
-                activeLine={engine.currentStep.activeLine}
-              />
-            )}
-          </motion.div>
-
-          {/* Explanation Panel */}
-          <motion.div
-            className={`shrink-0 border-t border-border bg-card/50 transition-all duration-300 ${engine.isDryRunMode && engine.currentStep?.dryRunPrompt
-                ? "lg:h-[350px]"
-                : "lg:h-[180px]"
-              }`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            {engine.currentStep && (
-              <ExplanationPanel
-                explanation={engine.currentStep.explanation}
-                beginnerExplanation={engine.currentStep.beginnerExplanation}
-                currentStep={engine.currentStepIndex}
-                totalSteps={engine.totalSteps}
-                algorithmName={displayConfig.title}
-                isDryRunMode={engine.isDryRunMode}
-                dryRunPrompt={engine.currentStep.dryRunPrompt}
-              />
-            )}
-          </motion.div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

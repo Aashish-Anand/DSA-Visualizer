@@ -33,7 +33,7 @@ Based on user research across multiple sources, here's what users prioritize, **
 | 8 | **Complexity Metrics** | Empirical performance data, not just Big-O labels | ✅ **Done** (Complexity Explorer BETA) |
 | 9 | **Interactive Quizzes** | Active recall during or after visualization | ⚠️ **Partial** (Interactive Dry Run exists, but limited) |
 | 10 | **Progress Tracking** | Know what I've learned, streaks, badges | ❌ **Missing** |
-| 11 | **Shareable Links** | Share a specific visualization state with someone | ❌ **Missing** (on roadmap) |
+| 11 | **Shareable Links** | Share a specific visualization state with someone | ✅ **Done** (deep links + Share button) |
 | 12 | **AI Hints/Tutoring** | Get contextual hints, not full answers | ❌ **Missing** |
 | 13 | **Embeddable Visualizations** | Embed in blogs, docs, courses | ❌ **Missing** |
 
@@ -310,13 +310,15 @@ Based on interview prep demand and gap analysis vs. competitors:
 | **Advanced Graph** | Dijkstra's, Topological Sort, Detect Cycle, Union-Find | Commonly asked, builds on existing BFS/DFS |
 | **String Algorithms** | KMP, Rabin-Karp, Longest Palindromic Substring | Underserved by visualizers, high demand |
 
-#### 3C. Shareable Visualization Links
+#### 3C. ~~Shareable Visualization Links~~ ✅ COMPLETED (June 2026)
 
-- Encode algorithm ID + input + current step into URL params
-- Generate OG meta tags for social sharing previews
-- Copy-to-clipboard "Share" button in the UI
+- ~~Encode algorithm ID + input + current step into URL params~~
+- ~~Copy-to-clipboard "Share" button in the UI~~
+- Deep links implemented via hash routing (`#/app/{algorithmId}`)
+- Share button in header with animated `Share → ✓ Copied!` feedback
+- All 34 algorithms shareable instantly — no per-algorithm config needed
 
-**URL format:** `https://dsa-visual.app/visualize/two-sum?input=[2,7,11,15]&target=9&step=5`
+**Future enhancement:** Add OG meta tags for social sharing previews, encode input + step in URL params for exact state restoration
 
 ---
 

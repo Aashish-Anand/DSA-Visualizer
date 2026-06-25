@@ -455,6 +455,41 @@ export interface GraphTraversalState {
 }
 
 // ================================
+// Problem Context Types
+// ================================
+
+export interface ProblemExample {
+  input: string;
+  output: string;
+  explanation: string;
+}
+
+export interface ProblemApproach {
+  name: string;
+  complexity: string;
+  spaceComplexity?: string;
+  description: string;
+  isOptimal: boolean;
+}
+
+export interface ProblemContext {
+  /** The formal problem statement */
+  statement: string;
+  /** Input/Output examples with explanations */
+  examples: ProblemExample[];
+  /** A prompt to help users think through the problem intuitively */
+  intuitionPrompt: string;
+  /** Different approaches from brute-force to optimal */
+  approaches: ProblemApproach[];
+  /** Real-world applications of this algorithm */
+  realWorldApplications: string[];
+  /** DSA patterns this problem belongs to (e.g., "Hash Map", "Two Pointers") */
+  patterns: string[];
+  /** Related algorithm IDs on the platform */
+  relatedProblems?: string[];
+}
+
+// ================================
 // Algorithm Config Types
 // ================================
 
@@ -483,6 +518,8 @@ export interface AlgorithmConfig {
   variants?: AlgorithmVariant[];
   /** Configuration for the Complexity Explorer feature */
   complexityExplorer?: ComplexityExplorerConfig;
+  /** Problem context for the "Understand First" panel */
+  problemContext?: ProblemContext;
 }
 
 export interface PseudocodeLine {
