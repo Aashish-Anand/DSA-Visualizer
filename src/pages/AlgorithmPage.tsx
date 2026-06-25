@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info, BarChart2, Code2, Shuffle } from "lucide-react";
+import { Info, BarChart2, Code2, Shuffle, Share2, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -1353,6 +1353,16 @@ function AlgorithmLayout<T>({
     return typeof window !== "undefined" && window.innerWidth < 1024;
   });
 
+  const [showCopied, setShowCopied] = useState(false);
+
+  const handleShare = useCallback(() => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}#/app/${config.id}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    });
+  }, [config.id]);
+
   useEffect(() => {
     if (showDesktopToast) {
       const timer = setTimeout(() => setShowDesktopToast(false), 4000);
@@ -1395,6 +1405,39 @@ function AlgorithmLayout<T>({
           <Badge variant="secondary" className="text-[10px]">
             {config.category}
           </Badge>
+          <button
+            onClick={handleShare}
+            className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 border border-border bg-card/50 hover:bg-primary/10 hover:border-primary/30 hover:text-primary text-muted-foreground"
+            title="Copy shareable link"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {showCopied ? (
+                <motion.span
+                  key="check"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center gap-1.5 text-emerald-500"
+                >
+                  <Check size={13} />
+                  Copied!
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="share"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center gap-1.5"
+                >
+                  <Share2 size={13} />
+                  Share
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
         <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
           {config.description}

@@ -9,6 +9,12 @@ import { FeedbackModal } from "@/components/Feedback/FeedbackModal";
 function AppContent() {
   const [currentView, setCurrentView] = useState<"landing" | "app">("landing");
   const [activeAlgorithm, setActiveAlgorithm] = useState("bubble-sort");
+
+  // Sync algorithm selection → URL hash
+  const handleSelectAlgorithm = (id: string) => {
+    setActiveAlgorithm(id);
+    window.location.hash = `#/app/${id}`;
+  };
   
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== "undefined") {
@@ -36,12 +42,17 @@ function AppContent() {
     setTheme(isDark ? "dark" : "light");
   }, [isDark, setTheme]);
 
-  // Setup Hash Routing
+  // Setup Hash Routing — supports #/app and #/app/{algorithmId}
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      if (hash === "#/app") {
+      if (hash.startsWith("#/app")) {
         setCurrentView("app");
+        // Extract algorithm ID from #/app/{algorithmId}
+        const parts = hash.split("/");
+        if (parts.length >= 3 && parts[2]) {
+          setActiveAlgorithm(parts[2]);
+        }
       } else {
         setCurrentView("landing");
       }
@@ -72,7 +83,7 @@ function AppContent() {
   }, []);
 
   const handleLaunchApp = () => {
-    window.location.hash = "#/app";
+    window.location.hash = `#/app/${activeAlgorithm}`;
   };
 
   if (currentView === "landing") {
@@ -93,7 +104,7 @@ function AppContent() {
     <div className="flex min-h-[100dvh] lg:h-screen bg-background text-foreground overflow-y-auto lg:overflow-hidden">
       <Sidebar
         activeAlgorithm={activeAlgorithm}
-        onSelectAlgorithm={setActiveAlgorithm}
+        onSelectAlgorithm={handleSelectAlgorithm}
         isDark={isDark}
         toggleTheme={toggleTheme}
       />
