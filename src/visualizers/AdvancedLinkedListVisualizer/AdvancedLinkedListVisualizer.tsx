@@ -115,7 +115,7 @@ export function AdvancedLinkedListVisualizer({ state }: AdvancedLinkedListVisual
               refY="3"
               orient="auto"
             >
-              <polygon points="0 0, 8 3, 0 6" fill="var(--border)" />
+              <polygon points="0 0, 8 3, 0 6" fill="var(--muted-fg)" />
             </marker>
           </defs>
 
@@ -129,7 +129,7 @@ export function AdvancedLinkedListVisualizer({ state }: AdvancedLinkedListVisual
                   animate={{ pathLength: 1, opacity: 1, d: edge.path }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  stroke="var(--border)"
+                  stroke="var(--muted-fg)"
                   strokeWidth={2.5}
                   fill="none"
                   markerEnd="url(#arrowhead)"
@@ -154,10 +154,10 @@ export function AdvancedLinkedListVisualizer({ state }: AdvancedLinkedListVisual
                 const isSlow = nodePointers.includes('slow');
                 const isHead = nodePointers.includes('head') || nodePointers.includes('dummy');
                 
-                let borderColor = "var(--border)";
+                let borderColor = "var(--muted-fg)";
                 let dataBgColor = "transparent";
-                let textColor = "var(--foreground)";
-                let dotColor = "var(--muted-foreground)";
+                let textColor = "var(--fg)";
+                let dotColor = "var(--muted-fg)";
                 let dotOpacity = 0.5;
                 let pointerTextColor = "var(--primary)";
                 
@@ -197,7 +197,7 @@ export function AdvancedLinkedListVisualizer({ state }: AdvancedLinkedListVisual
                   dotOpacity = 1;
                   pointerTextColor = "#ec4899";
                 } else if (!isHead) {
-                  pointerTextColor = "var(--muted-foreground)";
+                  pointerTextColor = "var(--muted-fg)";
                 }
 
                 return (
@@ -284,7 +284,7 @@ export function AdvancedLinkedListVisualizer({ state }: AdvancedLinkedListVisual
                       x={0}
                       y={40}
                       textAnchor="middle"
-                      fill="var(--muted-foreground)"
+                      fill="var(--muted-fg)"
                       opacity={0.5}
                       fontSize={9}
                       fontFamily="var(--font-mono)"

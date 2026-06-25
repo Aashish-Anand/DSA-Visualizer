@@ -102,7 +102,7 @@ export function LinkedListVisualizer({ state }: LinkedListVisualizerProps) {
                     animate={{ opacity: 1 }}
                   >
                     <ArrowRight className={`w-6 h-6 ${
-                      isActivePath && !isCurr ? "text-amber-500" : "text-border"
+                      isActivePath && !isCurr ? "text-amber-500" : "text-muted-foreground"
                     }`} />
                   </motion.div>
                 ) : (

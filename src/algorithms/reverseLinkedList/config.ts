@@ -76,7 +76,7 @@ export const reverseLinkedListConfig: AlgorithmConfig = {
       let operations = 0;
       let reads = 0;
       let writes = 0;
-      
+
       reads += 2; // prev, curr
       writes += 2;
       for (let i = 0; i < inputSize; i++) {
