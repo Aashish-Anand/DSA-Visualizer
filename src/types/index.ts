@@ -475,6 +475,8 @@ export interface ProblemApproach {
 export interface ProblemContext {
   /** The formal problem statement */
   statement: string;
+  /** Optional reference image URL to illustrate the problem statement */
+  referenceImage?: string;
   /** Input/Output examples with explanations */
   examples: ProblemExample[];
   /** A prompt to help users think through the problem intuitively */

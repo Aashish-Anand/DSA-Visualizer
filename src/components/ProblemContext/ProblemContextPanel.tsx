@@ -49,6 +49,15 @@ export function ProblemContextPanel({ context, onStartVisualization }: ProblemCo
           <p className="text-sm text-foreground/90 leading-relaxed">
             {context.statement}
           </p>
+          {context.referenceImage && (
+            <div className="mt-4 rounded-lg overflow-hidden border border-border bg-muted/20 flex justify-center py-4 px-2">
+              <img
+                src={context.referenceImage}
+                alt="Problem Illustration"
+                className="max-h-72 w-auto object-contain rounded-md shadow-md"
+              />
+            </div>
+          )}
         </motion.section>
 
         {/* Examples */}
