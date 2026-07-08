@@ -1,4 +1,4 @@
-import type { VisualizationStep, DP1DState, RecursionTreeState, RecursionNode, RecursionEdge } from "@/types";
+import type { VisualizationStep, DP1DState, RecursionTreeState, RecursionNode, RecursionEdge, ComplexityMetrics } from "@/types";
 
 // ================================
 // Iterative DP Generator
@@ -8,54 +8,73 @@ export function generateClimbingStairsSteps(n: number): VisualizationStep<DP1DSt
   const steps: VisualizationStep<DP1DState>[] = [];
   const dp: (number | null)[] = Array(n + 1).fill(null);
 
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
+
   steps.push({
     state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "init", result: null },
     activeLine: 0,
     explanation: `We want to find the number of ways to climb ${n} stairs.`,
-    beginnerExplanation: "Imagine we have stairs. How many ways can we reach the top?"
+    beginnerExplanation: "Imagine we have stairs. How many ways can we reach the top?",
+    complexityMetrics: getMetrics(),
   });
 
+  comparisons++;
   if (n <= 1) {
     steps.push({
       state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "complete", result: 1 },
       activeLine: 1,
       explanation: `For n <= 1, there is only 1 way.`,
-      beginnerExplanation: "If there's only 0 or 1 stair, there's just 1 way to climb it."
+      beginnerExplanation: "If there's only 0 or 1 stair, there's just 1 way to climb it.",
+      complexityMetrics: getMetrics(),
     });
     return steps;
   }
 
+  operations++;
   steps.push({
     state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "init", result: null },
     activeLine: 2,
     explanation: `Create a DP array of size ${n + 1} to store the results of subproblems.`,
-    beginnerExplanation: "Let's make a list to write down the answers for smaller stairs as we figure them out."
+    beginnerExplanation: "Let's make a list to write down the answers for smaller stairs as we figure them out.",
+    complexityMetrics: getMetrics(),
   });
 
   dp[0] = 1;
   dp[1] = 1;
+  operations += 2;
   steps.push({
     state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "calculating", result: null },
     activeLine: 3,
     explanation: `Base cases: 1 way to reach step 0, and 1 way to reach step 1.`,
-    beginnerExplanation: "We know the answer for 0 stairs and 1 stair is always 1. Let's write that down."
+    beginnerExplanation: "We know the answer for 0 stairs and 1 stair is always 1. Let's write that down.",
+    complexityMetrics: getMetrics(),
   });
 
   for (let i = 2; i <= n; i++) {
+    operations++;
     steps.push({
       state: { dpArray: [...dp], currentIndex: i, dependencies: [i - 1, i - 2], phase: "calculating", result: null },
       activeLine: 4,
       explanation: `Now we calculate ways for step ${i}.`,
-      beginnerExplanation: `Let's figure out how many ways we can reach stair number ${i}.`
+      beginnerExplanation: `Let's figure out how many ways we can reach stair number ${i}.`,
+      complexityMetrics: getMetrics(),
     });
 
+    operations++;
     dp[i] = (dp[i - 1] as number) + (dp[i - 2] as number);
     
     steps.push({
       state: { dpArray: [...dp], currentIndex: i, dependencies: [i - 1, i - 2], phase: "calculating", result: null },
       activeLine: 5,
       explanation: `Ways to reach step ${i} is the sum of ways to reach step ${i-1} and step ${i-2} (${dp[i-1]} + ${dp[i-2]} = ${dp[i]}).`,
-      beginnerExplanation: `To reach stair ${i}, we could have come from stair ${i-1} (by taking 1 step) or stair ${i-2} (by taking 2 steps). So we add those two answers together!`
+      beginnerExplanation: `To reach stair ${i}, we could have come from stair ${i-1} (by taking 1 step) or stair ${i-2} (by taking 2 steps). So we add those two answers together!`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -63,10 +82,29 @@ export function generateClimbingStairsSteps(n: number): VisualizationStep<DP1DSt
     state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "complete", result: dp[n] },
     activeLine: 6,
     explanation: `We've reached the top! The total number of ways is ${dp[n]}.`,
-    beginnerExplanation: `We reached the top! The final answer is ${dp[n]}.`
+    beginnerExplanation: `We reached the top! The final answer is ${dp[n]}.`,
+    complexityMetrics: getMetrics(),
   });
 
   return steps;
+}
+
+export function runClimbingStairsExperiment(n: number): ComplexityMetrics {
+  let comparisons = 0;
+  let operations = 0;
+
+  comparisons++;
+  if (n <= 1) {
+    return { comparisons, operations };
+  }
+
+  operations += 3; // array creation + 2 base cases
+  
+  for (let i = 2; i <= n; i++) {
+    operations += 2; // loop increment/check + addition/assignment
+  }
+
+  return { comparisons, operations };
 }
 
 // ================================

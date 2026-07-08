@@ -1,4 +1,4 @@
-import type { VisualizationStep, KadaneState } from "@/types";
+import type { VisualizationStep, KadaneState, ComplexityMetrics } from "@/types";
 
 export function generateKadaneArray(size: number = 8): number[] {
   // Generate array with both positive and negative numbers
@@ -15,6 +15,14 @@ export function generateKadaneSteps(
   let currentStartIndex = 0;
   let maxStartIndex: number | null = null;
   let maxEndIndex: number | null = null;
+
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   const pushStep = (
     activeLine: number,
@@ -37,6 +45,7 @@ export function generateKadaneSteps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -48,6 +57,7 @@ export function generateKadaneSteps(
   );
 
   for (let i = 0; i < array.length; i++) {
+    operations++;
     const val = array[i];
 
     pushStep(
@@ -68,6 +78,7 @@ export function generateKadaneSteps(
       i
     );
 
+    comparisons++;
     if (currentSum > maxSum) {
       maxSum = currentSum;
       maxStartIndex = currentStartIndex;
@@ -90,6 +101,7 @@ export function generateKadaneSteps(
       );
     }
 
+    comparisons++;
     if (currentSum < 0) {
       pushStep(
         7,
@@ -111,4 +123,30 @@ export function generateKadaneSteps(
   );
 
   return steps;
+}
+
+export function runKadaneExperiment(inputSize: number): ComplexityMetrics {
+  const array = generateKadaneArray(inputSize);
+  let comparisons = 0;
+  let operations = 0;
+  
+  let currentSum = 0;
+  let maxSum = -Infinity;
+
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    currentSum += array[i];
+    
+    comparisons++;
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+    }
+    
+    comparisons++;
+    if (currentSum < 0) {
+      currentSum = 0;
+    }
+  }
+
+  return { comparisons, operations };
 }

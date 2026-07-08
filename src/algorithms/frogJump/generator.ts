@@ -1,4 +1,4 @@
-import type { VisualizationStep, DP1DState } from "@/types";
+import type { VisualizationStep, DP1DState, ComplexityMetrics } from "@/types";
 
 export function generateRandomHeights(size: number): number[] {
   return Array.from({ length: size }, () => Math.floor(Math.random() * 50) + 10);
@@ -9,70 +9,95 @@ export function generateFrogJumpSteps(heights: number[]): VisualizationStep<DP1D
   const n = heights.length;
   const dp: (number | null)[] = Array(n).fill(null);
 
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
+
   steps.push({
     state: { dpArray: [...dp], inputArray: heights, currentIndex: null, dependencies: [], phase: "init", result: null },
     activeLine: 0,
     explanation: `n is the number of stones: ${n}.`,
-    beginnerExplanation: `There are ${n} stones in total.`
+    beginnerExplanation: `There are ${n} stones in total.`,
+    complexityMetrics: getMetrics(),
   });
 
+  operations++;
   steps.push({
     state: { dpArray: [...dp], inputArray: heights, currentIndex: null, dependencies: [], phase: "init", result: null },
     activeLine: 1,
     explanation: `Create a DP array of size ${n} to store minimum energy up to each stone.`,
-    beginnerExplanation: "Let's make a list to track the minimum energy to reach each stone."
+    beginnerExplanation: "Let's make a list to track the minimum energy to reach each stone.",
+    complexityMetrics: getMetrics(),
   });
 
   dp[0] = 0;
+  operations++;
   steps.push({
     state: { dpArray: [...dp], inputArray: heights, currentIndex: null, dependencies: [], phase: "calculating", result: null },
     activeLine: 3,
     explanation: `The frog starts at stone 0, so the energy required is 0.`,
-    beginnerExplanation: "Starting at the first stone takes 0 energy!"
+    beginnerExplanation: "Starting at the first stone takes 0 energy!",
+    complexityMetrics: getMetrics(),
   });
 
+  comparisons++;
   if (n > 1) {
+    operations += 2;
     dp[1] = Math.abs(heights[1] - heights[0]);
     steps.push({
       state: { dpArray: [...dp], inputArray: heights, currentIndex: 1, dependencies: [0], phase: "calculating", result: null },
       activeLine: 4,
       explanation: `Energy to reach stone 1 is just the jump from stone 0: |${heights[1]} - ${heights[0]}| = ${dp[1]}.`,
-      beginnerExplanation: `To reach stone 1, there's only one way: jump from stone 0. The energy is ${dp[1]}.`
+      beginnerExplanation: `To reach stone 1, there's only one way: jump from stone 0. The energy is ${dp[1]}.`,
+      complexityMetrics: getMetrics(),
     });
   }
 
   for (let i = 2; i < n; i++) {
+    operations++;
     steps.push({
       state: { dpArray: [...dp], inputArray: heights, currentIndex: i, dependencies: [i - 1, i - 2], phase: "calculating", result: null },
       activeLine: 5,
       explanation: `Now we calculate minimum energy for stone ${i}.`,
-      beginnerExplanation: `Let's figure out the best way to reach stone ${i}.`
+      beginnerExplanation: `Let's figure out the best way to reach stone ${i}.`,
+      complexityMetrics: getMetrics(),
     });
 
+    operations += 3;
     const jump1Cost = Math.abs(heights[i] - heights[i - 1]);
     const jump1 = (dp[i - 1] as number) + jump1Cost;
     steps.push({
       state: { dpArray: [...dp], inputArray: heights, currentIndex: i, dependencies: [i - 1], phase: "calculating", result: null },
       activeLine: 6,
       explanation: `Cost if jumping from stone ${i - 1}: dp[${i - 1}] + jump cost (${jump1Cost}) = ${jump1}.`,
-      beginnerExplanation: `If we take a small jump from the previous stone, it costs ${jump1} energy total.`
+      beginnerExplanation: `If we take a small jump from the previous stone, it costs ${jump1} energy total.`,
+      complexityMetrics: getMetrics(),
     });
 
+    operations += 3;
     const jump2Cost = Math.abs(heights[i] - heights[i - 2]);
     const jump2 = (dp[i - 2] as number) + jump2Cost;
     steps.push({
       state: { dpArray: [...dp], inputArray: heights, currentIndex: i, dependencies: [i - 2], phase: "calculating", result: null },
       activeLine: 7,
       explanation: `Cost if jumping from stone ${i - 2}: dp[${i - 2}] + jump cost (${jump2Cost}) = ${jump2}.`,
-      beginnerExplanation: `If we take a big jump from two stones back, it costs ${jump2} energy total.`
+      beginnerExplanation: `If we take a big jump from two stones back, it costs ${jump2} energy total.`,
+      complexityMetrics: getMetrics(),
     });
 
+    comparisons++;
+    operations++;
     dp[i] = Math.min(jump1, jump2);
     steps.push({
       state: { dpArray: [...dp], inputArray: heights, currentIndex: i, dependencies: [i - 1, i - 2], phase: "calculating", result: null },
       activeLine: 8,
       explanation: `We take the minimum of the two options: min(${jump1}, ${jump2}) = ${dp[i]}.`,
-      beginnerExplanation: `We want to save energy! So we choose the smaller path, which costs ${dp[i]}.`
+      beginnerExplanation: `We want to save energy! So we choose the smaller path, which costs ${dp[i]}.`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -80,10 +105,31 @@ export function generateFrogJumpSteps(heights: number[]): VisualizationStep<DP1D
     state: { dpArray: [...dp], inputArray: heights, currentIndex: null, dependencies: [], phase: "complete", result: dp[n - 1] },
     activeLine: 9,
     explanation: `We've reached the last stone! Minimum energy is ${dp[n - 1]}.`,
-    beginnerExplanation: `We made it! The least tiring path costs ${dp[n - 1]} energy.`
+    beginnerExplanation: `We made it! The least tiring path costs ${dp[n - 1]} energy.`,
+    complexityMetrics: getMetrics(),
   });
 
   return steps;
+}
+
+export function runFrogJumpExperiment(n: number): ComplexityMetrics {
+  
+  let comparisons = 0;
+  let operations = 0;
+
+  comparisons++;
+  if (n <= 1) {
+    return { comparisons, operations };
+  }
+
+  operations += 4; // array init, dp[0], dp[1]
+  
+  for (let i = 2; i < n; i++) {
+    operations += 8; // jump1, jump2, assignment
+    comparisons++; // min()
+  }
+
+  return { comparisons, operations };
 }
 
 // ================================

@@ -1,4 +1,4 @@
-import type { VisualizationStep, MajorityElement1State } from "@/types";
+import type { VisualizationStep, MajorityElement1State, ComplexityMetrics } from "@/types";
 
 export function generateMajorityElement1Array(size: number = 8): number[] {
   // Guarantee a majority element
@@ -38,6 +38,14 @@ export function generateMajorityElement1Steps(
 
   let candidate: number | null = null;
   let count = 0;
+  
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   const pushStep = (
     activeLine: number,
@@ -57,6 +65,7 @@ export function generateMajorityElement1Steps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -68,6 +77,7 @@ export function generateMajorityElement1Steps(
   );
 
   for (let i = 0; i < array.length; i++) {
+    operations++;
     const num = array[i];
 
     pushStep(
@@ -78,6 +88,7 @@ export function generateMajorityElement1Steps(
       i
     );
 
+    comparisons++;
     if (count === 0) {
       candidate = num;
       pushStep(
@@ -89,6 +100,7 @@ export function generateMajorityElement1Steps(
       );
     }
 
+    comparisons++;
     if (num === candidate) {
       count += 1;
       pushStep(
@@ -118,4 +130,30 @@ export function generateMajorityElement1Steps(
   );
 
   return steps;
+}
+
+export function runMajorityElement1Experiment(inputSize: number): ComplexityMetrics {
+  const array = generateMajorityElement1Array(inputSize);
+  let comparisons = 0;
+  let operations = 0;
+  
+  let candidate: number | null = null;
+  let count = 0;
+
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    const num = array[i];
+    comparisons++;
+    if (count === 0) {
+      candidate = num;
+    }
+    comparisons++;
+    if (num === candidate) {
+      count++;
+    } else {
+      count--;
+    }
+  }
+
+  return { comparisons, operations };
 }

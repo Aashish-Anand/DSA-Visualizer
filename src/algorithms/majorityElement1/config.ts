@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runMajorityElement1Experiment } from "./generator";
 
 export const majorityElement1Config: AlgorithmConfig = {
   id: "majority-element-1",
@@ -72,5 +73,18 @@ export const majorityElement1Config: AlgorithmConfig = {
       "Election Tabulation: Finding a clear majority winner (>50%) in single-winner voting systems."
     ],
     patterns: ["Boyer-Moore Voting", "Array", "Space Optimization"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The Boyer-Moore Voting Algorithm achieves O(N) time and O(1) space, making it the most optimal way to find a majority element.",
+      "Instead of using a Hash Map to count occurrences (which takes O(N) space) or sorting the array (which takes O(N log N) time), we maintain a single candidate and a vote count.",
+      "Each time we see the candidate, we increment the count. If we see a different element, we decrement. When the count hits zero, we pick a new candidate.",
+      "Because the majority element appears more than half the time, its 'votes' will always outlast the combined 'votes' of all other elements."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runMajorityElement1Experiment,
   },
 };

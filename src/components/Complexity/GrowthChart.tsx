@@ -21,21 +21,26 @@ function getReferenceCurves(maxN: number, maxOps: number) {
   const points = 50;
   const step = maxN / points;
 
+  const logn: { x: number; y: number }[] = [];
   const linear: { x: number; y: number }[] = [];
   const quadratic: { x: number; y: number }[] = [];
   const nlogn: { x: number; y: number }[] = [];
 
   // Scale factor: make reference curves relative to actual data
   const scaleFactor = maxOps / (maxN * maxN || 1);
+  const maxLog = Math.max(Math.log2(Math.max(maxN, 2)), 0.1);
 
   for (let i = 1; i <= points; i++) {
     const n = step * i;
+    const safeLog = Math.max(Math.log2(Math.max(n, 1)), 0.1);
+    
+    logn.push({ x: n, y: safeLog * scaleFactor * (maxN * maxN / maxLog) });
     linear.push({ x: n, y: n * scaleFactor * maxN });
     quadratic.push({ x: n, y: n * n * scaleFactor });
-    nlogn.push({ x: n, y: n * Math.log2(Math.max(n, 1)) * scaleFactor * (maxN / Math.log2(Math.max(maxN, 2))) });
+    nlogn.push({ x: n, y: n * safeLog * scaleFactor * (maxN / maxLog) });
   }
 
-  return { linear, quadratic, nlogn };
+  return { logn, linear, quadratic, nlogn };
 }
 
 export function GrowthChart({ runExperiment, inputSizeRange }: GrowthChartProps) {
@@ -266,6 +271,17 @@ export function GrowthChart({ runExperiment, inputSizeRange }: GrowthChartProps)
             {refCurves && (
               <>
                 <motion.path
+                  d={pathFromPoints(refCurves.logn)}
+                  fill="none"
+                  stroke="hsl(199 89% 48%)"
+                  strokeWidth={1.5}
+                  strokeDasharray="6 4"
+                  opacity={0.3}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                />
+                <motion.path
                   d={pathFromPoints(refCurves.linear)}
                   fill="none"
                   stroke="hsl(142 71% 45%)"
@@ -371,6 +387,10 @@ export function GrowthChart({ runExperiment, inputSizeRange }: GrowthChartProps)
             <span className="flex items-center gap-1">
               <span className="w-3 h-0.5 bg-primary inline-block rounded-full" />
               <span className="text-muted-foreground">Your Data</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(199 89% 48%)", opacity: 0.5 }} />
+              <span className="text-muted-foreground">O(log n)</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(142 71% 45%)", opacity: 0.5 }} />

@@ -5,7 +5,7 @@ Below is the current completion status for all 29 algorithm directories in the p
 | Algorithm | Problem Context ("Understand First") | Complexity Explorer | Multi-Language (Py/Java/C++) | Interactive Dry Run |
 | :--- | :---: | :---: | :---: | :---: |
 | **Two Sum** | ✅ | ✅ | ✅ | ✅ |
-| **Binary Search** | ❌ | ❌ | ✅ | ❌ |
+| **Binary Search** | ❌ | ✅ | ✅ | ❌ |
 | **Climbing Stairs** | ❌ | ❌ | ✅ | ❌ |
 | **Frog Jump** | ❌ | ❌ | ✅ | ❌ |
 | **Bubble Sort** | ✅ | ✅ | ❌ | ❌ |
@@ -16,8 +16,8 @@ Below is the current completion status for all 29 algorithm directories in the p
 | **Four Sum** | ✅ | ❌ | ❌ | ❌ |
 | **Graph BFS / DFS** | ⚠️ (BFS only) | ❌ | ❌ | ❌ |
 | **Kadane's Algorithm** | ✅ | ❌ | ❌ | ❌ |
-| **Linear Search** | ❌ | ❌ | ❌ | ❌ |
-| **Majority Element I & II** | ✅ | ❌ | ❌ | ❌ |
+| **Linear Search** | ❌ | ✅ | ❌ | ❌ |
+| **Majority Element I & II** | ✅ | ✅ | ❌ | ❌ |
 | **Merge Sort** | ✅ | ❌ | ❌ | ❌ |
 | **Quick Sort** | ❌ | ❌ | ❌ | ❌ |
 | **Radix Sort** | ❌ | ❌ | ❌ | ❌ |

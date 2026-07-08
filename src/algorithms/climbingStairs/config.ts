@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runClimbingStairsExperiment } from "./generator";
 
 export const climbingStairsConfig: AlgorithmConfig = {
   id: "climbing-stairs",
@@ -91,5 +92,17 @@ export const climbingStairsConfig: AlgorithmConfig = {
         { code: "}", indent: 0 }
       ],
     }
-  ]
+  ],
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The iterative DP approach for Climbing Stairs calculates the answer bottom-up.",
+      "It maintains an array (or simply two variables) and iteratively computes `dp[i] = dp[i-1] + dp[i-2]`.",
+      "Because it loops exactly N times, performing a constant number of operations (like array lookups and addition) at each step, the time complexity is strictly linear, O(N). The space complexity is O(N) when using an array, but can be optimized to O(1) if we only keep track of the last two values."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(N)", worst: "O(N)" },
+    inputSizeRange: { min: 5, max: 2000, default: 100 },
+    runExperiment: runClimbingStairsExperiment,
+  },
 };

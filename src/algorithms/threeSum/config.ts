@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runThreeSumExperiment } from "./generator";
 
 export const threeSumConfig: AlgorithmConfig = {
   id: "three-sum",
@@ -77,5 +78,17 @@ export const threeSumConfig: AlgorithmConfig = {
       "Cryptographic Analysis & Subset Sum: Solving zero-sum sub-problems in knapsack or subset-sum variants within security protocols."
     ],
     patterns: ["Two Pointers", "Sorting", "Fix & Search", "Array"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The optimal approach for 3Sum relies heavily on sorting the array first, which takes O(N log N) time.",
+      "Once sorted, it iterates through the array, fixing one number and using two pointers to find the remaining two numbers that sum to zero. This inner search takes O(N) time.",
+      "Because the O(N) search is performed for each of the N elements, the total time complexity is O(N²). The space complexity is generally O(1) or O(log N) depending on the sorting algorithm used."
+    ],
+    timeCases: { best: "O(N²)", average: "O(N²)", worst: "O(N²)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runThreeSumExperiment,
   },
 };

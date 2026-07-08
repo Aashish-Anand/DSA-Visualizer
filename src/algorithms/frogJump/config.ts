@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runFrogJumpExperiment } from "./generator";
 
 export const frogJumpConfig: AlgorithmConfig = {
   id: "frog-jump",
@@ -94,4 +95,16 @@ export const frogJumpConfig: AlgorithmConfig = {
       ]
     }
   ],
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The iterative dynamic programming approach for Frog Jump builds the solution from the ground up.",
+      "By maintaining an array of minimum energy costs to reach each stone, it computes the optimal path to the `i`-th stone by taking the minimum cost of a 1-step jump and a 2-step jump from previous stones.",
+      "Since it performs a constant number of calculations (two possible jumps) for each of the N stones exactly once, it guarantees an O(N) time complexity. The space complexity is O(N) for storing the array, though it can be optimized to O(1) by keeping track of just the last two costs."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(N)", worst: "O(N)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runFrogJumpExperiment,
+  },
 };

@@ -1,4 +1,4 @@
-import type { VisualizationStep, StockBuySellState } from "@/types";
+import type { VisualizationStep, StockBuySellState, ComplexityMetrics } from "@/types";
 
 export function generateStockArray(size: number = 8): number[] {
   // Generate array with realistic positive stock prices
@@ -14,6 +14,14 @@ export function generateStockBuySellSteps(
   let maxProfit = 0;
   let buyIndex: number | null = null;
   let sellIndex: number | null = null;
+
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   // Helper to push state
   const pushStep = (
@@ -38,6 +46,7 @@ export function generateStockBuySellSteps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -50,6 +59,7 @@ export function generateStockBuySellSteps(
   );
 
   for (let i = 0; i < prices.length; i++) {
+    operations++;
     const currentPrice = prices[i];
 
     pushStep(
@@ -61,6 +71,7 @@ export function generateStockBuySellSteps(
       minPriceIndex !== null ? currentPrice - prices[minPriceIndex] : null
     );
 
+    comparisons++;
     if (minPriceIndex === null || currentPrice < prices[minPriceIndex]) {
       minPriceIndex = i;
       pushStep(
@@ -81,6 +92,7 @@ export function generateStockBuySellSteps(
         profitIfSoldToday
       );
 
+      comparisons++;
       if (profitIfSoldToday > maxProfit) {
         maxProfit = profitIfSoldToday;
         buyIndex = minPriceIndex;
@@ -105,4 +117,29 @@ export function generateStockBuySellSteps(
   );
 
   return steps;
+}
+
+export function runStockBuySellExperiment(inputSize: number): ComplexityMetrics {
+  const prices = generateStockArray(inputSize);
+  
+  let comparisons = 0;
+  let operations = 0;
+  
+  let minPrice = Infinity;
+  let maxProfit = 0;
+
+  for (let i = 0; i < prices.length; i++) {
+    operations++;
+    comparisons++;
+    if (prices[i] < minPrice) {
+      minPrice = prices[i];
+    } else {
+      comparisons++;
+      if (prices[i] - minPrice > maxProfit) {
+        maxProfit = prices[i] - minPrice;
+      }
+    }
+  }
+
+  return { comparisons, operations };
 }

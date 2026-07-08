@@ -1,4 +1,4 @@
-import type { WaterState, VisualizationStep } from "@/types";
+import type { WaterState, VisualizationStep, ComplexityMetrics } from "@/types";
 
 export function generateRandomTrappingInput(length: number = 12): number[] {
   // A classic test case is [0,1,0,2,1,0,1,3,2,1,2,1]
@@ -18,6 +18,14 @@ export function generateTrappingRainWaterSteps(
   let rightMax = 0;
   let totalWater = 0;
   const waterLevels = new Array(array.length).fill(0);
+
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   const pushStep = (
     phase: WaterState["phase"],
@@ -46,6 +54,7 @@ export function generateTrappingRainWaterSteps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -58,11 +67,14 @@ export function generateTrappingRainWaterSteps(
   pushStep("init", left, right, 3, `Initialize leftMax = 0 and rightMax = 0.`, "We'll keep track of the highest walls we've seen on the left and right.");
 
   while (left < right) {
+    operations++;
     pushStep("scanning", left, right, 6, `Comparing height[left] (${array[left]}) and height[right] (${array[right]}).`, "We look at the walls at our two pointers to see which is shorter.");
 
+    comparisons++;
     if (array[left] < array[right]) {
       pushStep("scanning", left, right, 7, `height[left] < height[right]. We process the left side because it's the limiting factor.`, "The left wall is shorter, so it controls how much water can be trapped here.");
       
+      comparisons++;
       if (array[left] >= leftMax) {
         leftMax = array[left];
         pushStep("found-new-max", left, right, 9, `height[left] >= leftMax. Update leftMax to ${leftMax}. Cannot trap water here.`, "This is the tallest wall we've seen on the left so far, so water would just spill over. We record its height.");
@@ -77,6 +89,7 @@ export function generateTrappingRainWaterSteps(
     } else {
       pushStep("scanning", left, right, 13, `height[right] <= height[left]. We process the right side.`, "The right wall is shorter (or equal), so it controls the water here.");
       
+      comparisons++;
       if (array[right] >= rightMax) {
         rightMax = array[right];
         pushStep("found-new-max", left, right, 15, `height[right] >= rightMax. Update rightMax to ${rightMax}. Cannot trap water here.`, "This is the tallest wall we've seen on the right so far. We record its height.");
@@ -94,4 +107,37 @@ export function generateTrappingRainWaterSteps(
   pushStep("complete", left, right, 19, `Pointers met. Total water trapped is ${totalWater}.`, `All done! The total amount of rain water trapped is ${totalWater}.`);
 
   return steps;
+}
+
+export function runTrappingRainWaterExperiment(inputSize: number): ComplexityMetrics {
+  const heights = generateRandomTrappingInput(inputSize);
+  
+  let comparisons = 0;
+  let operations = 0;
+  
+  let left = 0;
+  let right = heights.length - 1;
+  let leftMax = 0;
+  let rightMax = 0;
+
+  while (left < right) {
+    operations++;
+    
+    comparisons++;
+    if (heights[left] < heights[right]) {
+      comparisons++;
+      if (heights[left] >= leftMax) {
+        leftMax = heights[left];
+      }
+      left++;
+    } else {
+      comparisons++;
+      if (heights[right] >= rightMax) {
+        rightMax = heights[right];
+      }
+      right--;
+    }
+  }
+
+  return { comparisons, operations };
 }

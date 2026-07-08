@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runBinarySearchExperiment } from "./generator";
 
 export const binarySearchConfig: AlgorithmConfig = {
   id: "binary-search",
@@ -60,4 +61,16 @@ export const binarySearchConfig: AlgorithmConfig = {
     { code: "high = mid - 1;", indent: 3 },
     { code: "return -1;", indent: 1 },
   ],
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "Binary Search is a textbook example of O(log N) time complexity. By requiring the array to be sorted, we can eliminate half of the remaining search space with every single comparison.",
+      "If we have 1,000 items, we can find the target in at most 10 steps. If we have 1,000,000 items, it takes at most 20 steps! This logarithmic growth makes Binary Search incredibly fast for large datasets.",
+      "The tradeoff is that the array must be sorted first, which takes O(N log N) time, so it's only worth it if we are searching multiple times."
+    ],
+    timeCases: { best: "O(1)", average: "O(log N)", worst: "O(log N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 10000, default: 1000 },
+    runExperiment: runBinarySearchExperiment,
+  },
 };

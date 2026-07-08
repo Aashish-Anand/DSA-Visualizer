@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runMajorityElement2Experiment } from "./generator";
 
 export const majorityElement2Config: AlgorithmConfig = {
   id: "majority-element-2",
@@ -74,5 +75,17 @@ export const majorityElement2Config: AlgorithmConfig = {
       "Recommendation Engines: Spotting co-dominant user preferences or top two heavily purchased items in customer shopping baskets."
     ],
     patterns: ["Extended Boyer-Moore", "Array", "Two Passes"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The Extended Boyer-Moore Voting Algorithm requires exactly two passes through the array.",
+      "The first pass maintains two candidates and their counts to find potential majority elements. The second pass counts their actual occurrences to verify if they exceed n/3.",
+      "Since it does a constant amount of work per element in both passes, the time complexity is strictly O(N). Because it only stores two candidate variables and their counts, the space complexity is exactly O(1)."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runMajorityElement2Experiment,
   },
 };

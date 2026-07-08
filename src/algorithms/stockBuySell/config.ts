@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runStockBuySellExperiment } from "./generator";
 
 export const stockBuySellConfig: AlgorithmConfig = {
   id: "stock-buy-sell",
@@ -56,5 +57,17 @@ export const stockBuySellConfig: AlgorithmConfig = {
       "Resource Allocation: Optimizing computing resource procurement when cloud spot prices fluctuate dynamically."
     ],
     patterns: ["Prefix Minimum", "Array", "Greedy", "Single Pass"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The optimal algorithm requires only a single pass through the array, keeping track of the running minimum price and the maximum potential profit.",
+      "Because it only looks at each price exactly once and stores only a few variables, it runs in O(N) time and requires O(1) auxiliary space.",
+      "The brute force approach of checking every possible pair of buy and sell days would take O(N²) time, which is vastly slower for large datasets."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runStockBuySellExperiment,
   },
 };

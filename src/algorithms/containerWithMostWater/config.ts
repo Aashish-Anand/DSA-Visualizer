@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runContainerExperiment } from "./generator";
 
 export const containerWithMostWaterConfig: AlgorithmConfig = {
   id: "container-with-most-water",
@@ -62,5 +63,17 @@ export const containerWithMostWaterConfig: AlgorithmConfig = {
       "Histogram & Packaging Optimization: Determining optimal bounding box layouts for packing items or selecting maximum capacity containers in logistics."
     ],
     patterns: ["Two Pointers", "Greedy", "Array", "Min-Max Optimization"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The Two Pointers approach for the Container With Most Water problem starts with pointers at the extreme ends of the array.",
+      "At each step, it calculates the area bounded by the shorter line and then moves the pointer of the shorter line inward.",
+      "Because each step moves one pointer and does a constant number of operations, the algorithm takes exactly N-1 steps to evaluate all potential candidates without ever going back, resulting in an O(N) time complexity and O(1) space complexity."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runContainerExperiment,
   },
 };

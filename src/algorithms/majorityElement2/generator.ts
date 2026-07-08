@@ -1,4 +1,4 @@
-import type { VisualizationStep, MajorityElement2State } from "@/types";
+import type { VisualizationStep, MajorityElement2State, ComplexityMetrics } from "@/types";
 
 export function generateMajorityElement2Array(size: number = 9): number[] {
   // Guarantee up to two majority elements (> n/3)
@@ -55,6 +55,14 @@ export function generateMajorityElement2Steps(
   let candidate2: number | null = null;
   let count2 = 0;
 
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
+
   const pushStep = (
     activeLine: number,
     explanation: string,
@@ -75,6 +83,7 @@ export function generateMajorityElement2Steps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -86,6 +95,7 @@ export function generateMajorityElement2Steps(
   );
 
   for (let i = 0; i < array.length; i++) {
+    operations++;
     const num = array[i];
 
     pushStep(
@@ -96,6 +106,7 @@ export function generateMajorityElement2Steps(
       i
     );
 
+    comparisons++;
     if (num === candidate1) {
       count1 += 1;
       pushStep(
@@ -105,45 +116,54 @@ export function generateMajorityElement2Steps(
         "vote-cand1",
         i
       );
-    } else if (num === candidate2) {
-      count2 += 1;
-      pushStep(
-        7,
-        `Matches Candidate 2. Incrementing Count 2 to ${count2}.`,
-        `This number voted for Candidate 2! We increase its votes.`,
-        "vote-cand2",
-        i
-      );
-    } else if (count1 === 0) {
-      candidate1 = num;
-      count1 = 1;
-      pushStep(
-        9,
-        `Count 1 is 0. Setting Candidate 1 to ${num} and Count 1 to 1.`,
-        `Candidate 1 has 0 votes, so we put ${num} in the slot as our new candidate!`,
-        "new-cand1",
-        i
-      );
-    } else if (count2 === 0) {
-      candidate2 = num;
-      count2 = 1;
-      pushStep(
-        11,
-        `Count 2 is 0. Setting Candidate 2 to ${num} and Count 2 to 1.`,
-        `Candidate 2 has 0 votes, so we put ${num} in the slot as our new candidate!`,
-        "new-cand2",
-        i
-      );
     } else {
-      count1 -= 1;
-      count2 -= 1;
-      pushStep(
-        13,
-        `Matches neither candidate, and both counts > 0. Decrementing both counts.`,
-        `This number didn't vote for either candidate! So BOTH candidates lose a vote.`,
-        "decrement-both",
-        i
-      );
+      comparisons++;
+      if (num === candidate2) {
+        count2 += 1;
+        pushStep(
+          7,
+          `Matches Candidate 2. Incrementing Count 2 to ${count2}.`,
+          `This number voted for Candidate 2! We increase its votes.`,
+          "vote-cand2",
+          i
+        );
+      } else {
+        comparisons++;
+        if (count1 === 0) {
+          candidate1 = num;
+          count1 = 1;
+          pushStep(
+            9,
+            `Count 1 is 0. Setting Candidate 1 to ${num} and Count 1 to 1.`,
+            `Candidate 1 has 0 votes, so we put ${num} in the slot as our new candidate!`,
+            "new-cand1",
+            i
+          );
+        } else {
+          comparisons++;
+          if (count2 === 0) {
+            candidate2 = num;
+            count2 = 1;
+            pushStep(
+              11,
+              `Count 2 is 0. Setting Candidate 2 to ${num} and Count 2 to 1.`,
+              `Candidate 2 has 0 votes, so we put ${num} in the slot as our new candidate!`,
+              "new-cand2",
+              i
+            );
+          } else {
+            count1 -= 1;
+            count2 -= 1;
+            pushStep(
+              13,
+              `Matches neither candidate, and both counts > 0. Decrementing both counts.`,
+              `This number didn't vote for either candidate! So BOTH candidates lose a vote.`,
+              "decrement-both",
+              i
+            );
+          }
+        }
+      }
     }
   }
 
@@ -158,6 +178,8 @@ export function generateMajorityElement2Steps(
   let c1Votes = 0;
   let c2Votes = 0;
   for (let i = 0; i < array.length; i++) {
+    operations++;
+    comparisons += 2;
     if (array[i] === candidate1) c1Votes++;
     if (array[i] === candidate2) c2Votes++;
   }
@@ -174,4 +196,55 @@ export function generateMajorityElement2Steps(
   );
 
   return steps;
+}
+
+export function runMajorityElement2Experiment(inputSize: number): ComplexityMetrics {
+  const array = generateMajorityElement2Array(inputSize);
+  
+  let comparisons = 0;
+  let operations = 0;
+
+  let cand1: number | null = null;
+  let count1 = 0;
+  let cand2: number | null = null;
+  let count2 = 0;
+
+  // Pass 1
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    const num = array[i];
+
+    comparisons++;
+    if (num === cand1) {
+      count1++;
+    } else {
+      comparisons++;
+      if (num === cand2) {
+        count2++;
+      } else {
+        comparisons++;
+        if (count1 === 0) {
+          cand1 = num;
+          count1 = 1;
+        } else {
+          comparisons++;
+          if (count2 === 0) {
+            cand2 = num;
+            count2 = 1;
+          } else {
+            count1--;
+            count2--;
+          }
+        }
+      }
+    }
+  }
+
+  // Pass 2
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    comparisons += 2;
+  }
+
+  return { comparisons, operations };
 }

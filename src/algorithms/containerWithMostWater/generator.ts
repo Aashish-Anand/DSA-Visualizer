@@ -1,4 +1,4 @@
-import type { WaterState, VisualizationStep } from "@/types";
+import type { WaterState, VisualizationStep, ComplexityMetrics } from "@/types";
 
 export function generateRandomContainerInput(length: number = 10): number[] {
   // Generate random heights between 1 and 10
@@ -14,6 +14,14 @@ export function generateContainerSteps(
   let maxArea = 0;
   let bestLeft: number | null = null;
   let bestRight: number | null = null;
+
+  let comparisons = 0;
+  let operations = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   const pushStep = (
     phase: WaterState["phase"],
@@ -43,6 +51,7 @@ export function generateContainerSteps(
       activeLine,
       explanation,
       beginnerExplanation,
+      complexityMetrics: getMetrics(),
     });
   };
 
@@ -56,15 +65,18 @@ export function generateContainerSteps(
   pushStep("init", left, right, null, 3, `Initialize max_area to 0.`, "We start our record for the largest area at 0.");
 
   while (left < right) {
+    operations++;
     const width = right - left;
     pushStep("calculating-water", left, right, null, 5, `Width = right - left = ${right} - ${left} = ${width}.`, `The distance between the two walls is ${width}.`);
 
+    comparisons++;
     const minHeight = Math.min(array[left], array[right]);
     pushStep("calculating-water", left, right, null, 6, `Current height = min(${array[left]}, ${array[right]}) = ${minHeight}.`, `The water can only go as high as the shorter wall, which is ${minHeight}.`);
 
     const currentArea = width * minHeight;
     pushStep("calculating-water", left, right, currentArea, 7, `Current area = ${width} * ${minHeight} = ${currentArea}.`, `The area of water trapped is ${width} times ${minHeight}, which equals ${currentArea}.`);
 
+    comparisons++;
     if (currentArea > maxArea) {
       maxArea = currentArea;
       bestLeft = left;
@@ -76,6 +88,7 @@ export function generateContainerSteps(
 
     pushStep("scanning", left, right, currentArea, 9, `Comparing heights: left (${array[left]}) vs right (${array[right]}).`, "We check which wall is shorter.");
 
+    comparisons++;
     if (array[left] < array[right]) {
       pushStep("moving-pointer", left, right, currentArea, 10, `Left height is smaller, so we increment left pointer to try and find a taller wall.`, "The left wall is shorter, so we move it inward hoping to find a taller one.");
       left++;
@@ -88,4 +101,38 @@ export function generateContainerSteps(
   pushStep("complete", null, null, null, 13, `Pointers met. Maximum area found is ${maxArea} between indices ${bestLeft} and ${bestRight}.`, `We've checked all pairs. The biggest container holds ${maxArea} water!`);
 
   return steps;
+}
+
+export function runContainerExperiment(inputSize: number): ComplexityMetrics {
+  const heights = generateRandomContainerInput(inputSize);
+  
+  let comparisons = 0;
+  let operations = 0;
+  
+  let left = 0;
+  let right = heights.length - 1;
+  let maxArea = 0;
+
+  while (left < right) {
+    operations++;
+    
+    comparisons++;
+    const h = heights[left] < heights[right] ? heights[left] : heights[right];
+    
+    const area = (right - left) * h;
+    
+    comparisons++;
+    if (area > maxArea) {
+      maxArea = area;
+    }
+    
+    comparisons++;
+    if (heights[left] < heights[right]) {
+      left++;
+    } else {
+      right--;
+    }
+  }
+
+  return { comparisons, operations };
 }

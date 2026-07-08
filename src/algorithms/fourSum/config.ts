@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runFourSumExperiment } from "./generator";
 
 export const fourSumConfig: AlgorithmConfig = {
   id: "four-sum",
@@ -74,5 +75,17 @@ export const fourSumConfig: AlgorithmConfig = {
       "General K-Sum Generalization: Providing the structural foundation for solving generalized k-sum problems in advanced combinatorial optimization."
     ],
     patterns: ["Two Pointers", "Sorting", "K-Sum Pattern", "Array"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The optimal approach for 4Sum builds upon the 3Sum logic. It requires sorting the array first, which takes O(N log N) time.",
+      "It then iterates through the array using two nested loops to fix the first two numbers. For the remaining two numbers, it uses the two-pointer technique to find pairs that sum to the required target.",
+      "Because the O(N) two-pointer search is performed within two nested loops (O(N²)), the total time complexity is O(N³). The space complexity remains O(1) or O(log N) depending on the sorting algorithm."
+    ],
+    timeCases: { best: "O(N³)", average: "O(N³)", worst: "O(N³)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 200, default: 50 },
+    runExperiment: runFourSumExperiment,
   },
 };

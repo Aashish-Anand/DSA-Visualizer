@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runKadaneExperiment } from "./generator";
 
 export const kadaneConfig: AlgorithmConfig = {
   id: "kadane",
@@ -76,5 +77,17 @@ export const kadaneConfig: AlgorithmConfig = {
       "Genomic Sequence Analysis: Locating biologically significant segments in DNA sequences where specific scoring matrices yield maximum cumulative affinity."
     ],
     patterns: ["Dynamic Programming", "Kadane's", "Array", "Greedy"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "Kadane's Algorithm processes the array exactly once from left to right, maintaining a running sum and the maximum sum seen so far.",
+      "Because we only visit each element once and do a constant number of operations (additions and comparisons), it runs in strictly O(N) time.",
+      "This is a massive improvement over the O(N³) brute force or the O(N²) optimized brute force."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runKadaneExperiment,
   },
 };

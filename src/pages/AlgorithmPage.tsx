@@ -243,6 +243,7 @@ interface TwoPointersPageProps {
 function TwoPointersPage({ config, generator, generateInput }: TwoPointersPageProps) {
   const [arraySize, setArraySize] = useState(8);
   const [input, setInput] = useState(() => generateInput(8));
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(
     () => generator(input.nums, input.target),
@@ -274,6 +275,62 @@ function TwoPointersPage({ config, generator, generateInput }: TwoPointersPagePr
     setArraySize(arr.length);
     setInput((prev) => ({ ...prev, nums: arr }));
   }, []);
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="search"
+                arraySize={arraySize}
+                maxSize={12}
+                target={input.target}
+                onTargetChange={handleTargetChange}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={input.nums}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <TwoPointersVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={input.nums}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <AlgorithmLayout
@@ -314,6 +371,7 @@ interface WaterPageProps {
 function WaterPage({ config, generator, generateInput }: WaterPageProps) {
   const [arraySize, setArraySize] = useState(12);
   const [inputArray, setInputArray] = useState(() => generateInput(12));
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(
     () => generator(inputArray),
@@ -333,6 +391,57 @@ function WaterPage({ config, generator, generateInput }: WaterPageProps) {
     },
     [generateInput]
   );
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <WaterVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <AlgorithmLayout
@@ -480,6 +589,7 @@ function ArraySearchPage({ config, generator }: ArraySearchPageProps) {
     generateRandomArray(10)
   );
   const [target, setTarget] = useState<number>(() => generateSearchTarget(inputArray));
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generator(inputArray, target), [inputArray, target, generator]);
   const engine = usePlaybackEngine<ArraySearchState>(steps);
@@ -505,6 +615,62 @@ function ArraySearchPage({ config, generator }: ArraySearchPageProps) {
     setArraySize(arr.length);
     setInputArray(arr);
   }, []);
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="search"
+                arraySize={arraySize}
+                target={target}
+                onTargetChange={handleTargetChange}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <ArraySearchVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+            currentTarget={target}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <AlgorithmLayout
@@ -842,7 +1008,7 @@ function TwoSumPage() {
 function ClimbingStairsPage() {
   const [n, setN] = useState(5);
   const [activeVariantId, setActiveVariantId] = useState("iterative");
-  const [viewMode, setViewMode] = useState<"problem" | "algorithm">("problem");
+  const [viewMode, setViewMode] = useState<"problem" | "algorithm" | "complexity">("problem");
 
   const steps = useMemo(() => {
     if (activeVariantId === "recursive") return generateClimbingStairsRecursiveSteps(n);
@@ -882,17 +1048,33 @@ function ClimbingStairsPage() {
         </button>
         <button
           onClick={() => setViewMode("algorithm")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
             }`}
         >
-          💻 Algorithm Execution
+          <Code2 className="w-4 h-4" /> Algorithm Execution
         </button>
+        {climbingStairsConfig.complexityExplorer && (
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        )}
       </div>
 
       {viewMode === "problem" ? (
         <div className="flex-1 overflow-hidden relative">
           <ClimbingStairsProblemVisualizer n={n} onSwitchToAlgorithm={() => setViewMode("algorithm")} />
         </div>
+      ) : viewMode === "complexity" && climbingStairsConfig.complexityExplorer ? (
+        <ComplexityExplorer
+          config={climbingStairsConfig.complexityExplorer}
+          algorithmName={climbingStairsConfig.title}
+          currentMetrics={engine.currentStep?.complexityMetrics}
+        />
       ) : (
         <AlgorithmLayout
           config={climbingStairsConfig}
@@ -931,7 +1113,7 @@ function FrogJumpPage() {
   const [heights, setHeights] = useState(() => generateRandomHeights(8));
 
   const [activeVariantId, setActiveVariantId] = useState("iterative");
-  const [viewMode, setViewMode] = useState<"problem" | "algorithm">("problem");
+  const [viewMode, setViewMode] = useState<"problem" | "algorithm" | "complexity">("problem");
 
   const steps = useMemo(() => {
     if (activeVariantId === "recursive") return generateFrogJumpRecursiveSteps(heights);
@@ -977,17 +1159,34 @@ function FrogJumpPage() {
         </button>
         <button
           onClick={() => setViewMode("algorithm")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+          className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
             }`}
         >
-          💻 Algorithm Execution
+          <Code2 className="w-4 h-4" /> Algorithm Execution
         </button>
+        {frogJumpConfig.complexityExplorer && (
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        )}
       </div>
 
       {viewMode === "problem" ? (
         <div className="flex-1 overflow-hidden relative">
           <FrogJumpProblemVisualizer heights={heights} onSwitchToAlgorithm={() => setViewMode("algorithm")} />
         </div>
+      ) : viewMode === "complexity" && frogJumpConfig.complexityExplorer ? (
+        <ComplexityExplorer
+          config={frogJumpConfig.complexityExplorer}
+          algorithmName={frogJumpConfig.title}
+          currentMetrics={engine.currentStep?.complexityMetrics}
+          currentArray={heights}
+        />
       ) : (
         <AlgorithmLayout
           config={frogJumpConfig}
@@ -1029,6 +1228,7 @@ function StockBuySellPage() {
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateStockArray(8)
   );
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generateStockBuySellSteps(inputArray), [inputArray]);
   const engine = usePlaybackEngine<StockBuySellState>(steps);
@@ -1047,9 +1247,64 @@ function StockBuySellPage() {
     setInputArray(arr);
   }, []);
 
+  const config = stockBuySellConfig;
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <StockBuySellVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <AlgorithmLayout
-      config={stockBuySellConfig}
+      config={config}
       engine={engine}
       inputControls={
         <InputControls
@@ -1079,6 +1334,7 @@ function KadanePage() {
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateKadaneArray(8)
   );
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generateKadaneSteps(inputArray), [inputArray]);
   const engine = usePlaybackEngine<KadaneState>(steps);
@@ -1097,9 +1353,64 @@ function KadanePage() {
     setInputArray(arr);
   }, []);
 
+  const config = kadaneConfig;
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <KadaneVisualizer state={engine.currentStep.state} />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <AlgorithmLayout
-      config={kadaneConfig}
+      config={config}
       engine={engine}
       inputControls={
         <InputControls
@@ -1129,6 +1440,7 @@ function MajorityElement1Page() {
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateMajorityElement1Array(8)
   );
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generateMajorityElement1Steps(inputArray), [inputArray]);
   const engine = usePlaybackEngine<MajorityElement1State>(steps);
@@ -1146,6 +1458,61 @@ function MajorityElement1Page() {
     setArraySize(arr.length);
     setInputArray(arr);
   }, []);
+
+  const config = majorityElement1Config;
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <MajorityElementVisualizer state={engine.currentStep.state} variant="majority-1" />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <AlgorithmLayout
@@ -1179,6 +1546,7 @@ function MajorityElement2Page() {
   const [inputArray, setInputArray] = useState<number[]>(() =>
     generateMajorityElement2Array(9)
   );
+  const [viewMode, setViewMode] = useState<"algorithm" | "complexity">("algorithm");
 
   const steps = useMemo(() => generateMajorityElement2Steps(inputArray), [inputArray]);
   const engine = usePlaybackEngine<MajorityElement2State>(steps);
@@ -1197,9 +1565,64 @@ function MajorityElement2Page() {
     setInputArray(arr);
   }, []);
 
+  const config = majorityElement2Config;
+
+  if (config.complexityExplorer) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex justify-center border-b border-border bg-card/30 p-2 gap-2">
+          <button
+            onClick={() => setViewMode("algorithm")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "algorithm" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <Code2 className="w-4 h-4" /> Algorithm View
+          </button>
+          <button
+            onClick={() => setViewMode("complexity")}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors flex items-center gap-2 ${viewMode === "complexity" ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground hover:bg-muted"
+              }`}
+          >
+            <BarChart2 className="w-4 h-4" /> Complexity Explorer
+            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${viewMode === "complexity" ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary border border-primary/20"}`}>Beta</span>
+          </button>
+        </div>
+
+        {viewMode === "algorithm" ? (
+          <AlgorithmLayout
+            config={config}
+            engine={engine}
+            inputControls={
+              <InputControls
+                type="sorting"
+                arraySize={arraySize}
+                onArraySizeChange={handleArraySizeChange}
+                onRandomize={handleRandomize}
+                currentArray={inputArray}
+                onCustomArrayChange={handleCustomArrayChange}
+              />
+            }
+            visualizer={
+              engine.currentStep ? (
+                <MajorityElementVisualizer state={engine.currentStep.state} variant="majority-2" />
+              ) : null
+            }
+          />
+        ) : (
+          <ComplexityExplorer
+            config={config.complexityExplorer}
+            algorithmName={config.title}
+            currentMetrics={engine.currentStep?.complexityMetrics}
+            currentArray={inputArray}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <AlgorithmLayout
-      config={majorityElement2Config}
+      config={config}
       engine={engine}
       inputControls={
         <InputControls

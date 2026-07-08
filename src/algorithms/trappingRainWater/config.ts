@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runTrappingRainWaterExperiment } from "./generator";
 
 export const trappingRainWaterConfig: AlgorithmConfig = {
   id: "trapping-rain-water",
@@ -82,5 +83,17 @@ export const trappingRainWaterConfig: AlgorithmConfig = {
       "Optical & Radar Profiling: Processing altimeter or LiDAR elevation scans to determine concavity and volume capacity in geological surveys."
     ],
     patterns: ["Two Pointers", "Dynamic Programming", "Monotonic Stack", "Prefix-Suffix Max"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["comparisons", "operations"],
+    storyParagraphs: [
+      "The optimal Two Pointers approach for Trapping Rain Water maintains left and right pointers moving inwards.",
+      "At each step, it compares the current left and right heights. The side with the smaller height limits the water that can be trapped at its position, so it can be safely processed.",
+      "Because each step processes exactly one element and then moves a pointer inwards, it guarantees an O(N) time complexity and requires only O(1) space."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(1)", worst: "O(1)" },
+    inputSizeRange: { min: 10, max: 2000, default: 100 },
+    runExperiment: runTrappingRainWaterExperiment,
   },
 };
