@@ -6,26 +6,26 @@ Below is the current completion status for all 29 algorithm directories in the p
 | :--- | :---: | :---: | :---: | :---: |
 | **Two Sum** | ✅ | ✅ | ✅ | ✅ |
 | **Binary Search** | ❌ | ✅ | ✅ | ❌ |
-| **Climbing Stairs** | ❌ | ❌ | ✅ | ❌ |
-| **Frog Jump** | ❌ | ❌ | ✅ | ❌ |
+| **Climbing Stairs** | ❌ | ✅ | ✅ | ❌ |
+| **Frog Jump** | ❌ | ✅ | ✅ | ❌ |
 | **Bubble Sort** | ✅ | ✅ | ❌ | ❌ |
-| **Insertion Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Selection Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Container With Most Water** | ✅ | ❌ | ❌ | ❌ |
-| **Counting Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Four Sum** | ✅ | ❌ | ❌ | ❌ |
-| **Graph BFS / DFS** | ⚠️ (BFS only) | ❌ | ❌ | ❌ |
-| **Kadane's Algorithm** | ✅ | ❌ | ❌ | ❌ |
+| **Insertion Sort** | ❌ | ✅ | ❌ | ❌ |
+| **Selection Sort** | ❌ | ✅ | ❌ | ❌ |
+| **Container With Most Water** | ✅ | ✅ | ❌ | ❌ |
+| **Counting Sort** | ❌ | ✅ | ❌ | ❌ |
+| **Four Sum** | ✅ | ✅ | ❌ | ❌ |
+| **Graph BFS / DFS** | ⚠️ (BFS only) | ✅ | ❌ | ❌ |
+| **Kadane's Algorithm** | ✅ | ✅ | ❌ | ❌ |
 | **Linear Search** | ❌ | ✅ | ❌ | ❌ |
 | **Majority Element I & II** | ✅ | ✅ | ❌ | ❌ |
-| **Merge Sort** | ✅ | ❌ | ❌ | ❌ |
-| **Quick Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Radix Sort** | ❌ | ❌ | ❌ | ❌ |
-| **Singly Linked List Search** | ❌ | ❌ | ❌ | ❌ |
-| **Stock Buy Sell** | ✅ | ❌ | ❌ | ❌ |
-| **Three Sum** | ✅ | ❌ | ❌ | ❌ |
-| **Trapping Rain Water** | ✅ | ❌ | ❌ | ❌ |
-| **Tree Traversal (In/Pre/Post/Level)** | ❌ | ❌ | ❌ | ❌ |
+| **Merge Sort** | ✅ | ✅ | ❌ | ❌ |
+| **Quick Sort** | ❌ | ✅ | ❌ | ❌ |
+| **Radix Sort** | ❌ | ✅ | ❌ | ❌ |
+| **Singly Linked List Search** | ❌ | ✅ | ❌ | ❌ |
+| **Stock Buy Sell** | ✅ | ✅ | ❌ | ❌ |
+| **Three Sum** | ✅ | ✅ | ❌ | ❌ |
+| **Trapping Rain Water** | ✅ | ✅ | ❌ | ❌ |
+| **Tree Traversal (In/Pre/Post/Level)** | ❌ | ✅ | ❌ | ❌ |
 
 ## Legend
 - **Problem Context ("Understand First")**: Requires adding `problemContext` object to `config.ts` containing problem statement, examples, intuition prompt, approach evolution, real-world applications, and pattern tags.

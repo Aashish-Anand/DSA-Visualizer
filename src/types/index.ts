@@ -14,6 +14,7 @@ export interface ComplexityMetrics {
   writes?: number;
   hashmapLookups?: number;
   hashmapInserts?: number;
+  recursiveCalls?: number;
 }
 
 export interface ComplexityCaseSummary {

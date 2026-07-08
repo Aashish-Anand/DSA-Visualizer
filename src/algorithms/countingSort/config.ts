@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runCountingSortExperiment } from "./generator";
 
 export const countingSortConfig: AlgorithmConfig = {
   id: "counting-sort",
@@ -23,4 +24,16 @@ export const countingSortConfig: AlgorithmConfig = {
     { code: "count[num]--", indent: 2 },
     { code: "return output", indent: 1 },
   ],
+  complexityExplorer: {
+    trackedMetrics: ["operations", "comparisons"],
+    storyParagraphs: [
+      "Counting sort is an integer sorting algorithm that operates by counting the number of objects that possess distinct key values.",
+      "It determines the positions of each key value in the output sequence by applying a prefix sum to those counts.",
+      "Because it does not compare elements (comparisons are only used to find the max value initially), it runs in O(N + K) time, where N is the number of elements and K is the range of the non-negative key values. However, it requires O(N + K) auxiliary space, making it impractical when K is significantly larger than N."
+    ],
+    timeCases: { best: "O(N + K)", average: "O(N + K)", worst: "O(N + K)" },
+    spaceCases: { best: "O(N + K)", average: "O(N + K)", worst: "O(N + K)" },
+    inputSizeRange: { min: 10, max: 200, default: 50 },
+    runExperiment: runCountingSortExperiment,
+  },
 };

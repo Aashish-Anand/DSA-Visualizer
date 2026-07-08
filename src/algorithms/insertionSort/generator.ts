@@ -1,4 +1,4 @@
-import type { VisualizationStep, SortingBarState } from "@/types";
+import type { VisualizationStep, SortingBarState, ComplexityMetrics } from "@/types";
 
 export function generateInsertionSortSteps(
   inputArray: number[]
@@ -6,6 +6,16 @@ export function generateInsertionSortSteps(
   const steps: VisualizationStep<SortingBarState>[] = [];
   const array = [...inputArray];
   const n = array.length;
+
+  let comparisons = 0;
+  let operations = 0;
+  let swaps = 0;
+
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+    swaps,
+  });
 
   const createBaseState = (
     sortedTo: number,
@@ -31,9 +41,11 @@ export function generateInsertionSortSteps(
     activeLine: 0,
     explanation: `Starting Insertion Sort. The first element (${array[0]}) is trivially sorted by itself.`,
     beginnerExplanation: `Let's sort! We'll start by looking at the second number and seeing where it fits compared to the first.`,
+    complexityMetrics: getMetrics(),
   });
 
   for (let i = 1; i < n; i++) {
+    operations += 2; // key assignment, j assignment
     const key = array[i];
     let j = i - 1;
 
@@ -42,8 +54,10 @@ export function generateInsertionSortSteps(
       activeLine: 2,
       explanation: `Selected arr[${i}] (${key}) as the key to insert into the sorted region (0 to ${i - 1}).`,
       beginnerExplanation: `We're picking up ${key}. We need to find its correct spot in the sorted numbers to the left.`,
+      complexityMetrics: getMetrics(),
     });
     while (j >= 0) {
+      operations++; // loop condition check
       steps.push({
         state: {
           ...createBaseState(i - 1, j + 1, null, { value: key, index: j + 1 }), // The key is temporarily conceptually at j+1
@@ -52,10 +66,14 @@ export function generateInsertionSortSteps(
         activeLine: 4,
         explanation: `Comparing key (${key}) with arr[${j}] (${array[j]}).`,
         beginnerExplanation: `Is our key (${key}) smaller than the number to its left (${array[j]})?`,
+        complexityMetrics: getMetrics(),
       });
 
+      comparisons++;
       if (array[j] > key) {
         // Shift right
+        swaps++; // Treating shift as swap for metrics consistency in sorting
+        operations++;
         array[j + 1] = array[j];
         
         steps.push({
@@ -66,13 +84,17 @@ export function generateInsertionSortSteps(
           activeLine: 5,
           explanation: `Since ${array[j]} > ${key}, shift ${array[j]} to the right.`,
           beginnerExplanation: `Yes, ${key} is smaller! So we shift ${array[j]} to the right to make room.`,
+          complexityMetrics: getMetrics(),
         });
+        operations++;
         j--;
       } else {
         break;
       }
     }
+    operations++; // last while check (j >= 0) if broken by condition, else already counted if break inside
 
+    operations++;
     array[j + 1] = key;
 
     steps.push({
@@ -80,6 +102,7 @@ export function generateInsertionSortSteps(
       activeLine: 7,
       explanation: `Inserted key (${key}) at index ${j + 1}. The sorted region now extends to index ${i}.`,
       beginnerExplanation: `We found the spot! We placed ${key} here. The sorted part of our array is growing.`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -99,7 +122,42 @@ export function generateInsertionSortSteps(
     activeLine: 0,
     explanation: `Insertion Sort complete! The sorted array is [${array.join(", ")}].`,
     beginnerExplanation: `We did it! 🎉 All the numbers have been inserted into their correct places.`,
+    complexityMetrics: getMetrics(),
   });
 
   return steps;
+}
+
+export function runInsertionSortExperiment(inputSize: number): ComplexityMetrics {
+  const array = Array.from({ length: inputSize }, () => Math.random());
+  const n = array.length;
+  
+  let comparisons = 0;
+  let operations = 0;
+  let swaps = 0;
+
+  for (let i = 1; i < n; i++) {
+    operations += 2;
+    const key = array[i];
+    let j = i - 1;
+
+    while (j >= 0) {
+      operations++;
+      comparisons++;
+      if (array[j] > key) {
+        swaps++;
+        operations++;
+        array[j + 1] = array[j];
+        operations++;
+        j--;
+      } else {
+        break;
+      }
+    }
+    operations++;
+    operations++;
+    array[j + 1] = key;
+  }
+
+  return { comparisons, operations, swaps };
 }

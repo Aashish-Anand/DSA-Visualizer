@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runGraphBfsExperiment } from "./generator";
 
 export const graphBfsConfig: AlgorithmConfig = {
   id: "graph-bfs",
@@ -62,6 +63,17 @@ export const graphBfsConfig: AlgorithmConfig = {
       "Web Crawlers: Search engines crawling the web link by link, level by level."
     ],
     patterns: ["Graph Traversal", "Queue (FIFO)", "Level Order", "Shortest Path"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["operations", "comparisons", "reads", "writes"],
+    storyParagraphs: [
+      "In a Graph BFS, we visit every vertex exactly once, and inspect every edge from that vertex exactly once. This leads to a time complexity proportional to the sum of vertices and edges, O(V + E).",
+      "The space complexity is bounded by the size of the Queue and the visited set. In the worst case, the Queue could contain all the vertices of the widest level of the graph. Hence, the space complexity is O(V)."
+    ],
+    timeCases: { best: "O(V + E)", average: "O(V + E)", worst: "O(V + E)" },
+    spaceCases: { best: "O(1)", average: "O(V)", worst: "O(V)" },
+    inputSizeRange: { min: 3, max: 100, default: 20 },
+    runExperiment: runGraphBfsExperiment,
   }
 };
 

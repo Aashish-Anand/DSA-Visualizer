@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Activity, ArrowLeftRight, Eye, Pencil, Hash, Database } from "lucide-react";
+import { Activity, ArrowLeftRight, Eye, Pencil, Hash, Database, Repeat } from "lucide-react";
 import type { ComplexityMetrics } from "@/types";
 
 interface ComplexityMetricsPanelProps {
@@ -45,6 +45,11 @@ const METRIC_CONFIG: Record<
     label: "Map Inserts",
     icon: <Database size={16} />,
     color: "hsl(142 71% 45%)",
+  },
+  recursiveCalls: {
+    label: "Recursive Calls",
+    icon: <Repeat size={16} />,
+    color: "hsl(316 70% 50%)",
   },
 };
 

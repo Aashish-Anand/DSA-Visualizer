@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runGraphDfsExperiment } from "./generator";
 
 export const graphDfsConfig: AlgorithmConfig = {
   id: "graph-dfs",
@@ -18,5 +19,16 @@ export const graphDfsConfig: AlgorithmConfig = {
     { code: "mark node as visited", indent: 1 },
     { code: "for each neighbor in graph[node]:", indent: 1 },
     { code: "dfs(neighbor)", indent: 2 }
-  ]
+  ],
+  complexityExplorer: {
+    trackedMetrics: ["operations", "comparisons", "recursiveCalls", "reads", "writes"],
+    storyParagraphs: [
+      "In a Graph DFS, similar to BFS, we visit every vertex exactly once, and inspect every edge exactly once. Thus, the time complexity is proportional to the number of vertices and edges, yielding O(V + E).",
+      "The space complexity is defined by the maximum depth of the call stack. In the worst case (e.g., a line graph), this depth can be V. The algorithm also needs space for the visited set, which takes O(V). Thus, the space complexity is O(V)."
+    ],
+    timeCases: { best: "O(V + E)", average: "O(V + E)", worst: "O(V + E)" },
+    spaceCases: { best: "O(V)", average: "O(V)", worst: "O(V)" },
+    inputSizeRange: { min: 3, max: 100, default: 20 },
+    runExperiment: runGraphDfsExperiment,
+  }
 };

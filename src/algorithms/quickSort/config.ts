@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runQuickSortExperiment } from "./generator";
 
 export const quickSortConfig: AlgorithmConfig = {
   id: "quick-sort",
@@ -24,4 +25,16 @@ export const quickSortConfig: AlgorithmConfig = {
     { code: "swap(arr[i + 1], arr[high])", indent: 1 },
     { code: "return i + 1", indent: 1 },
   ],
+  complexityExplorer: {
+    trackedMetrics: ["operations", "comparisons", "swaps"],
+    storyParagraphs: [
+      "Quick Sort is an extremely fast, in-place sorting algorithm based on the divide and conquer paradigm.",
+      "In the average case, the pivot splits the array into two roughly equal halves, resulting in O(N log N) time complexity. However, if the pivot is always the smallest or largest element (e.g., when sorting an already sorted array using the last element as pivot), the partitioning becomes highly unbalanced.",
+      "This worst-case scenario degenerates to O(N²) time complexity. A randomized pivot (or median-of-three) is typically used in practice to ensure the O(N log N) average case."
+    ],
+    timeCases: { best: "O(N log N)", average: "O(N log N)", worst: "O(N²)" },
+    spaceCases: { best: "O(log N)", average: "O(log N)", worst: "O(N)" },
+    inputSizeRange: { min: 10, max: 200, default: 50 },
+    runExperiment: runQuickSortExperiment,
+  },
 };

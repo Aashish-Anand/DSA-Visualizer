@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runMergeSortExperiment } from "./generator";
 
 export const mergeSortConfig: AlgorithmConfig = {
   id: "merge-sort",
@@ -62,6 +63,18 @@ export const mergeSortConfig: AlgorithmConfig = {
       "Base algorithm for Timsort (used in Python's `sort()` and Java's `Arrays.sort()`)."
     ],
     patterns: ["Divide and Conquer", "Recursion", "Stable Sorting", "O(n log n)"]
+  },
+  complexityExplorer: {
+    trackedMetrics: ["operations", "comparisons"],
+    storyParagraphs: [
+      "Merge Sort is a highly efficient, stable sorting algorithm based on the divide and conquer paradigm.",
+      "It consistently performs in O(N log N) time regardless of the initial order of the elements. It recursively divides the array into halves until the base case of 1 element is reached (which takes O(log N) splits), and then merges these sorted halves back together in O(N) time at each level.",
+      "However, its primary drawback is its O(N) space complexity since it requires temporary arrays during the merge phase."
+    ],
+    timeCases: { best: "O(N log N)", average: "O(N log N)", worst: "O(N log N)" },
+    spaceCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    inputSizeRange: { min: 10, max: 200, default: 50 },
+    runExperiment: runMergeSortExperiment,
   }
 };
 

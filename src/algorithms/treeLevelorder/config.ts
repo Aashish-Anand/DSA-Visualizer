@@ -1,4 +1,5 @@
 import type { AlgorithmConfig } from "@/types";
+import { runTreeLevelorderExperiment } from "./generator";
 
 export const treeLevelorderConfig: AlgorithmConfig = {
   id: "tree-levelorder",
@@ -16,5 +17,16 @@ export const treeLevelorderConfig: AlgorithmConfig = {
     { code: "visit(node)", indent: 2 },
     { code: "if node.left: queue.enqueue(node.left)", indent: 2 },
     { code: "if node.right: queue.enqueue(node.right)", indent: 2 }
-  ]
+  ],
+  complexityExplorer: {
+    trackedMetrics: ["operations", "reads", "writes"],
+    storyParagraphs: [
+      "In a Level-order traversal, every node is pushed to the queue exactly once and popped exactly once. Therefore, the time complexity scales linearly with the number of nodes, resulting in O(N).",
+      "The space complexity is defined by the maximum size of the queue. For a perfectly balanced tree, the widest level is the last one, which holds roughly N/2 nodes. Therefore, the space complexity in the worst-case scenario (balanced tree) is O(N)."
+    ],
+    timeCases: { best: "O(N)", average: "O(N)", worst: "O(N)" },
+    spaceCases: { best: "O(1)", average: "O(N)", worst: "O(N)" },
+    inputSizeRange: { min: 3, max: 63, default: 15 },
+    runExperiment: runTreeLevelorderExperiment,
+  }
 };

@@ -1,16 +1,30 @@
-import type { VisualizationStep, CountingSortState } from "@/types";
+import type { VisualizationStep, CountingSortState, ComplexityMetrics } from "@/types";
 
 export function generateCountingSortSteps(
   inputArray: number[]
 ): VisualizationStep<CountingSortState>[] {
   const steps: VisualizationStep<CountingSortState>[] = [];
   const array = [...inputArray];
-  const max_val = Math.max(...array, 1);
+  let max_val = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > max_val) {
+      max_val = array[i];
+    }
+  }
+  max_val = Math.max(max_val, 1);
   
   // Initialize state arrays
   const countArray = Array(max_val + 1).fill(0);
   const outputArray: (number | null)[] = Array(array.length).fill(null);
   const sortedIndices: number[] = [];
+
+  const comparisons = array.length; // From finding max_val implicitly
+  let operations = array.length + (max_val + 1) + array.length; // array assignments + countArray init + outputArray init
+  
+  const getMetrics = (): ComplexityMetrics => ({
+    comparisons,
+    operations,
+  });
 
   const createBaseState = (
     phase: CountingSortState["phase"] = "counting",
@@ -32,6 +46,7 @@ export function generateCountingSortSteps(
     activeLine: 0,
     explanation: `Starting Counting Sort. This works well when we know the maximum value in our array (here it's ${max_val}).`,
     beginnerExplanation: `Let's sort by counting! Since the biggest number is ${max_val}, we'll make a list to count how many times we see each number from 0 to ${max_val}.`,
+    complexityMetrics: getMetrics(),
   });
 
   steps.push({
@@ -39,26 +54,32 @@ export function generateCountingSortSteps(
     activeLine: 2,
     explanation: `Created a count array of size ${max_val + 1} initialized to 0.`,
     beginnerExplanation: `Here is our empty count list. Every slot from 0 to ${max_val} starts at zero.`,
+    complexityMetrics: getMetrics(),
   });
 
   // Step 1: Count frequencies
   for (let i = 0; i < array.length; i++) {
+    operations++; // loop check
     const num = array[i];
+    operations++;
     
     steps.push({
       state: createBaseState("counting", i, num),
       activeLine: 4,
       explanation: `Read ${num} from input array. Incrementing countArray[${num}].`,
       beginnerExplanation: `We found a ${num}! Let's add 1 to the count for ${num}.`,
+      complexityMetrics: getMetrics(),
     });
     
     countArray[num]++;
+    operations++;
     
     steps.push({
       state: createBaseState("counting", i, num),
       activeLine: 5,
       explanation: `countArray[${num}] is now ${countArray[num]}.`,
       beginnerExplanation: `We've seen the number ${num} a total of ${countArray[num]} times now.`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -68,23 +89,28 @@ export function generateCountingSortSteps(
     activeLine: 6,
     explanation: `Now modifying count array such that each element at index i stores the sum of previous counts.`,
     beginnerExplanation: `Now for some math! We'll add up the counts so each slot tells us EXACTLY where that number should go in the final sorted list.`,
+    complexityMetrics: getMetrics(),
   });
 
   for (let i = 1; i <= max_val; i++) {
+    operations++; // loop check
     steps.push({
       state: createBaseState("accumulating", null, i),
       activeLine: 7,
       explanation: `Adding countArray[${i - 1}] (${countArray[i-1]}) to countArray[${i}] (${countArray[i]}).`,
       beginnerExplanation: `Let's add the total so far to slot ${i}.`,
+      complexityMetrics: getMetrics(),
     });
     
     countArray[i] += countArray[i - 1];
+    operations++;
     
     steps.push({
       state: createBaseState("accumulating", null, i),
       activeLine: 7,
       explanation: `countArray[${i}] is now ${countArray[i]}. This means numbers <= ${i} will occupy indices 0 to ${countArray[i] - 1}.`,
       beginnerExplanation: `Slot ${i} is now ${countArray[i]}. This means the last ${i} we see should go at position ${countArray[i] - 1}!`,
+      complexityMetrics: getMetrics(),
     });
   }
 
@@ -94,28 +120,35 @@ export function generateCountingSortSteps(
     activeLine: 8,
     explanation: `Building the output array. We iterate the input array backwards to maintain stability.`,
     beginnerExplanation: `Time to put everything in its sorted place! We'll read our input backwards and use our count list to know exactly where to put each number.`,
+    complexityMetrics: getMetrics(),
   });
 
   for (let i = array.length - 1; i >= 0; i--) {
+    operations++; // loop check
     const num = array[i];
+    operations++;
     
     steps.push({
       state: createBaseState("placing", i, num),
       activeLine: 9,
       explanation: `Looking at arr[${i}] = ${num}. countArray[${num}] is ${countArray[num]}.`,
       beginnerExplanation: `We picked up a ${num}. Let's look at slot ${num} in our count list. It says ${countArray[num]}!`,
+      complexityMetrics: getMetrics(),
     });
     
     const outputIndex = countArray[num] - 1;
+    operations++;
     
     steps.push({
       state: createBaseState("placing", i, num),
       activeLine: 10,
       explanation: `Placing ${num} at index ${outputIndex} in the output array.`,
       beginnerExplanation: `Since it says ${countArray[num]}, this ${num} belongs at position ${outputIndex} in the final list.`,
+      complexityMetrics: getMetrics(),
     });
     
     outputArray[outputIndex] = num;
+    operations++;
     sortedIndices.push(outputIndex); // Technically placed in final spot, but we won't highlight green yet to avoid confusion
     
     steps.push({
@@ -123,9 +156,11 @@ export function generateCountingSortSteps(
       activeLine: 11,
       explanation: `Decremeting countArray[${num}] so the next ${num} is placed one position to the left.`,
       beginnerExplanation: `We put it there! Now we decrease the count for ${num} by 1, so if we see another ${num}, it goes right next to it.`,
+      complexityMetrics: getMetrics(),
     });
     
     countArray[num]--;
+    operations++;
   }
 
   steps.push({
@@ -136,9 +171,57 @@ export function generateCountingSortSteps(
     activeLine: 12,
     explanation: `Counting Sort complete! The output array is the final sorted array.`,
     beginnerExplanation: `We did it! 🎉 The output array is completely sorted!`,
+    complexityMetrics: getMetrics(),
   });
 
   return steps;
+}
+
+export function runCountingSortExperiment(inputSize: number): ComplexityMetrics {
+  const array = Array.from({ length: inputSize }, () => Math.floor(Math.random() * 15) + 1);
+  let max_val = 0;
+  
+  let comparisons = 0;
+  let operations = 0;
+
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    comparisons++;
+    if (array[i] > max_val) {
+      operations++;
+      max_val = array[i];
+    }
+  }
+  max_val = Math.max(max_val, 1);
+  operations += 2; // Math.max + assignment
+
+  const countArray = Array(max_val + 1).fill(0);
+  const outputArray: (number | null)[] = Array(array.length).fill(null);
+  operations += (max_val + 1) + array.length; // Array initializations
+
+  for (let i = 0; i < array.length; i++) {
+    operations++;
+    const num = array[i];
+    countArray[num]++;
+    operations += 2;
+  }
+
+  for (let i = 1; i <= max_val; i++) {
+    operations++;
+    countArray[i] += countArray[i - 1];
+    operations++;
+  }
+
+  for (let i = array.length - 1; i >= 0; i--) {
+    operations++;
+    const num = array[i];
+    const outputIndex = countArray[num] - 1;
+    outputArray[outputIndex] = num;
+    countArray[num]--;
+    operations += 4;
+  }
+
+  return { comparisons, operations };
 }
 
 export function generateCountingSortArray(size: number): number[] {
