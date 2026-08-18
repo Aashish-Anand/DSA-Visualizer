@@ -37,6 +37,8 @@ export function FeedbackForm({
   const [type, setType] = useState<FeedbackType>("bug");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [cooldownError, setCooldownError] = useState<string | null>(null);
   const [touched, setTouched] = useState({ description: false, email: false });
   const descRef = useRef<HTMLTextAreaElement>(null);
 
@@ -63,21 +65,50 @@ export function FeedbackForm({
       e.preventDefault();
       setTouched({ description: true, email: true });
       if (!isValid) return;
-      onSubmit({ type, description: description.trim(), email: email.trim() });
+
+      // Rate limit check: 30-second cooldown per client browser
+      const lastSubmit = localStorage.getItem("algolens_last_feedback_time");
+      if (lastSubmit && Date.now() - parseInt(lastSubmit, 10) < 30000) {
+        setCooldownError("Please wait a few seconds before submitting more feedback.");
+        return;
+      }
+      setCooldownError(null);
+      localStorage.setItem("algolens_last_feedback_time", Date.now().toString());
+
+      onSubmit({ 
+        type, 
+        description: description.trim(), 
+        email: email.trim(),
+        honeypot: honeypot.trim()
+      });
     },
-    [type, description, email, isValid, onSubmit]
+    [type, description, email, honeypot, isValid, onSubmit]
   );
+
+  const displayError = error || cooldownError;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* Invisible Honeypot field for bot trap */}
+      <input
+        type="text"
+        name="website_url"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden opacity-0 absolute -z-50 pointer-events-none"
+        aria-hidden="true"
+      />
+
       {/* Error banner */}
-      {error && (
+      {displayError && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="px-3 py-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm"
         >
-          {error}
+          {displayError}
         </motion.div>
       )}
 

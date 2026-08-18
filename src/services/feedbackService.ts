@@ -14,9 +14,39 @@ function delay(ms: number): Promise<void> {
 }
 
 export async function submitFeedback(payload: FeedbackPayload): Promise<void> {
-  await delay(SIMULATED_DELAY_MS);
+  const webhookUrl = import.meta.env.VITE_FEEDBACK_WEBHOOK_URL;
 
-  // V1: Log to console. Replace this block with an API call for production.
+  if (webhookUrl) {
+    const formattedData = {
+      timestamp: new Date().toISOString(),
+      type: payload.formData.type,
+      description: payload.formData.description,
+      email: payload.formData.email || "N/A",
+      algorithm: payload.context.algorithmName || "General",
+      pageUrl: payload.context.pageUrl || window.location.href,
+      currentStep: payload.context.currentStep ?? "N/A",
+      viewport: `${payload.context.screenWidth}x${payload.context.screenHeight}`,
+      theme: payload.context.currentTheme,
+      userAgent: payload.context.browserUserAgent,
+      hp: payload.formData.honeypot || "",
+    };
+
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      body: JSON.stringify(formattedData),
+    });
+
+    if (!response.ok && response.status !== 0) {
+      throw new Error(`Failed to submit feedback: ${response.statusText}`);
+    }
+    return;
+  }
+
+  // Fallback: Console log mode when no webhook is set
+  await delay(SIMULATED_DELAY_MS);
   console.group("📬 AlgoLens Feedback Submitted");
   console.log("Type:", payload.formData.type);
   console.log("Description:", payload.formData.description);

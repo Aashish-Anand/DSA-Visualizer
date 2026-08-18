@@ -73,4 +73,43 @@ export const binarySearchConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 10000, default: 1000 },
     runExperiment: runBinarySearchExperiment,
   },
+  problemContext: {
+    statement: "Given a sorted array of distinct integers `arr` and a target value `target`, return the index of `target` if it is present in the array. If not found, return `-1`. You must write an algorithm with `O(log n)` runtime complexity.",
+    examples: [
+      {
+        input: "arr = [-1, 0, 3, 5, 9, 12], target = 9",
+        output: "4",
+        explanation: "9 exists in arr and its index is 4."
+      },
+      {
+        input: "arr = [-1, 0, 3, 5, 9, 12], target = 2",
+        output: "-1",
+        explanation: "2 does not exist in arr so return -1."
+      }
+    ],
+    intuitionPrompt: "Imagine searching for a word in a physical dictionary. You wouldn't check page 1, then page 2, then page 3. Instead, you open to the middle page. If your word comes alphabetically before that page, you discard the entire right half of the book and repeat on the left!",
+    approaches: [
+      {
+        name: "Linear Search",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "Scan every element from index 0 to n-1 sequentially until target is found.",
+        isOptimal: false
+      },
+      {
+        name: "Binary Search (Iterative)",
+        complexity: "O(log n)",
+        spaceComplexity: "O(1)",
+        description: "Maintain low and high pointers. Calculate mid = low + (high - low) / 2. Halve search space based on whether arr[mid] < target or arr[mid] > target.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Database Indexing (B-Trees and sorted page searching).",
+      "Git Bisect (finding the commit that introduced a bug via binary search over commit history).",
+      "Standard library implementations (e.g. C++ std::lower_bound, Java Arrays.binarySearch)."
+    ],
+    patterns: ["Binary Search", "Two Pointers", "Divide and Conquer"]
+  }
 };
+

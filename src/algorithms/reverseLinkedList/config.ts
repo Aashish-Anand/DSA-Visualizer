@@ -86,5 +86,44 @@ export const reverseLinkedListConfig: AlgorithmConfig = {
       }
       return { operations, comparisons: 0, reads, writes };
     }
+  },
+  problemContext: {
+    statement: "Given the `head` of a singly linked list, reverse the list in-place and return the new head of the reversed list.",
+    examples: [
+      {
+        input: "head = [1, 2, 3, 4, 5]",
+        output: "[5, 4, 3, 2, 1]",
+        explanation: "Pointers are flipped in-place: 1<-2<-3<-4<-5."
+      },
+      {
+        input: "head = [1, 2]",
+        output: "[2, 1]",
+        explanation: "1<-2."
+      }
+    ],
+    intuitionPrompt: "Iterate through the list, saving the next node before overwriting `curr.next = prev`. Shift `prev = curr` and `curr = nextTemp` step by step.",
+    approaches: [
+      {
+        name: "Iterative Pointer Reversal",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "Maintain prev = null, curr = head. Save nextTemp, set curr.next = prev, advance prev and curr.",
+        isOptimal: true
+      },
+      {
+        name: "Recursive Reversal",
+        complexity: "O(n)",
+        spaceComplexity: "O(n) call stack",
+        description: "Recursively reverse list from head.next, then set head.next.next = head and head.next = null.",
+        isOptimal: false
+      }
+    ],
+    realWorldApplications: [
+      "Browser back button navigation history stack.",
+      "Subroutine in palindrome linked list verification.",
+      "Reversing task queues in low-level scheduling."
+    ],
+    patterns: ["Linked List", "In-Place Pointer Mutation", "Three Pointers"]
   }
 };
+

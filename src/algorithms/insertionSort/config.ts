@@ -31,4 +31,30 @@ export const insertionSortConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 200, default: 50 },
     runExperiment: runInsertionSortExperiment,
   },
+  problemContext: {
+    statement: "Given an unsorted array of integers `arr`, sort the array in non-decreasing order in-place using Insertion Sort.",
+    examples: [
+      {
+        input: "arr = [12, 11, 13, 5, 6]",
+        output: "[5, 6, 11, 12, 13]",
+        explanation: "Element 11 is inserted before 12. Then 13 remains. Then 5 is inserted at index 0. Finally 6 is inserted after 5."
+      }
+    ],
+    intuitionPrompt: "Think of sorting a hand of playing cards. You pick one card at a time from the table, compare it against cards in your left hand from right to left, and slide it into its proper spot!",
+    approaches: [
+      {
+        name: "Standard Insertion Sort",
+        complexity: "O(n²)",
+        spaceComplexity: "O(1)",
+        description: "Iterate from index 1 to n-1. Pick element key=arr[i] and shift elements of arr[0..i-1] that are greater than key to one position ahead.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Hybrid sorting algorithms like Timsort and introsort (used in Python and C++ std::sort) for small partitions (typically n <= 16 or 32).",
+      "Online sorting where numbers are received one by one over a live network stream."
+    ],
+    patterns: ["In-Place Sorting", "Incremental Construction", "Card Playing Sorting"]
+  }
 };
+

@@ -37,4 +37,38 @@ export const quickSortConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 200, default: 50 },
     runExperiment: runQuickSortExperiment,
   },
+  problemContext: {
+    statement: "Given an unsorted array of integers `arr`, sort the array in non-decreasing order using the Quick Sort algorithm (Divide and Conquer). Pick a pivot, partition elements smaller than pivot to its left and larger to its right, then recursively sort partitions.",
+    examples: [
+      {
+        input: "arr = [10, 7, 8, 9, 1, 5]",
+        output: "[1, 5, 7, 8, 9, 10]",
+        explanation: "Pick 5 as pivot. Partition into [1] and [10, 7, 8, 9]. Recursively sort sub-arrays."
+      }
+    ],
+    intuitionPrompt: "Pick a benchmark element (pivot). Put everyone shorter than the pivot on the left, everyone taller on the right. Now the pivot is in its exact final position! Repeat this process on both sides.",
+    approaches: [
+      {
+        name: "Quick Sort (Lomuto Partition)",
+        complexity: "O(n log n) avg / O(n²) worst",
+        spaceComplexity: "O(log n) stack",
+        description: "Choose last element as pivot. Maintain index i for smaller elements, iterate j from low to high-1. Swap elements <= pivot.",
+        isOptimal: true
+      },
+      {
+        name: "Randomized / Dual-Pivot Quick Sort",
+        complexity: "O(n log n)",
+        spaceComplexity: "O(log n) stack",
+        description: "Randomly pick pivot or pick median-of-three to avoid worst-case O(n²) degradation on sorted inputs.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "C++ `std::sort` (Introsort, which starts as Quick Sort and switches to Heap Sort if recursion depth gets too large).",
+      "Java `Arrays.sort` for primitive types (uses Dual-Pivot Quick Sort).",
+      "In-place high-performance sorting systems where minimal memory overhead is required."
+    ],
+    patterns: ["Divide and Conquer", "Pivot Partitioning", "In-Place Sorting", "Recursion"]
+  }
 };
+

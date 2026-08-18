@@ -107,4 +107,43 @@ export const frogJumpConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 2000, default: 100 },
     runExperiment: runFrogJumpExperiment,
   },
+  problemContext: {
+    statement: "A frog is at stone 0 and wants to reach stone N-1. The height of the i-th stone is `heights[i]`. The frog can jump from stone i to stone i+1 or stone i+2. The energy consumed in a jump from stone i to stone j is `|heights[i] - heights[j]|`. Find the minimum total energy consumed to reach stone N-1.",
+    examples: [
+      {
+        input: "heights = [10, 30, 40, 20]",
+        output: "30",
+        explanation: "Jump 0 -> 1 (energy |10-30| = 20), then jump 1 -> 3 (energy |30-20| = 10). Total = 30."
+      },
+      {
+        input: "heights = [30, 10, 60, 10, 60, 50]",
+        output: "40",
+        explanation: "Jump 0 -> 1 (20) -> 3 (0) -> 5 (40). Total energy = 40."
+      }
+    ],
+    intuitionPrompt: "At stone `i`, the frog could only arrive from `i-1` or `i-2`. The min cost to reach stone `i` is min(costTo(i-1) + jumpCost(i-1, i), costTo(i-2) + jumpCost(i-2, i)).",
+    approaches: [
+      {
+        name: "Recursive Search",
+        complexity: "O(2ⁿ)",
+        spaceComplexity: "O(n)",
+        description: "Branch recursively at each stone into 1-step and 2-step jumps.",
+        isOptimal: false
+      },
+      {
+        name: "1D Dynamic Programming (Tabulation / Space-Optimized)",
+        complexity: "O(n)",
+        spaceComplexity: "O(n) or O(1)",
+        description: "Compute min energy for each stone bottom-up using memoization or two rolling variables.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Shortest path in weighted DAGs.",
+      "Cost-optimized resource scheduling.",
+      "Energy minimization in robotics motion planning."
+    ],
+    patterns: ["Dynamic Programming", "1D DP", "Greedy vs DP"]
+  }
 };
+

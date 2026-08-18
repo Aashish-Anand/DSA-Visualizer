@@ -114,5 +114,39 @@ export const mergeTwoSortedListsConfig: AlgorithmConfig = {
       
       return { operations, comparisons, writes };
     }
+  },
+  problemContext: {
+    statement: "You are given the heads of two sorted linked lists `list1` and `list2`. Merge the two lists into one sorted linked list by splicing together the nodes of the first two lists, and return the head of the merged list.",
+    examples: [
+      {
+        input: "list1 = [1, 2, 4], list2 = [1, 3, 4]",
+        output: "[1, 1, 2, 3, 4, 4]",
+        explanation: "Compare heads: 1 vs 1 (take list1's 1), then 2 vs 1 (take list2's 1), 2 vs 3 (take list1's 2), 4 vs 3 (take list2's 3), 4 vs 4 (take list1's 4), attach remaining 4."
+      }
+    ],
+    intuitionPrompt: "Like combining two sorted decks of cards held in each hand, comparing top cards and placing the smaller card onto the output pile.",
+    approaches: [
+      {
+        name: "Iterative Dummy Head",
+        complexity: "O(n + m)",
+        spaceComplexity: "O(1)",
+        description: "Create a dummy node. Compare list1.val and list2.val. Append smaller node to dummy list and advance pointers until one list is exhausted, then append the remainder.",
+        isOptimal: true
+      },
+      {
+        name: "Recursive Merge",
+        complexity: "O(n + m)",
+        spaceComplexity: "O(n + m) stack",
+        description: "If list1.val < list2.val, set list1.next = merge(list1.next, list2) and return list1.",
+        isOptimal: false
+      }
+    ],
+    realWorldApplications: [
+      "Subroutine in External Merge Sort for sorting multi-gigabyte files.",
+      "Merging database index query results.",
+      "Stream processing of timestamped log entries from multiple microservices."
+    ],
+    patterns: ["Linked List", "Two Pointers", "Dummy Node", "Merge Routine"]
   }
 };
+

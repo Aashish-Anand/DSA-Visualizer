@@ -36,4 +36,31 @@ export const countingSortConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 200, default: 50 },
     runExperiment: runCountingSortExperiment,
   },
+  problemContext: {
+    statement: "Given an array of integers `arr` where the range of key values is known and small, sort the array in non-decreasing order using Counting Sort without using comparison operations.",
+    examples: [
+      {
+        input: "arr = [4, 2, 2, 8, 3, 3, 1]",
+        output: "[1, 2, 2, 3, 3, 4, 8]",
+        explanation: "Count frequencies: 1:1, 2:2, 3:2, 4:1, 8:1. Use prefix sums to place each element into output array stably."
+      }
+    ],
+    intuitionPrompt: "Instead of comparing numbers to each other, simply count how many times each number appears! If there are two 2s and one 1, 1 goes at index 0 and 2s go at indices 1 and 2.",
+    approaches: [
+      {
+        name: "Counting Sort",
+        complexity: "O(n + k)",
+        spaceComplexity: "O(n + k)",
+        description: "Find max element k. Count element frequencies, calculate prefix sums to determine target positions, and construct output array stably.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Subroutine in Radix Sort for multi-digit sorting.",
+      "Sorting test scores or age distributions where key ranges (k) are very small relative to n.",
+      "Histogram computation and bucket categorization in data engineering."
+    ],
+    patterns: ["Non-Comparison Sort", "Frequency Array", "Prefix Sum"]
+  }
 };
+

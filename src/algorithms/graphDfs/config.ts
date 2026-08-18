@@ -30,5 +30,38 @@ export const graphDfsConfig: AlgorithmConfig = {
     spaceCases: { best: "O(V)", average: "O(V)", worst: "O(V)" },
     inputSizeRange: { min: 3, max: 100, default: 20 },
     runExperiment: runGraphDfsExperiment,
+  },
+  problemContext: {
+    statement: "Given an undirected or directed graph represented by an adjacency list and a starting node, perform Depth-First Search (DFS) to visit all reachable nodes. Traverse as deep as possible along each branch before backtracking.",
+    examples: [
+      {
+        input: "graph = {0: [1, 2], 1: [2], 2: [0, 3], 3: [3]}, start = 2",
+        output: "[2, 0, 1, 3]",
+        explanation: "Starting from 2, visit neighbor 0, then 0's unvisited neighbor 1. Backtrack to 2 and visit 3."
+      }
+    ],
+    intuitionPrompt: "Like navigating a maze by walking down a path until you hit a dead end, dropping breadcrumbs (marking visited) as you go, then stepping back to the last fork in the road to try another path!",
+    approaches: [
+      {
+        name: "Recursive DFS",
+        complexity: "O(V + E)",
+        spaceComplexity: "O(V)",
+        description: "Visit current node, mark visited. Recursively call DFS on each unvisited neighbor. Uses implicit call stack.",
+        isOptimal: true
+      },
+      {
+        name: "Iterative DFS with Stack",
+        complexity: "O(V + E)",
+        spaceComplexity: "O(V)",
+        description: "Explicitly push nodes onto an LIFO stack data structure.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Topological sorting in build systems (e.g. Bazel, Make, Webpack).",
+      "Cycle detection in directed and undirected graphs.",
+      "Solving mazes and finding strongly connected components (Kosaraju / Tarjan algorithm)."
+    ],
+    patterns: ["Graph Traversal", "Depth-First Search", "Recursion", "Backtracking"]
   }
 };

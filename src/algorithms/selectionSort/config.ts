@@ -30,4 +30,30 @@ export const selectionSortConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 200, default: 50 },
     runExperiment: runSelectionSortExperiment,
   },
+  problemContext: {
+    statement: "Given an unsorted array `arr`, sort it in non-decreasing order using Selection Sort by repeatedly finding the minimum element from the unsorted segment and moving it to the beginning.",
+    examples: [
+      {
+        input: "arr = [64, 25, 12, 22, 11]",
+        output: "[11, 12, 22, 25, 64]",
+        explanation: "Find min (11) swap with 64 -> [11, 25, 12, 22, 64]. Find min (12) swap with 25 -> [11, 12, 25, 22, 64]. Find min (22) swap with 25 -> [11, 12, 22, 25, 64]."
+      }
+    ],
+    intuitionPrompt: "Scanning the unsorted portion of a list to pick the absolute smallest remaining item, placing it into the next open slot on the left.",
+    approaches: [
+      {
+        name: "Selection Sort",
+        complexity: "O(n²)",
+        spaceComplexity: "O(1)",
+        description: "Maintain a sorted sublist on the left. Find minimum element in unsorted sublist and swap with arr[i]. Performs at most N-1 swaps total.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Flash memory devices where writes are significantly more expensive than reads (Selection Sort makes at most O(N) writes).",
+      "Small dataset sorting when O(1) space and minimal writes are strictly required."
+    ],
+    patterns: ["In-Place Sorting", "Min Selection", "Minimal Writes"]
+  }
 };
+

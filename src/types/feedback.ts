@@ -8,6 +8,7 @@ export interface FeedbackFormData {
   type: FeedbackType;
   description: string;
   email: string; // empty string if not provided
+  honeypot?: string; // invisible anti-bot trap
 }
 
 export interface FeedbackContext {

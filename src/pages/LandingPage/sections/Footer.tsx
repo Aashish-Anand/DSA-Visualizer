@@ -17,9 +17,6 @@ export function Footer() {
         </div>
 
         <div className="flex items-center gap-6 text-[12px] text-muted-foreground">
-          <a href="https://github.com/Aashish-Anand" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">
-            GitHub
-          </a>
           <a href="#roadmap" className="hover:text-foreground transition-colors">
             Roadmap
           </a>

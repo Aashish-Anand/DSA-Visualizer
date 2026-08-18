@@ -129,5 +129,36 @@ export const addTwoNumbersConfig: AlgorithmConfig = {
       }
       return { operations, comparisons: 0, reads, writes };
     }
+  },
+  problemContext: {
+    statement: "You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each node contains a single digit. Add the two numbers and return the sum as a linked list in reverse order.",
+    examples: [
+      {
+        input: "l1 = [2, 4, 3], l2 = [5, 6, 4]",
+        output: "[7, 0, 8]",
+        explanation: "342 + 465 = 807, represented as [7, 0, 8] in reverse."
+      },
+      {
+        input: "l1 = [9, 9, 9, 9, 9, 9, 9], l2 = [9, 9, 9, 9]",
+        output: "[8, 9, 9, 9, 0, 0, 0, 1]",
+        explanation: "9999999 + 9999 = 10009998, represented in reverse order."
+      }
+    ],
+    intuitionPrompt: "Perform elementary school addition digit-by-digit from right to left (least significant to most significant), keeping track of a single `carry` variable (0 or 1).",
+    approaches: [
+      {
+        name: "Elementary Addition with Carry",
+        complexity: "O(max(n, m))",
+        spaceComplexity: "O(max(n, m))",
+        description: "Maintain carry=0 and dummy head. Loop while l1, l2, or carry exists. Sum values + carry, update carry = sum / 10, append sum % 10 to result.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Arbitrary-precision arithmetic (BigInt / BigInteger library implementations for numbers exceeding 64-bit integer limits).",
+      "Financial software calculations requiring exact precision without floating point rounding errors."
+    ],
+    patterns: ["Linked List", "Elementary Math", "Dummy Node", "Carry Propagation"]
   }
 };
+

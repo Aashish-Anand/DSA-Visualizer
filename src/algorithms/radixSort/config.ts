@@ -36,4 +36,31 @@ export const radixSortConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 200, default: 50 },
     runExperiment: runRadixSortExperiment,
   },
+  problemContext: {
+    statement: "Given an array of non-negative integers `arr`, sort the array using Radix Sort by processing digits individually from the least significant digit (LSD) to the most significant digit (MSD) using a stable sorting subroutine (e.g. Counting Sort).",
+    examples: [
+      {
+        input: "arr = [170, 45, 75, 90, 802, 24, 2, 66]",
+        output: "[2, 24, 45, 66, 75, 90, 170, 802]",
+        explanation: "Sort by 1s digit: [170, 90, 802, 2, 24, 45, 75, 66]. Sort by 10s digit: [802, 2, 24, 45, 66, 170, 75, 90]. Sort by 100s digit: [2, 24, 45, 66, 75, 90, 170, 802]."
+      }
+    ],
+    intuitionPrompt: "Sorting multi-digit numbers by first sorting all ones digits, then all tens digits, then hundreds digits, preserving the relative order of earlier digits at each step!",
+    approaches: [
+      {
+        name: "LSD Radix Sort",
+        complexity: "O(d × (n + k))",
+        spaceComplexity: "O(n + k)",
+        description: "Iterate from place=1 (1s, 10s, 100s...). Group numbers into 10 buckets (0-9) based on current digit and flatten back into array stably.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Sorting fixed-length string records or binary integer keys.",
+      "Card sorter machines and postal code sorting systems.",
+      "Parallel computing sorting routines on GPU architectures."
+    ],
+    patterns: ["Non-Comparison Sort", "Digit Distribution", "Stable Bucket Sorting"]
+  }
 };
+

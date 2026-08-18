@@ -28,4 +28,36 @@ export const linearSearchConfig: AlgorithmConfig = {
     inputSizeRange: { min: 10, max: 2000, default: 100 },
     runExperiment: runLinearSearchExperiment,
   },
+  problemContext: {
+    statement: "Given an array `arr` and a target value `target`, return the index of `target` in `arr`. If `target` is not present in `arr`, return `-1`.",
+    examples: [
+      {
+        input: "arr = [10, 20, 80, 30, 60, 50, 110, 100, 130, 170], target = 110",
+        output: "6",
+        explanation: "Element 110 is present at index 6."
+      },
+      {
+        input: "arr = [10, 20, 80, 30, 60, 50, 110, 100, 130, 170], target = 175",
+        output: "-1",
+        explanation: "Element 175 is not present in arr."
+      }
+    ],
+    intuitionPrompt: "Looking through a stack of unsorted papers one by one from top to bottom until you find the exact paper you need.",
+    approaches: [
+      {
+        name: "Linear Search",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "Iterate through each element sequentially from index 0 to n-1. Compare each element with target.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Searching through unsorted arrays or linked lists.",
+      "Small dataset lookups where setting up index data structures incurs unnecessary overhead.",
+      "Unstructured file or raw data stream processing."
+    ],
+    patterns: ["Array Iteration", "Sequential Search", "Unsorted Search"]
+  }
 };
+

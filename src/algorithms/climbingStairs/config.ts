@@ -105,4 +105,43 @@ export const climbingStairsConfig: AlgorithmConfig = {
     inputSizeRange: { min: 5, max: 2000, default: 100 },
     runExperiment: runClimbingStairsExperiment,
   },
+  problemContext: {
+    statement: "You are climbing a staircase. It takes `n` steps to reach the top. Each time you can either climb `1` step or `2` steps. In how many distinct ways can you climb to the top?",
+    examples: [
+      {
+        input: "n = 2",
+        output: "2",
+        explanation: "There are two ways to climb to the top: 1 step + 1 step, or 2 steps."
+      },
+      {
+        input: "n = 3",
+        output: "3",
+        explanation: "There are three ways to climb to the top: (1+1+1), (1+2), or (2+1)."
+      }
+    ],
+    intuitionPrompt: "To reach step `n`, your very last step must have been from step `n-1` (taking 1 step) or step `n-2` (taking 2 steps). Therefore, total ways to step `n` is simply: waysTo(n-1) + waysTo(n-2)!",
+    approaches: [
+      {
+        name: "Naive Recursion",
+        complexity: "O(2ⁿ)",
+        spaceComplexity: "O(n)",
+        description: "Recompute climbStairs(n-1) and climbStairs(n-2) recursively. High overlap of duplicate subproblems.",
+        isOptimal: false
+      },
+      {
+        name: "Dynamic Programming (Tabulation / Memoization)",
+        complexity: "O(n)",
+        spaceComplexity: "O(n) or O(1)",
+        description: "Store ways to reach step i in a dp table or two variables (prev1, prev2) and compute bottom-up.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Path counting in grid routing and game movement physics.",
+      "Combinatorial optimization for tiling problems.",
+      "Fibonacci sequence applications in algorithm design."
+    ],
+    patterns: ["Dynamic Programming", "Fibonacci", "1D DP"]
+  }
 };
+

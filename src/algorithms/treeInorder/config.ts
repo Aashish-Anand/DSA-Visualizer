@@ -26,5 +26,45 @@ export const treeInorderConfig: AlgorithmConfig = {
     spaceCases: { best: "O(log N)", average: "O(log N)", worst: "O(N)" },
     inputSizeRange: { min: 3, max: 63, default: 15 },
     runExperiment: runTreeInorderExperiment,
+  },
+  problemContext: {
+    statement: "Given the `root` of a binary tree, return the in-order traversal of its nodes' values (Left -> Root -> Right). For a Binary Search Tree (BST), this visits elements in sorted order.",
+    examples: [
+      {
+        input: "root = [1, null, 2, 3]",
+        output: "[1, 3, 2]",
+        explanation: "Traverse left subtree (empty), visit root 1, traverse right subtree (inorder of node 2 with left child 3 gives 3, then 2)."
+      }
+    ],
+    intuitionPrompt: "Sweep from left to right across the binary tree. For every subtree, visit the left child first, process the current node, then visit the right child.",
+    approaches: [
+      {
+        name: "Recursive In-order",
+        complexity: "O(n)",
+        spaceComplexity: "O(h) call stack",
+        description: "Call helper(node.left), record node.val, call helper(node.right).",
+        isOptimal: true
+      },
+      {
+        name: "Iterative with Stack",
+        complexity: "O(n)",
+        spaceComplexity: "O(h)",
+        description: "Push left children onto stack until null, pop and visit, then move to right child.",
+        isOptimal: true
+      },
+      {
+        name: "Morris Traversal",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "Use temporary threaded binary tree pointers (predecessor links) for O(1) auxiliary space.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Sorted element extraction from Binary Search Trees (BST).",
+      "Evaluating arithmetic expression trees (infix notation).",
+      "Validating BST invariant (checking if inorder traversal is strictly increasing)."
+    ],
+    patterns: ["Tree Traversal", "Depth-First Search", "In-Order", "BST Processing"]
   }
 };

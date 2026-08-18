@@ -80,5 +80,44 @@ export const middleOfLinkedListConfig: AlgorithmConfig = {
       }
       return { operations, comparisons: 0, reads, writes };
     }
+  },
+  problemContext: {
+    statement: "Given the `head` of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.",
+    examples: [
+      {
+        input: "head = [1, 2, 3, 4, 5]",
+        output: "Node 3",
+        explanation: "The middle node of the list is 3."
+      },
+      {
+        input: "head = [1, 2, 3, 4, 5, 6]",
+        output: "Node 4",
+        explanation: "Since the list has two middle nodes with values 3 and 4, we return the second one (4)."
+      }
+    ],
+    intuitionPrompt: "If two runners start at the same line and Runner A runs twice as fast as Runner B, when Runner A crosses the finish line, Runner B is exactly at the midpoint!",
+    approaches: [
+      {
+        name: "Fast & Slow Pointers (Floyd's Cycle / Tortoise & Hare)",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "Move slow pointer by 1 step and fast pointer by 2 steps per iteration until fast reaches end.",
+        isOptimal: true
+      },
+      {
+        name: "Two-Pass Length Counting",
+        complexity: "O(n)",
+        spaceComplexity: "O(1)",
+        description: "First pass counts total list length L. Second pass traverses L / 2 steps from head.",
+        isOptimal: false
+      }
+    ],
+    realWorldApplications: [
+      "Merge Sort on Linked Lists (splitting linked list into equal halves).",
+      "Finding palindrome center in linked lists.",
+      "Buffer partitioning in streaming data structures."
+    ],
+    patterns: ["Linked List", "Fast and Slow Pointers", "Two Pointers"]
   }
 };
+

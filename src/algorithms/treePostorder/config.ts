@@ -26,5 +26,38 @@ export const treePostorderConfig: AlgorithmConfig = {
     spaceCases: { best: "O(log N)", average: "O(log N)", worst: "O(N)" },
     inputSizeRange: { min: 3, max: 63, default: 15 },
     runExperiment: runTreePostorderExperiment,
+  },
+  problemContext: {
+    statement: "Given the `root` of a binary tree, return the post-order traversal of its nodes' values (Left -> Right -> Root).",
+    examples: [
+      {
+        input: "root = [1, null, 2, 3]",
+        output: "[3, 2, 1]",
+        explanation: "Process left subtree, process right subtree (child 3 then 2), then visit root 1 last."
+      }
+    ],
+    intuitionPrompt: "Process children subtrees completely before processing their parent node. Perfect for bottom-up calculations like node deletion or calculating subtree sizes/heights.",
+    approaches: [
+      {
+        name: "Recursive Post-order",
+        complexity: "O(n)",
+        spaceComplexity: "O(h) call stack",
+        description: "Recursively visit node.left, node.right, then record node.val.",
+        isOptimal: true
+      },
+      {
+        name: "Iterative with Two Stacks or Reversed Pre-Order",
+        complexity: "O(n)",
+        spaceComplexity: "O(h)",
+        description: "Process Root -> Right -> Left using stack, then reverse the collected result array to yield Left -> Right -> Root.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Safely deleting or freeing nodes in a binary tree (children freed before parent).",
+      "Evaluating expression trees in postfix / Reverse Polish Notation (RPN).",
+      "Calculating folder / directory disk sizes bottom-up."
+    ],
+    patterns: ["Tree Traversal", "Depth-First Search", "Post-Order", "Bottom-Up Processing"]
   }
 };

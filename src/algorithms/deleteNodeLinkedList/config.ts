@@ -99,5 +99,32 @@ export const deleteNodeLinkedListConfig: AlgorithmConfig = {
       }
       return { operations, comparisons: 0, reads, writes };
     }
+  },
+  problemContext: {
+    statement: "Given the `head` of a singly linked list and an integer `k` (0-indexed), delete the k-th node from the linked list and return the updated head.",
+    examples: [
+      {
+        input: "head = [4, 5, 1, 9], k = 2",
+        output: "[4, 5, 9]",
+        explanation: "The node at 0-indexed position 2 (value 1) is removed by pointing node 5 directly to node 9."
+      }
+    ],
+    intuitionPrompt: "Traverse to node k-1, then re-route its `next` pointer to bypass node k: `prev.next = curr.next`.",
+    approaches: [
+      {
+        name: "Pointer Bypass",
+        complexity: "O(k)",
+        spaceComplexity: "O(1)",
+        description: "Special check for k=0 (return head.next). Otherwise, traverse k steps, keeping track of prev. Set prev.next = curr.next.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Unlinking tasks from a process schedule queue.",
+      "LRU Cache cache-eviction node unlinking.",
+      "Memory pool node deallocation."
+    ],
+    patterns: ["Linked List", "Pointer Manipulation", "Node Removal"]
   }
 };
+

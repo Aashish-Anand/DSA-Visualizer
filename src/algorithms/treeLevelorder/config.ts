@@ -28,5 +28,31 @@ export const treeLevelorderConfig: AlgorithmConfig = {
     spaceCases: { best: "O(1)", average: "O(N)", worst: "O(N)" },
     inputSizeRange: { min: 3, max: 63, default: 15 },
     runExperiment: runTreeLevelorderExperiment,
+  },
+  problemContext: {
+    statement: "Given the `root` of a binary tree, return the level-order traversal of its nodes' values (i.e., from left to right, level by level).",
+    examples: [
+      {
+        input: "root = [3, 9, 20, null, null, 15, 7]",
+        output: "[[3], [9, 20], [15, 7]]",
+        explanation: "Level 0: [3]. Level 1: [9, 20]. Level 2: [15, 7]."
+      }
+    ],
+    intuitionPrompt: "Explore the binary tree layer by layer, top to bottom. Using a Queue (FIFO), visit all nodes at depth k before moving to depth k+1.",
+    approaches: [
+      {
+        name: "Breadth-First Search (BFS with Queue)",
+        complexity: "O(n)",
+        spaceComplexity: "O(w) queue max width",
+        description: "Maintain a FIFO queue initialized with root. For each level, snapshot current queue size, pop nodes, record values, and enqueue children.",
+        isOptimal: true
+      }
+    ],
+    realWorldApplications: [
+      "Finding the shortest path / minimum depth in unweighted trees or graphs.",
+      "Serialization and deserialization of binary trees (e.g., LeetCode tree string format).",
+      "Network broadcasting and organizational hierarchy rendering."
+    ],
+    patterns: ["Tree Traversal", "Breadth-First Search", "Level Order", "Queue"]
   }
 };
