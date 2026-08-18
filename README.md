@@ -1,258 +1,170 @@
-# DSA Visual — Learn Algorithms by Seeing
+# AlgoLens — Learn Data Structures & Algorithms by Seeing
 
-A visual, interactive learning platform that helps beginners understand **Data Structures & Algorithms** through step-by-step animations and beginner-friendly explanations.
+A modern, interactive visual learning platform that helps developers and students master **Data Structures & Algorithms** through step-by-step animations, interactive runtime experiments, and intuitive mental models.
 
-> **No backend required.** All algorithm execution happens entirely in the browser.
+> **Zero server latency.** All algorithm execution and state generation happens entirely client-side in the browser.
 
 🚀 **Live Demo:** [https://dsa-visualizer-two-pi.vercel.app/](https://dsa-visualizer-two-pi.vercel.app/)
 
-![Bubble Sort visualization with animated histogram bars](https://img.shields.io/badge/Algorithms-2-7c3aed?style=for-the-badge) ![Built with React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=for-the-badge&logo=typescript)
+![Algorithms](https://img.shields.io/badge/Algorithms-22+-7c3aed?style=for-the-badge) ![Built with React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=for-the-badge&logo=typescript) ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38bdf8?style=for-the-badge&logo=tailwindcss) ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- **Step-by-step visualization** — Every algorithm generates a sequence of states. The UI renders them one at a time so you can see exactly what happens at each step.
-- **Complexity Explorer [BETA]** — Go beyond Big-O notation. Watch live empirical experiments, real-time comparison metrics, and interactive growth charts to truly understand *why* an algorithm performs the way it does.
-- **Multi-Language Code Sync** — Follow along in Python, Java, C++, or Pseudocode with line-by-line execution tracking.
-- **Interactive Dry Run** — Active learning mode that quizzes you at critical decision points during execution.
-- **Animated visualizations** — Smooth Framer Motion animations for bar swaps, cell highlights, and HashMap entries.
-- **"Explain Like I'm 12" mode** — Toggle beginner-friendly explanations with a single switch.
-- **Playback controls** — Play, Pause, Step Forward, Step Backward, Reset, and adjustable speed (0.5x–4x).
-- **Keyboard shortcuts** — `Space` (play/pause), `←` / `→` (step), `R` (reset).
-- **Dark mode** — Automatic system preference detection.
-
----
-
-## 📸 Visualizers in Action
-
-<table>
-  <tr>
-    <td width="50%">
-      <b>Bar Visualizer (Sorting)</b><br/>
-      <i>Used in Quick, Bubble, Selection, and Insertion Sort. Features dynamic markers (MIN, PIVOT).</i><br/>
-      <img src="public/screenshots/quick-sort.png" />
-    </td>
-    <td width="50%">
-      <b>Merge Sort Visualizer</b><br/>
-      <i>A custom tree-based visualizer showing the array splitting into chunks and merging.</i><br/>
-      <img src="public/screenshots/merge-sort.png" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <b>Radix Sort Visualizer</b><br/>
-      <i>A 10-bucket system (0-9) where numbers drop down based on their place value.</i><br/>
-      <img src="public/screenshots/radix-sort.png" />
-    </td>
-    <td width="50%">
-      <b>Counting Sort Visualizer</b><br/>
-      <i>A 3-part layout visualizing frequencies, prefix sums, and the final output array.</i><br/>
-      <img src="public/screenshots/counting-sort.png" />
-    </td>
-  </tr>
-</table>
+- **🎬 Step-by-Step Visualization Engine** — Every algorithm generates deterministic, granular state steps. Play, pause, rewind, jump forward, and adjust speed from 0.5x to 4x.
+- **📖 Problem Context ("Understand First" Panel)** — Build intuition before diving into code. Includes formal problem statements, intuitive visual analogies, brute-force vs. optimal approach evolutions, time/space trade-offs, real-world software applications, and DSA pattern tags.
+- **📊 Complexity Explorer** — Go beyond static Big-O notation. Run live empirical experiments with variable input sizes, measure exact operation counts (comparisons, swaps, reads, writes, recursive calls), and visualize interactive growth curves.
+- **💻 Multi-Language Code Sync** — Line-by-line synchronized execution tracking available in **Python**, **Java**, **C++**, and **TypeScript / Pseudocode**.
+- **🧪 Interactive Dry Run** — Active learning mode that challenges you with interactive quiz checkpoints at critical decision points during execution.
+- **🔗 Shareable Deep Links** — Copy and share direct URLs encoding selected algorithms and view states (`?algo=quick-sort`).
+- **📬 In-App Feedback Pipeline** — Serverless Google Sheets / Excel integration with built-in anti-bot honeypots, rate-limiting caches, and spam filtering.
+- **🌓 Dark & Light Modes** — Clean, harmonious design system with automatic system preference detection and smooth glassmorphism styling.
+- **⌨️ Keyboard Navigation** — `Space` (Play/Pause), `←` / `→` (Step Backward/Forward), `R` (Reset).
 
 ---
 
 ## 🧠 Supported Algorithms
 
-| Category | Algorithm | Difficulty | Key Visual Features |
-| :--- | :--- | :--- | :--- |
-| **Trees** | Pre / In / Post-order | Easy | Recursive Call Stack UI & Node Highlights |
-| | Level-order Traversal | Medium | Dynamic Queue & Layer Tracking |
-| **Arrays** | Two Sum | Easy | HashMap State & Dynamic Tables |
-| | Stock Buy and Sell | Medium | Min/Max Dynamic Pointers |
-| | Kadane's Algorithm | Medium | Contiguous Subarray Trackers |
-| | Majority Element 1 & 2| Easy/Hard | Moore's Voting & Candidate Frequencies |
-| **Sorting** | Bubble, Selection, Insertion | Easy | Array comparisons & swaps |
-| | Quick, Merge | Medium | Divide & Conquer strategies |
-| | Radix, Counting | Medium | Buckets, Frequencies, & Prefix Sums |
-| **Searching** | Linear, Binary Search | Easy | Array Traversal & Elimination bounds |
-| **Linked List** | Singly Linked List Search | Easy | Pointer Traversal & Object References |
-| **Graphs** | BFS, DFS | Medium | Adjacency Lists, Queues, & Call Stacks |
+AlgoLens includes **22+ fully animated algorithms** across 6 core DSA categories:
+
+| Category | Algorithm | Difficulty | Key Visual Highlights |
+| :--- | :--- | :---: | :--- |
+| **Arrays & Two Pointers** | Two Sum | Easy | Real-time HashMap lookup table & complement tracking |
+| | Container With Most Water | Medium | 2D dynamic water boundary & capacity calculations |
+| | Trapping Rain Water | Hard | Elevation histogram, left/right max water physics |
+| | Three Sum & Four Sum | Medium | Sorted two-pointer sweeps & duplicate skipping |
+| | Stock Buy and Sell | Medium | Dynamic min-price pointer & profit maximization |
+| | Kadane's Algorithm | Medium | Maximum contiguous subarray boundary tracking |
+| | Majority Element (I & II) | Easy/Medium | Boyer-Moore voting counters & candidate frequencies |
+| **Sorting** | Bubble, Selection, Insertion | Easy | Dynamic comparison pointers, sorted partitions, & swaps |
+| | Quick Sort | Medium | Pivot selection (Lomuto), partition splits, & call stack |
+| | Merge Sort | Medium | Divide-and-conquer tree splitting & auxiliary array merging |
+| | Counting Sort | Medium | Frequency array, prefix-sum indices, & stable output placement |
+| | Radix Sort | Medium | LSD 10-bucket place-value distribution (1s, 10s, 100s) |
+| **Searching** | Linear Search | Easy | Sequential element scanning & match detection |
+| | Binary Search | Easy | Low/Mid/High boundary elimination on sorted arrays |
+| **Linked Lists** | Singly Linked List Search | Easy | Head-to-tail pointer traversal & target lookup |
+| | Reverse Linked List | Easy | Three-pointer in-place link reversal (`prev`, `curr`, `next`) |
+| | Middle of the Linked List | Easy | Fast & Slow pointer (Tortoise & Hare) midpoint detection |
+| | Delete K-th Node | Easy | Pointer bypass & unlinking logic |
+| | Merge Two Sorted Lists | Easy | Two-pointer comparative splicing with dummy head node |
+| | Add Two Numbers | Medium | Reverse-order digit summation with carry propagation |
+| **Trees** | Pre / In / Post-order Traversal | Easy | DFS call stack execution & visited node highlights |
+| | Level-order Traversal (BFS) | Medium | FIFO Queue state & layer-by-layer tree scanning |
+| **Graphs** | Breadth-First Search (BFS) | Medium | FIFO queue exploration & shortest path frontiers |
+| | Depth-First Search (DFS) | Medium | Recursive call stack traversal & backtracking |
+| **Dynamic Programming** | Climbing Stairs | Easy | 1D tabulation, memoization, & recursion tree breakdown |
+| | Frog Jump (Min Cost) | Medium | 1D DP decision transitions & min energy path calculation |
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm v9 or higher
+- [Node.js](https://nodejs.org/) v18.0.0 or higher
+- npm v9.0.0 or higher
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/DSA_Visualizer.git
-cd DSA_Visualizer
+# 1. Clone the repository
+git clone https://github.com/Aashish-Anand/DSA-Visualizer.git
+cd DSA-Visualizer
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start the dev server
+# 3. (Optional) Set up Environment Variables
+cp .env.example .env
+
+# 4. Start the development server
 npm run dev
 ```
 
-> **Troubleshooting `npm: command not found`**
-> If you get a "command not found" error, your Node manager (like `fnm` or `nvm`) might not be loaded in your terminal session.
-> Try running this before your `npm` commands:
-> ```bash
-> export PATH="$HOME/.local/share/fnm:$PATH" && eval "$(fnm env)"
-> ```
-
 Open **http://localhost:5173** in your browser.
 
-### Build for Production
+---
+
+## ⚙️ Environment Configuration
+
+AlgoLens works 100% out of the box without any environment variables. If you wish to connect the feedback modal to your own Google Sheet:
+
+1. Create a `.env` file based on `.env.example`:
+   ```env
+   VITE_FEEDBACK_WEBHOOK_URL="https://script.google.com/macros/s/YOUR_GOOGLE_APPS_SCRIPT_ID/exec"
+   ```
+2. For production deployments (e.g. **Vercel**), add `VITE_FEEDBACK_WEBHOOK_URL` in **Project Settings > Environment Variables** and redeploy.
+
+---
+
+## 🧪 Quality Assurance & Testing
+
+This project adheres to a strict testing and linting workflow:
 
 ```bash
+# Run unit tests
+npm run test
+
+# Run complete validation (typecheck + ESLint + Vitest)
+npm run validate
+
+# Build production bundle
 npm run build
+
+# Preview production build locally
 npm run preview
 ```
 
-## 🧪 Testing & Quality Assurance
-
-This project uses a robust QA pipeline to prevent regressions.
-
-### Run Unit Tests
-We use **Vitest** to mathematically verify the core logic of the algorithm generators.
-```bash
-npm run test
-```
-
-### Complete Validation Check
-To run unit tests, check for ESLint warnings, and verify TypeScript types all at once in a single command:
-```bash
-npm run validate
-```
-*(This is a shortcut that automatically runs `npm run typecheck && npm run lint && npm run test` in sequence)*
-
-> **Note on Committing:** 
-> We use **Husky** and **lint-staged**. Whenever you run `git commit`, it will automatically run the linters and type checkers on your staged files. If there are any errors (like unused variables or type mismatches), the commit will be aborted to keep the `main` branch clean!
+> **Pre-Commit Enforcement:** We use **Husky** and **lint-staged** to automatically run ESLint and TypeScript checks before every commit, ensuring that `main` is always build-ready.
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-Algorithm Generator → VisualizationStep[] → Playback Engine → UI Components
+Algorithm Generator → VisualizationStep<T>[] → usePlaybackEngine<T> → UI Visualizer Component
 ```
 
-The core design principle: **algorithms generate states, the UI renders states.**
-
-- Algorithms produce a `VisualizationStep<T>[]` array containing every intermediate state.
-- The generic `usePlaybackEngine<T>` hook manages playback (play/pause/step/speed).
-- Visualizer components render the current state with animations.
-- The engine is **fully algorithm-agnostic** — adding a new algorithm requires zero changes to the playback system.
-
----
-
-## 📁 Project Structure
-
-```
-src/
-├── algorithms/                 # Algorithm step generators
-│   ├── bubbleSort/
-│   │   ├── generator.ts        # generateBubbleSortSteps()
-│   │   └── config.ts           # Pseudocode, metadata
-│   └── twoSum/
-│       ├── generator.ts        # generateTwoSumSteps()
-│       └── config.ts           # Pseudocode, metadata
-├── components/                 # Reusable UI components
-│   ├── Controls/
-│   │   ├── PlaybackControls.tsx # Play/pause/step/speed controls
-│   │   └── InputControls.tsx    # Algorithm-specific inputs
-│   ├── ExplanationPanel/
-│   │   └── ExplanationPanel.tsx # Step explanation + ELI12 toggle
-│   ├── PseudocodePanel/
-│   │   └── PseudocodePanel.tsx  # Line-highlighted pseudocode
-│   ├── Sidebar/
-│   │   └── Sidebar.tsx          # Topic navigation
-│   └── ui/                     # shadcn/ui primitives
-├── hooks/
-│   └── usePlaybackEngine.ts    # Generic playback engine
-├── visualizers/                # Algorithm-specific visualizers
-│   ├── BubbleSortVisualizer/
-│   └── TwoSumVisualizer/
-├── types/
-│   └── index.ts                # All TypeScript interfaces
-├── pages/
-│   └── AlgorithmPage.tsx       # Main layout composition
-├── lib/
-│   └── utils.ts                # Utility functions
-├── App.tsx                     # Root with dark mode
-├── main.tsx                    # Entry point
-└── index.css                   # Design system & theme
-```
+The core architecture strictly separates algorithm computation from UI rendering:
+1. **Generators (`src/algorithms/*/generator.ts`)**: Pure functions that simulate algorithm execution and yield an array of immutable `VisualizationStep<T>` state snapshots.
+2. **Playback Engine (`src/hooks/usePlaybackEngine.ts`)**: An algorithm-agnostic React hook managing playback state, stepping, timing, and progress.
+3. **Visualizers (`src/visualizers/*`)**: React components that render current state frames with smooth Framer Motion animations.
+4. **Problem Context & Complexity Explorer**: Modular panels driven by declarative configurations in `config.ts`.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|-----------|---------|
-| [React](https://react.dev) | UI framework |
-| [TypeScript](https://typescriptlang.org) | Type safety |
-| [Vite](https://vite.dev) | Build tool & dev server |
-| [TailwindCSS v4](https://tailwindcss.com) | Utility-first styling |
-| [shadcn/ui](https://ui.shadcn.com) | UI component primitives |
-| [Framer Motion](https://motion.dev) | Animations |
-| [Lucide React](https://lucide.dev) | Icons |
-| [Vitest](https://vitest.dev) | Automated Unit Testing |
-| [Husky & Lint-Staged](https://typicode.github.io/husky/) | Pre-commit hooks & Quality Assurance |
-| [GitHub Actions](https://github.com/features/actions) | CI/CD Pipeline |
+| Layer | Technologies |
+| :--- | :--- |
+| **Framework** | [React 19](https://react.dev), [Vite 8](https://vite.dev), [TypeScript 6](https://www.typescriptlang.org/) |
+| **Styling** | [TailwindCSS v4](https://tailwindcss.com), [Radix UI](https://www.radix-ui.com/) |
+| **Motion & UI** | [Framer Motion](https://motion.dev), [Lucide Icons](https://lucide.dev) |
+| **Testing** | [Vitest](https://vitest.dev) |
+| **Tooling** | ESLint v10, Husky, lint-staged |
+| **Deployment** | Vercel |
 
 ---
 
-## 🔮 Adding a New Algorithm
+## 📋 Roadmap
 
-The architecture is designed for easy extension. To add a new algorithm, please first read our comprehensive **[Algorithm Onboarding Standards](./ALGORITHM_ONBOARDING.md)** document.
-
-A quick summary of the steps:
-
-1. **Create the generator** in `src/algorithms/<name>/generator.ts`:
-   ```typescript
-   function generateMyAlgorithmSteps(input): VisualizationStep<MyState>[] {
-     // Generate all intermediate states
-   }
-   ```
-
-2. **Create the config** in `src/algorithms/<name>/config.ts`:
-   ```typescript
-   export const myAlgorithmConfig: AlgorithmConfig = {
-     id: "my-algorithm",
-     title: "My Algorithm",
-     category: "Category",
-     pseudocode: [...],
-     difficulty: "Easy",
-   };
-   ```
-
-3. **Build the visualizer** in `src/visualizers/<Name>Visualizer/`:
-   ```typescript
-   function MyAlgorithmVisualizer({ state }: { state: MyState }) {
-     // Render the current state with animations
-   }
-   ```
-
-4. **Register it** in `AlgorithmPage.tsx` and `Sidebar.tsx`.
-
-The playback engine, pseudocode panel, explanation panel, and controls work automatically — no changes needed.
-
----
-
-## 📋 Future Roadmap
-
-- [x] Trees (Pre-order, In-order, Post-order, Level-order)
-- [x] Graph traversal (BFS, DFS)
+- [x] Tree Traversals (Pre, In, Post, Level-order)
+- [x] Graph Traversals (BFS, DFS)
 - [x] 1D Dynamic Programming (Climbing Stairs, Frog Jump)
-- [x] Algorithm complexity metrics & explorer
-- [ ] Linked Lists (insertion, deletion)
-- [ ] Stack & Queue operations
-- [ ] Binary Search Trees (insertion, deletion)
-- [ ] Shareable visualization links
+- [x] Advanced Linked List suite (Reverse, Middle, Delete, Merge, Add Two Numbers)
+- [x] Complexity Explorer with live empirical experiments
+- [x] Problem Context ("Understand First") system
+- [x] Shareable deep links via URL query params
+- [x] Serverless Anti-Spam Feedback Pipeline
+- [ ] Multi-Language pseudocode rollout for remaining sorting & array algorithms
+- [ ] Interactive Dry Run quiz integration across all categories
+- [ ] Binary Search Tree operations (Insertion, Deletion, Balancing)
+- [ ] Stack & Queue visual sandbox
 
 ---
 
 ## 📄 License
 
-MIT
+This project is licensed under the [MIT License](./LICENSE).
