@@ -71,9 +71,9 @@ const features = [
 
 export function FeaturesGrid() {
   return (
-    <section id="features" className="py-24 px-6 bg-background relative">
+    <section id="features" className="py-16 md:py-20 px-6 md:px-10 bg-background relative border-t border-foreground/[0.06]">
       <div className="w-full max-w-6xl mx-auto">
-        <div className="mb-16">
+        <div className="mb-10 md:mb-12">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
             Everything you need to <span className="text-primary">master DSA</span>
           </h2>

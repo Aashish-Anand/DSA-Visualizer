@@ -44,13 +44,13 @@ const categories: RoadmapCategory[] = [
 
 export function Roadmap() {
   return (
-    <section id="roadmap" className="py-32 md:py-40 px-6 md:px-10 border-t border-white/[0.04]">
+    <section id="roadmap" className="py-16 md:py-20 px-6 md:px-10 border-t border-foreground/[0.06]">
       <div className="max-w-[900px] mx-auto">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-6"
+          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-4"
         >
           Roadmap
         </motion.p>

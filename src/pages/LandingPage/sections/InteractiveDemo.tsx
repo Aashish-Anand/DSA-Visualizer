@@ -20,13 +20,13 @@ export function InteractiveDemo() {
   const engine = usePlaybackEngine(steps);
 
   return (
-    <section id="demo" className="py-32 md:py-40 px-6 md:px-10 border-t border-white/[0.04]">
+    <section id="demo" className="py-16 md:py-20 px-6 md:px-10 border-t border-foreground/[0.06]">
       <div className="max-w-[1000px] mx-auto">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-6"
+          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-4"
         >
           Interactive Demo
         </motion.p>
@@ -45,7 +45,7 @@ export function InteractiveDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-lg text-muted-foreground mb-12 max-w-xl"
+          className="text-lg text-muted-foreground mb-8 md:mb-10 max-w-xl"
         >
           Kadane&apos;s Algorithm — finding the maximum subarray sum. Use the controls below.
         </motion.p>

@@ -7,7 +7,7 @@ interface FinalCTAProps {
 
 export function FinalCTA({ onLaunchApp }: FinalCTAProps) {
   return (
-    <section className="relative py-32 md:py-40 px-6 md:px-10 border-t border-foreground/[0.04] overflow-hidden">
+    <section className="relative py-20 md:py-24 px-6 md:px-10 border-t border-foreground/[0.06] overflow-hidden">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/[0.08] rounded-full blur-[100px] pointer-events-none" />
 

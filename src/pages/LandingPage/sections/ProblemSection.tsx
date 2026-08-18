@@ -2,14 +2,14 @@ import { motion } from "framer-motion";
 
 export function ProblemSection() {
   return (
-    <section className="py-32 md:py-40 px-6 md:px-10">
+    <section className="py-16 md:py-20 px-6 md:px-10">
       <div className="max-w-[900px] mx-auto">
         {/* Section label */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-6"
+          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-4"
         >
           The Problem
         </motion.p>
@@ -18,7 +18,7 @@ export function ProblemSection() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-0.02em] leading-[1.15] mb-8"
+          className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-0.02em] leading-[1.15] mb-6"
         >
           Reading code is not the same as{" "}
           <span className="text-muted-foreground">understanding it.</span>
@@ -29,7 +29,7 @@ export function ProblemSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-lg text-muted-foreground leading-relaxed mb-20 max-w-2xl"
+          className="text-lg text-muted-foreground leading-relaxed mb-10 md:mb-12 max-w-2xl"
         >
           Traditional DSA learning forces you to simulate complex state changes in your head.
           You stare at a for-loop and try to imagine where pointers are, which elements have

@@ -24,13 +24,13 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-32 md:py-40 px-6 md:px-10 border-t border-white/[0.04]">
+    <section id="how-it-works" className="py-16 md:py-20 px-6 md:px-10 border-t border-foreground/[0.06]">
       <div className="max-w-[900px] mx-auto">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-6"
+          className="text-[13px] font-medium text-primary uppercase tracking-[0.15em] mb-4"
         >
           How it works
         </motion.p>
@@ -39,7 +39,7 @@ export function HowItWorks() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-0.02em] leading-[1.15] mb-20"
+          className="text-[clamp(1.8rem,4vw,3rem)] font-bold tracking-[-0.02em] leading-[1.15] mb-10 md:mb-12"
         >
           Three steps to{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400">
@@ -55,7 +55,7 @@ export function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group flex items-start gap-6 md:gap-10 py-10 border-t border-white/[0.06] last:border-b"
+              className="group flex items-start gap-6 md:gap-10 py-7 md:py-8 border-t border-foreground/[0.06] last:border-b"
             >
               <div className="text-[13px] font-mono text-muted-foreground/50 pt-1 shrink-0">
                 {step.number}

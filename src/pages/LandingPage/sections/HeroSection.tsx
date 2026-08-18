@@ -50,7 +50,7 @@ export function HeroSection({ onLaunchApp }: HeroSectionProps) {
             className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full border border-foreground/[0.08] bg-foreground/[0.03] text-[13px] text-muted-foreground"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Now visualizing 10+ algorithms
+            Now visualizing 22+ algorithms
           </motion.div>
 
           <motion.h1
