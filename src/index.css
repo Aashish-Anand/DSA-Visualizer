@@ -177,3 +177,28 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+.lesson-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  background: var(--card);
+  cursor: pointer;
+}
+.lesson-action:hover { background: var(--muted); }
+button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, circle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.lesson-code { height: 320px; }
+@media (min-width: 1024px) {
+  .lesson-code { width: 34%; min-width: 280px; max-width: 540px; height: auto; resize: horizontal; overflow: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

@@ -15,6 +15,8 @@ export interface ComplexityMetrics {
   hashmapLookups?: number;
   hashmapInserts?: number;
   recursiveCalls?: number;
+  computedStates?: number;
+  cacheHits?: number;
 }
 
 export interface ComplexityCaseSummary {
@@ -42,6 +44,8 @@ export interface ComplexityExplorerConfig {
   inputSizeRange: { min: number; max: number; default: number };
   /** Runs the algorithm at a given size and returns total metrics (no steps) */
   runExperiment: (inputSize: number) => ComplexityMetrics;
+  operationDefinition?: string;
+  expectedGrowth?: "linear" | "exponential" | "quadratic" | "logarithmic" | "linearithmic";
 }
 
 export interface DryRunPrompt {
@@ -498,6 +502,7 @@ export interface ProblemContext {
 
 
 export interface AlgorithmVariant {
+  complexityExplorer?: ComplexityExplorerConfig;
   id: string;
   title: string;
   description: string;

@@ -26,6 +26,8 @@ export function generateClimbingStairsSteps(n: number): VisualizationStep<DP1DSt
 
   comparisons++;
   if (n <= 1) {
+    dp[0] = 1;
+    if (n === 1) dp[1] = 1;
     steps.push({
       state: { dpArray: [...dp], currentIndex: null, dependencies: [], phase: "complete", result: 1 },
       activeLine: 1,
@@ -68,7 +70,7 @@ export function generateClimbingStairsSteps(n: number): VisualizationStep<DP1DSt
 
     operations++;
     dp[i] = (dp[i - 1] as number) + (dp[i - 2] as number);
-    
+
     steps.push({
       state: { dpArray: [...dp], currentIndex: i, dependencies: [i - 1, i - 2], phase: "calculating", result: null },
       activeLine: 5,
@@ -99,7 +101,7 @@ export function runClimbingStairsExperiment(n: number): ComplexityMetrics {
   }
 
   operations += 3; // array creation + 2 base cases
-  
+
   for (let i = 2; i <= n; i++) {
     operations += 2; // loop increment/check + addition/assignment
   }
@@ -124,7 +126,7 @@ interface LayoutNode {
 function buildLayoutTree(index: number, depth: number, isMemoized: boolean, memo: Record<number, number> = {}): LayoutNode {
   const id = `node-${index}-${Math.random().toString(36).substr(2, 9)}`;
   const node: LayoutNode = { id, label: `f(${index})`, index, x: 0, y: depth * 80 + 50 };
-  
+
   if (isMemoized && memo[index] !== undefined) return node;
   if (isMemoized) memo[index] = 1;
 
@@ -139,11 +141,11 @@ let currentLeafX = 0;
 function assignXCoordinates(node: LayoutNode) {
   if (!node.left && !node.right) {
     node.x = currentLeafX;
-    currentLeafX += 140; 
+    currentLeafX += 140;
   } else {
     if (node.left) assignXCoordinates(node.left);
     if (node.right) assignXCoordinates(node.right);
-    
+
     if (node.left && node.right) {
       node.x = (node.left.x + node.right.x) / 2;
     } else if (node.left) {
@@ -167,30 +169,30 @@ function flattenLayoutTree(node: LayoutNode, nodes: RecursionNode[], edges: Recu
 export function generateClimbingStairsRecursiveSteps(n: number): VisualizationStep<RecursionTreeState>[] {
   const nodes: RecursionNode[] = [];
   const edges: RecursionEdge[] = [];
-  
+
   currentLeafX = 0;
   const root = buildLayoutTree(n, 0, false);
   assignXCoordinates(root);
   flattenLayoutTree(root, nodes, edges);
-  
+
   return buildTreeSteps(n, nodes, false);
 }
 
 export function generateClimbingStairsMemoizedSteps(n: number): VisualizationStep<RecursionTreeState>[] {
   const nodes: RecursionNode[] = [];
   const edges: RecursionEdge[] = [];
-  
+
   currentLeafX = 0;
   const root = buildLayoutTree(n, 0, true);
   assignXCoordinates(root);
   flattenLayoutTree(root, nodes, edges);
-  
+
   return buildTreeSteps(n, nodes, true);
 }
 
 function buildTreeSteps(
-  n: number, 
-  layoutNodes: RecursionNode[], 
+  n: number,
+  layoutNodes: RecursionNode[],
   useMemo: boolean
 ): VisualizationStep<RecursionTreeState>[] {
   const steps: VisualizationStep<RecursionTreeState>[] = [];
@@ -217,26 +219,27 @@ function buildTreeSteps(
       },
       activeLine,
       explanation,
-      beginnerExplanation
+      beginnerExplanation,
+      complexityMetrics: { operations: state.nodes.length + state.computedNodeIds.length, comparisons: 0, recursiveCalls: state.nodes.length, computedStates: state.computedNodeIds.length, cacheHits: state.memoizedNodeIds.length },
     });
   }
 
   const memoCache: Record<number, number> = {};
-  let layoutNodeIndex = 0; 
+  let layoutNodeIndex = 0;
 
   function dfs(index: number, parentId: string | null): [number, string] {
     const currentNode = { ...layoutNodes[layoutNodeIndex++] };
-    
+
     state.nodes = [...state.nodes, currentNode];
     if (parentId) {
       state.edges = [...state.edges, { source: parentId, target: currentNode.id }];
     }
-    
+
     state.currentNodeId = currentNode.id;
     state.callStackIds = [...state.callStackIds, currentNode.id];
-    
+
     addStep(
-      useMemo ? 0 : 0, 
+      useMemo ? 0 : 0,
       `Calling climbStairs(${index}). We want to find ways to climb ${index} stairs.`,
       `Let's find out how many ways we can reach stair ${index}.`
     );
@@ -244,9 +247,9 @@ function buildTreeSteps(
     if (useMemo && memoCache[index] !== undefined) {
       state.memoizedNodeIds = [...state.memoizedNodeIds, currentNode.id];
       state.nodes = state.nodes.map(n => n.id === currentNode.id ? { ...n, value: memoCache[index] } : n);
-      
+
       addStep(
-        2, 
+        2,
         `Cache hit! climbStairs(${index}) was already computed as ${memoCache[index]}.`,
         `We've been here before! We already know the answer is ${memoCache[index]}.`
       );
@@ -259,12 +262,12 @@ function buildTreeSteps(
       const res = 1;
       state.nodes = state.nodes.map(n => n.id === currentNode.id ? { ...n, value: res } : n);
       state.computedNodeIds = [...state.computedNodeIds, currentNode.id];
-      
+
       if (useMemo) {
         state.memoArray[index] = res;
         memoCache[index] = res;
       }
-      
+
       addStep(
         1,
         `Base case reached: climbStairs(${index}) = 1.`,
@@ -276,21 +279,20 @@ function buildTreeSteps(
 
     // Call left (index - 1)
     const [leftVal] = dfs(index - 1, currentNode.id);
-    
+
     state.currentNodeId = currentNode.id;
-    state.callStackIds = [...state.callStackIds, currentNode.id];
-    
+
+
     // Call right (index - 2)
     const [rightVal] = dfs(index - 2, currentNode.id);
 
     state.currentNodeId = currentNode.id;
-    state.callStackIds = [...state.callStackIds, currentNode.id];
 
     const result = leftVal + rightVal;
-    
+
     state.nodes = state.nodes.map(n => n.id === currentNode.id ? { ...n, value: result } : n);
     state.computedNodeIds = [...state.computedNodeIds, currentNode.id];
-    
+
     if (useMemo) {
       memoCache[index] = result;
       state.memoArray[index] = result;
@@ -312,7 +314,7 @@ function buildTreeSteps(
   }
 
   dfs(n, null);
-  
+
   state.currentNodeId = null;
   addStep(
     -1,

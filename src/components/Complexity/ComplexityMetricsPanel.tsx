@@ -11,6 +11,8 @@ const METRIC_CONFIG: Record<
   keyof ComplexityMetrics,
   { label: string; icon: React.ReactNode; color: string }
 > = {
+  computedStates: {label: "Computed states", icon: <Database size={16}/>, color: "hsl(142 71% 45%)"},
+  cacheHits: {label: "Cache hits", icon: <Hash size={16}/>, color: "hsl(45 93% 47%)"},
   operations: {
     label: "Operations",
     icon: <Activity size={16} />,
@@ -58,10 +60,10 @@ export function ComplexityMetricsPanel({
   trackedMetrics,
 }: ComplexityMetricsPanelProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2">
       {trackedMetrics.map((key) => {
         const config = METRIC_CONFIG[key];
-        const value = metrics[key] ?? 0;
+        const value = metrics[key] ?? "Unavailable";
 
         return (
           <motion.div
@@ -84,7 +86,7 @@ export function ComplexityMetricsPanel({
             </div>
 
             <div className="min-w-0">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground truncate">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {config.label}
               </div>
               <motion.div

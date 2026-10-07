@@ -40,14 +40,14 @@ export function ExplanationPanel({
   return (
     <div className="flex flex-col gap-3 p-4 h-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Explanation
           </span>
           <Badge
             variant="secondary"
-            className="text-[10px] px-2 py-0 h-5 tabular-nums font-semibold"
+            className="text-xs px-2 py-0 h-5 tabular-nums font-semibold"
           >
             Step {currentStep + 1} / {totalSteps}
           </Badge>
@@ -74,7 +74,7 @@ export function ExplanationPanel({
                 !isBeginnerMode ? "text-primary" : "text-muted-foreground/40"
               }`}
             />
-            <Switch
+            <Switch aria-label="Simple explanation"
               checked={isBeginnerMode}
               onCheckedChange={setIsBeginnerMode}
               className="data-[state=checked]:bg-amber-500"
@@ -90,7 +90,7 @@ export function ExplanationPanel({
                 isBeginnerMode ? "text-amber-500" : "text-muted-foreground"
               }`}
             >
-              {isBeginnerMode ? "ELI12 On" : "ELI12"}
+              {isBeginnerMode ? "Simple explanation On" : "Simple explanation"}
             </span>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function ExplanationPanel({
             transition={{ duration: 0.25 }}
             className={`text-sm leading-relaxed ${
               isBeginnerMode
-                ? "text-amber-400/90 dark:text-amber-300/90"
+                ? "text-amber-800 dark:text-amber-300"
                 : "text-foreground/80"
             }`}
           >

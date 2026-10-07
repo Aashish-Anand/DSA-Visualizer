@@ -1,422 +1,54 @@
-import { useState, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Play, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { GrowthDataPoint, ComplexityMetrics } from "@/types";
+import { useMemo, useState } from "react";
+import type { ComplexityExplorerConfig, GrowthDataPoint } from "@/types";
 
-interface GrowthChartProps {
-  runExperiment: (inputSize: number) => ComplexityMetrics;
-  inputSizeRange: { min: number; max: number; default: number };
-}
-
-// Chart dimensions
-const W = 480;
-const H = 240;
-const PAD = { top: 20, right: 20, bottom: 35, left: 50 };
-const chartW = W - PAD.left - PAD.right;
-const chartH = H - PAD.top - PAD.bottom;
-
-// Reference curves for comparison
-function getReferenceCurves(maxN: number, maxOps: number) {
-  const points = 50;
-  const step = maxN / points;
-
-  const logn: { x: number; y: number }[] = [];
-  const linear: { x: number; y: number }[] = [];
-  const quadratic: { x: number; y: number }[] = [];
-  const nlogn: { x: number; y: number }[] = [];
-
-  // Scale factor: make reference curves relative to actual data
-  const scaleFactor = maxOps / (maxN * maxN || 1);
-  const maxLog = Math.max(Math.log2(Math.max(maxN, 2)), 0.1);
-
-  for (let i = 1; i <= points; i++) {
-    const n = step * i;
-    const safeLog = Math.max(Math.log2(Math.max(n, 1)), 0.1);
-    
-    logn.push({ x: n, y: safeLog * scaleFactor * (maxN * maxN / maxLog) });
-    linear.push({ x: n, y: n * scaleFactor * maxN });
-    quadratic.push({ x: n, y: n * n * scaleFactor });
-    nlogn.push({ x: n, y: n * safeLog * scaleFactor * (maxN / maxLog) });
-  }
-
-  return { logn, linear, quadratic, nlogn };
-}
-
-export function GrowthChart({ runExperiment, inputSizeRange }: GrowthChartProps) {
-  const [dataPoints, setDataPoints] = useState<GrowthDataPoint[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
-
-  const handleRunExperiment = useCallback(() => {
-    setIsRunning(true);
-    setDataPoints([]);
-
-    // Run experiments at logarithmically spaced sizes
-    const sizes: number[] = [];
-    const { min, max } = inputSizeRange;
-    const numPoints = 12;
-    for (let i = 0; i < numPoints; i++) {
-      const size = Math.round(min + (max - min) * (i / (numPoints - 1)));
-      if (!sizes.includes(size)) sizes.push(size);
-    }
-
-    // Simulate progressive build-up
-    const results: GrowthDataPoint[] = [];
-    let idx = 0;
-
-    const addNext = () => {
-      if (idx >= sizes.length) {
-        setIsRunning(false);
-        return;
-      }
-
-      // Average 3 runs for stability
-      let totalOps = 0;
-      const runs = 3;
-      for (let r = 0; r < runs; r++) {
-        const metrics = runExperiment(sizes[idx]);
-        totalOps += metrics.operations;
-      }
-
-      results.push({
-        inputSize: sizes[idx],
-        operations: Math.round(totalOps / runs),
-      });
-
-      setDataPoints([...results]);
-      idx++;
-      requestAnimationFrame(() => setTimeout(addNext, 80));
-    };
-
-    requestAnimationFrame(() => addNext());
-  }, [runExperiment, inputSizeRange]);
-
-  const handleClear = useCallback(() => {
-    setDataPoints([]);
-  }, []);
-
-
-  const { maxN, maxOps, xScale, yScale } = useMemo(() => {
-    if (dataPoints.length === 0)
-      return {
-        maxN: inputSizeRange.max,
-        maxOps: 100,
-        xScale: (n: number) => PAD.left + (n / inputSizeRange.max) * chartW,
-        yScale: (ops: number) => PAD.top + chartH - (ops / 100) * chartH,
-      };
-
-    const maxN = Math.max(...dataPoints.map((d) => d.inputSize));
-    const maxOps = Math.max(...dataPoints.map((d) => d.operations)) * 1.1;
-
-    return {
-      maxN,
-      maxOps,
-      xScale: (n: number) => PAD.left + (n / maxN) * chartW,
-      yScale: (ops: number) =>
-        PAD.top + chartH - (ops / maxOps) * chartH,
-    };
-  }, [dataPoints, inputSizeRange.max]);
-
-  // Reference curves
-  const refCurves = useMemo(() => {
-    if (dataPoints.length < 2) return null;
-    return getReferenceCurves(maxN, maxOps);
-  }, [dataPoints.length, maxN, maxOps]);
-
-  const pathFromPoints = (pts: { x: number; y: number }[]) => {
-    return pts
-      .map((p, i) => {
-        const sx = xScale(p.x);
-        const sy = yScale(p.y);
-        return `${i === 0 ? "M" : "L"} ${sx} ${sy}`;
-      })
-      .join(" ");
+type Growth = NonNullable<ComplexityExplorerConfig["expectedGrowth"]>;
+const curves: { id: Growth; label: string; color: string; fn: (n: number) => number }[] = [
+  {id:"linear",label:"O(n)",color:"#16a34a",fn:n=>n},
+  {id:"logarithmic",label:"O(log n)",color:"#0284c7",fn:n=>Math.log2(Math.max(n, 2))},
+  {id:"linearithmic",label:"O(n log n)",color:"#a16207",fn:n=>n*Math.log2(Math.max(n,2))},
+  {id:"quadratic",label:"O(n²)",color:"#e11d48",fn:n=>n*n},
+  {id:"exponential",label:"φⁿ (Fibonacci recursion)",color:"#9333ea",fn:n=>Math.pow((1+Math.sqrt(5))/2,n)},
+];
+interface Props { runExperiment: ComplexityExplorerConfig["runExperiment"]; inputSizeRange: ComplexityExplorerConfig["inputSizeRange"]; expectedGrowth?: Growth; operationDefinition?: string; }
+export function GrowthChart({ runExperiment, inputSizeRange, expectedGrowth, operationDefinition }: Props) {
+  const [data, setData] = useState<GrowthDataPoint[]>([]);
+  const [selected, setSelected] = useState<Growth[]>(expectedGrowth ? [expectedGrowth] : []);
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [error, setError] = useState("");
+  const run = () => {
+    try {
+      const sizes = [...new Set(Array.from({length:12}, (_,i)=>Math.round(inputSizeRange.min+(inputSizeRange.max-inputSizeRange.min)*i/11)))];
+      const results = sizes.map(inputSize => ({inputSize, operations: Math.round(Array.from({length:3},()=>runExperiment(inputSize).operations).reduce((a,b)=>a+b,0)/3)}));
+      setData(results); setHovered(null); setError("");
+    } catch { setError("The experiment could not complete. Try running it again."); }
   };
-
-  const dataPath = useMemo(() => {
-    if (dataPoints.length < 2) return "";
-    return pathFromPoints(
-      dataPoints.map((d) => ({ x: d.inputSize, y: d.operations }))
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataPoints, xScale, yScale]);
-
-  // Y-axis ticks
-  const yTicks = useMemo(() => {
-    const ticks: number[] = [];
-    const count = 4;
-    for (let i = 0; i <= count; i++) {
-      ticks.push(Math.round((maxOps / count) * i));
-    }
-    return ticks;
-  }, [maxOps]);
-
-  // X-axis ticks
-  const xTicks = useMemo(() => {
-    const ticks: number[] = [];
-    const count = 4;
-    for (let i = 0; i <= count; i++) {
-      ticks.push(Math.round((maxN / count) * i));
-    }
-    return ticks;
-  }, [maxN]);
-
-  return (
-    <div className="rounded-xl bg-card border border-border/50 overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-border/50">
-        <div>
-          <h4 className="text-sm font-semibold">Growth Analysis</h4>
-          <p className="text-[10px] text-muted-foreground">
-            See how work scales with input size
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {dataPoints.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs gap-1"
-              onClick={handleClear}
-            >
-              <Trash2 size={12} />
-              Clear
-            </Button>
-          )}
-          <Button
-            variant="default"
-            size="sm"
-            className="h-7 text-xs gap-1"
-            onClick={handleRunExperiment}
-            disabled={isRunning}
-          >
-            <Play size={12} />
-            {isRunning ? "Running..." : "Run Experiment"}
-          </Button>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div className="p-3">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          className="w-full"
-          style={{ maxHeight: 260 }}
-        >
-          {/* Grid lines */}
-          {yTicks.map((tick) => (
-            <g key={`y-${tick}`}>
-              <line
-                x1={PAD.left}
-                y1={yScale(tick)}
-                x2={W - PAD.right}
-                y2={yScale(tick)}
-                stroke="var(--border)"
-                strokeWidth={0.5}
-                strokeDasharray="4 4"
-              />
-              <text
-                x={PAD.left - 8}
-                y={yScale(tick) + 3}
-                textAnchor="end"
-                fontSize={9}
-                fill="var(--muted-fg)"
-                fontFamily="var(--font-mono)"
-              >
-                {tick >= 1000 ? `${(tick / 1000).toFixed(1)}k` : tick}
-              </text>
-            </g>
-          ))}
-
-          {xTicks.map((tick) => (
-            <g key={`x-${tick}`}>
-              <text
-                x={xScale(tick)}
-                y={H - 8}
-                textAnchor="middle"
-                fontSize={9}
-                fill="var(--muted-fg)"
-                fontFamily="var(--font-mono)"
-              >
-                {tick}
-              </text>
-            </g>
-          ))}
-
-          {/* Axis labels */}
-          <text
-            x={W / 2}
-            y={H - 0}
-            textAnchor="middle"
-            fontSize={10}
-            fill="var(--muted-fg)"
-            fontWeight="600"
-          >
-            Input Size (n)
-          </text>
-          <text
-            x={12}
-            y={H / 2}
-            textAnchor="middle"
-            fontSize={10}
-            fill="var(--muted-fg)"
-            fontWeight="600"
-            transform={`rotate(-90, 12, ${H / 2})`}
-          >
-            Operations
-          </text>
-
-          {/* Reference curves */}
-          <AnimatePresence>
-            {refCurves && (
-              <>
-                <motion.path
-                  d={pathFromPoints(refCurves.logn)}
-                  fill="none"
-                  stroke="hsl(199 89% 48%)"
-                  strokeWidth={1.5}
-                  strokeDasharray="6 4"
-                  opacity={0.3}
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                />
-                <motion.path
-                  d={pathFromPoints(refCurves.linear)}
-                  fill="none"
-                  stroke="hsl(142 71% 45%)"
-                  strokeWidth={1.5}
-                  strokeDasharray="6 4"
-                  opacity={0.3}
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                />
-                <motion.path
-                  d={pathFromPoints(refCurves.quadratic)}
-                  fill="none"
-                  stroke="hsl(0 84% 60%)"
-                  strokeWidth={1.5}
-                  strokeDasharray="6 4"
-                  opacity={0.3}
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                />
-                <motion.path
-                  d={pathFromPoints(refCurves.nlogn)}
-                  fill="none"
-                  stroke="hsl(45 93% 47%)"
-                  strokeWidth={1.5}
-                  strokeDasharray="6 4"
-                  opacity={0.3}
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
-                />
-              </>
-            )}
-          </AnimatePresence>
-
-          {/* Data line */}
-          {dataPath && (
-            <motion.path
-              d={dataPath}
-              fill="none"
-              stroke="var(--primary)"
-              strokeWidth={2.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.6 }}
-            />
-          )}
-
-          {/* Data points */}
-          {dataPoints.map((point, i) => (
-            <motion.circle
-              key={`${point.inputSize}-${i}`}
-              cx={xScale(point.inputSize)}
-              cy={yScale(point.operations)}
-              r={4}
-              fill="var(--primary)"
-              stroke="var(--bg)"
-              strokeWidth={2}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            />
-          ))}
-
-          {/* Hover tooltips — rendered as SVG text for simplicity */}
-          {dataPoints.map((point, i) => (
-            <g key={`tooltip-${i}`} className="opacity-0 hover:opacity-100 transition-opacity">
-              <rect
-                x={xScale(point.inputSize) - 35}
-                y={yScale(point.operations) - 28}
-                width={70}
-                height={20}
-                rx={4}
-                fill="var(--card)"
-                stroke="var(--border)"
-                strokeWidth={1}
-              />
-              <text
-                x={xScale(point.inputSize)}
-                y={yScale(point.operations) - 14}
-                textAnchor="middle"
-                fontSize={9}
-                fill="var(--fg)"
-                fontFamily="var(--font-mono)"
-                fontWeight="600"
-              >
-                n={point.inputSize} → {point.operations}
-              </text>
-            </g>
-          ))}
-        </svg>
-
-        {/* Legend */}
-        {dataPoints.length > 1 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center justify-center gap-4 mt-2 text-[10px] font-medium"
-          >
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 bg-primary inline-block rounded-full" />
-              <span className="text-muted-foreground">Your Data</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(199 89% 48%)", opacity: 0.5 }} />
-              <span className="text-muted-foreground">O(log n)</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(142 71% 45%)", opacity: 0.5 }} />
-              <span className="text-muted-foreground">O(n)</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(45 93% 47%)", opacity: 0.5 }} />
-              <span className="text-muted-foreground">O(n log n)</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-0.5 inline-block rounded-full" style={{ backgroundColor: "hsl(0 84% 60%)", opacity: 0.5 }} />
-              <span className="text-muted-foreground">O(n²)</span>
-            </span>
-          </motion.div>
-        )}
-
-        {/* Empty state */}
-        {dataPoints.length === 0 && !isRunning && (
-          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-            <p className="text-sm font-medium">No data yet</p>
-            <p className="text-xs mt-1">
-              Click "Run Experiment" to see how operations scale
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  const refs = useMemo(() => {
+    if (!data.length) return [];
+    const anchor = data.find(p => p.operations > 0) ?? data[0];
+    return curves.filter(c=>selected.includes(c.id)).map(curve=>({...curve,points:Array.from({length:60},(_,i)=>{const n=inputSizeRange.min+(inputSizeRange.max-inputSizeRange.min)*i/59;return {inputSize:n,operations:curve.fn(n)/curve.fn(anchor.inputSize)*anchor.operations};})}));
+  },[data,selected,inputSizeRange]);
+  const maxN = inputSizeRange.max;
+  const maxOps = Math.max(1, ...data.map(d=>d.operations), ...refs.flatMap(r=>r.points.map(d=>d.operations))) * 1.1;
+  const x = (n:number)=>60+n/maxN*560, y=(ops:number)=>240-ops/maxOps*210;
+  const path = (points:GrowthDataPoint[])=>points.map((d,i)=>`${i ? "L" : "M"} ${x(d.inputSize)} ${y(d.operations)}`).join(" ");
+  const last = data.at(-1), first = data[0];
+  return <section className="rounded-xl bg-card/50 border border-border p-4 sm:p-5">
+    <div className="flex flex-wrap justify-between items-start gap-3"><div><h3 className="font-semibold">Growth experiment</h3><p className="text-sm text-muted-foreground mt-1">n = {inputSizeRange.min}–{maxN} · Average of 3 runs per size</p></div><div className="flex gap-2">{data.length>0 && <button className="lesson-action" onClick={()=>{setData([]);setHovered(null);}}>Clear</button>}<button onClick={run} className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold">Run experiment</button></div></div>
+    <p className="text-xs text-muted-foreground mt-3">{operationDefinition ?? "Operations are counted by this algorithm's instrumentation; these are operation counts, not elapsed time or animation frames."}</p>
+    {error && <p role="alert" className="text-sm mt-3 text-red-600 dark:text-red-400">{error}</p>}
+    {!data.length ? <div className="rounded-lg bg-muted/30 p-8 text-center mt-4"><p className="font-medium">See how input size changes the work</p><p className="text-sm text-muted-foreground mt-2">Run an experiment to plot measured operations.</p></div> : <>
+      <svg role="img" aria-label="Measured operations versus input size" viewBox="0 0 660 280" className="w-full mt-4 max-h-80">
+        {[0,1,2,3,4].map(i=><g key={i}><line x1={60} x2={620} y1={y(maxOps*i/4)} y2={y(maxOps*i/4)} stroke="var(--border)" strokeDasharray="4 4"/><text x={52} y={y(maxOps*i/4)+4} textAnchor="end" fontSize={11} fill="var(--muted-fg)">{Math.round(maxOps*i/4).toLocaleString()}</text><text x={x(maxN*i/4)} y={260} textAnchor="middle" fontSize={11} fill="var(--muted-fg)">{Math.round(maxN*i/4)}</text></g>)}
+        <text x={335} y={278} textAnchor="middle" fontSize={12} fill="var(--muted-fg)">Input size (n)</text><text transform="translate(14,135) rotate(-90)" textAnchor="middle" fontSize={12} fill="var(--muted-fg)">Operations</text>
+        {refs.map(r=><path key={r.id} d={path(r.points)} fill="none" stroke={r.color} strokeWidth={2} strokeDasharray="6 4"/>)}
+        <path d={path(data)} fill="none" stroke="var(--primary)" strokeWidth={3}/>
+        {data.map((d,i)=><circle key={d.inputSize} cx={x(d.inputSize)} cy={y(d.operations)} r={hovered===i ? 6 : 4} fill="var(--primary)" stroke="var(--bg)" strokeWidth={2} tabIndex={0} aria-label={`Input ${d.inputSize}, ${d.operations} operations`} onMouseEnter={()=>setHovered(i)} onMouseLeave={()=>setHovered(null)} onFocus={()=>setHovered(i)} onBlur={()=>setHovered(null)}><title>n={d.inputSize}: {d.operations} operations</title></circle>)}
+      </svg>
+      <p className="text-sm font-mono min-h-6 text-primary" aria-live="polite">{hovered !== null ? `n = ${data[hovered].inputSize} → ${data[hovered].operations.toLocaleString()} operations` : "Solid purple: measured operation counts"}</p>
+      <fieldset className="mt-3"><legend className="text-xs font-semibold mb-2">Compare growth shapes</legend><div className="flex flex-wrap gap-x-4 gap-y-2">{curves.filter(c=>c.id!=="exponential" || inputSizeRange.max<=20).map(c=><label key={c.id} className="flex gap-2 items-center text-xs"><input type="checkbox" checked={selected.includes(c.id)} onChange={()=>setSelected(prev=>prev.includes(c.id)?prev.filter(v=>v!==c.id):[...prev,c.id])} className="accent-primary"/><span style={{color:c.color}}>{c.label}</span></label>)}</div></fieldset>
+      {refs.length>0 && <p className="text-xs text-muted-foreground mt-3">Dashed curves are theoretical shapes scaled to match the first positive measured point. They illustrate growth, not exact operation counts. Comparing a much faster-growing shape may compress the measured line.</p>}
+      {last && first && <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20"><p className="text-sm leading-6">Increasing n from <strong>{first.inputSize}</strong> to <strong>{last.inputSize}</strong> increased measured work from <strong>{first.operations.toLocaleString()}</strong> to <strong>{last.operations.toLocaleString()}</strong> operations.{expectedGrowth === "linear" ? " The trend is linear: roughly twice the input produces twice the work." : expectedGrowth === "exponential" ? " Repeated recursive calls make work grow much faster than input size." : " Compare the measured trend with the reference shapes."}</p></div>}
+      <details className="mt-4"><summary className="text-sm cursor-pointer font-medium">View measured data</summary><table className="w-full text-sm mt-3"><thead><tr className="text-left border-b border-border"><th className="py-2">Input size</th><th>Operations</th></tr></thead><tbody>{data.map(d=><tr key={d.inputSize} className="border-b border-border/50"><td className="py-1 font-mono">{d.inputSize}</td><td className="font-mono">{d.operations.toLocaleString()}</td></tr>)}</tbody></table></details>
+    </>}
+  </section>;
 }

@@ -20,7 +20,7 @@ import {
   FastForward,
   Hash
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface SidebarItem {
   id: string;
@@ -35,6 +35,8 @@ interface SidebarCategory {
 }
 
 const CATEGORIES: SidebarCategory[] = [
+  { name: "Stacks", icon: "layers", items: [{ id: "largest-rectangle-histogram", title: "Largest Rectangle in Histogram", difficulty: "Hard" }] },
+
   {
     name: "Arrays",
     icon: "list",
@@ -119,6 +121,8 @@ const CATEGORIES: SidebarCategory[] = [
 ];
 
 const PATTERNS: SidebarCategory[] = [
+  { name: "Monotonic Stack", icon: "layers", items: [{ id: "largest-rectangle-histogram", title: "Largest Rectangle in Histogram", difficulty: "Hard" }] },
+
   {
     name: "Two Pointers",
     icon: "brackets",
@@ -249,6 +253,26 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleThem
   );
   
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    drawerRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileOpen(false);
+      if (event.key !== "Tab") return;
+      const controls = drawerRef.current?.querySelectorAll<HTMLElement>('button, input, select, a[href], [tabindex="0"]');
+      if (!controls?.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    window.addEventListener("keydown", close);
+    return () => { window.removeEventListener("keydown", close); document.body.style.overflow = previousOverflow; previousFocus?.focus(); };
+  }, [isMobileOpen]);
 
   const activeData = viewMode === "topics" ? CATEGORIES : PATTERNS;
   const activeExpanded = viewMode === "topics" ? expandedTopics : expandedPatterns;
@@ -267,7 +291,7 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleThem
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1 min-h-0">
       {/* Logo */}
       <div className="px-4 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -402,15 +426,18 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleThem
     <>
       {/* Mobile hamburger button */}
       <button
+        aria-label={isMobileOpen ? "Close algorithm navigation" : "Open algorithm navigation"}
+        aria-expanded={isMobileOpen}
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-3 left-3 z-50 lg:hidden p-2 rounded-lg bg-card border border-border shadow-lg"
+        className={`${isMobileOpen ? "hidden" : ""} fixed top-3 left-3 z-50 lg:hidden p-2 rounded-lg bg-card border border-border shadow-lg`}
       >
         {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-56 border-r border-border bg-sidebar h-screen sticky top-0 shrink-0">
-        {sidebarContent}
+      <aside aria-label="Algorithm navigation" className={`hidden lg:flex flex-col ${collapsed ? "w-12" : "w-56"} border-r border-border bg-sidebar h-screen sticky top-0 shrink-0`}>
+        <button aria-label={collapsed ? "Expand algorithm navigation" : "Collapse algorithm navigation"} onClick={() => setCollapsed(!collapsed)} className="flex items-center justify-center gap-2 p-2 border-b border-border text-xs text-muted-foreground hover:text-foreground"><Menu size={16}/>{!collapsed && "Collapse navigation"}</button>
+        {!collapsed && sidebarContent}
       </aside>
 
       {/* Mobile sidebar overlay */}
@@ -423,11 +450,14 @@ export function Sidebar({ activeAlgorithm, onSelectAlgorithm, isDark, toggleThem
             onClick={() => setIsMobileOpen(false)}
           />
           <motion.aside
+            ref={drawerRef}
+            role="dialog" aria-modal="true" aria-label="Algorithm navigation"
             className="fixed left-0 top-0 bottom-0 w-64 z-50 bg-sidebar border-r border-border shadow-2xl lg:hidden"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
+            <button onClick={() => setIsMobileOpen(false)} className="lesson-action m-3" aria-label="Close algorithm navigation"><X size={16}/>Close navigation</button>
             {sidebarContent}
           </motion.aside>
         </>

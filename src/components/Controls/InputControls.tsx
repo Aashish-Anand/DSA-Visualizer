@@ -5,6 +5,7 @@ import { Shuffle, Dice5, Edit2, Check, X as XIcon } from "lucide-react";
 import { useState } from "react";
 
 interface BaseInputProps {
+  validateArray?: (arr: number[]) => string | null;
   currentArray?: number[];
   onCustomArrayChange?: (arr: number[]) => void;
 }
@@ -13,6 +14,8 @@ interface SortingInputControlsProps extends BaseInputProps {
   type: "sorting";
   arraySize: number;
   maxSize?: number;
+  minSize?: number;
+  inputLabel?: string;
   onArraySizeChange: (size: number) => void;
   onRandomize: () => void;
 }
@@ -22,6 +25,8 @@ interface SearchInputControlsProps extends BaseInputProps {
   arraySize: number;
   target: number;
   maxSize?: number;
+  minSize?: number;
+  inputLabel?: string;
   onArraySizeChange: (size: number) => void;
   onTargetChange: (target: number) => void;
   onRandomize: () => void;
@@ -53,10 +58,14 @@ function ArrayEditor({
   currentArray,
   onApply,
   onCancel,
+  maxItems = 50,
+  validateArray,
 }: {
   currentArray: number[];
   onApply: (arr: number[]) => void;
   onCancel: () => void;
+  maxItems?: number;
+  validateArray?: (arr: number[]) => string | null;
 }) {
   const [inputValue, setInputValue] = useState(currentArray.join(", "));
   const [error, setError] = useState<string | null>(null);
@@ -67,19 +76,21 @@ function ArrayEditor({
       setError("Array cannot be empty");
       return;
     }
-    if (parts.length > 50) {
-      setError("Maximum 50 items allowed");
+    if (parts.length > maxItems) {
+      setError(`Maximum ${maxItems} items allowed`);
       return;
     }
     const arr: number[] = [];
     for (const p of parts) {
       const n = Number(p);
-      if (isNaN(n)) {
+      if (!Number.isFinite(n)) {
         setError(`Invalid number: '${p}'`);
         return;
       }
       arr.push(n);
     }
+    const validationError = validateArray?.(arr);
+    if (validationError) { setError(validationError); return; }
     onApply(arr);
   };
 
@@ -87,6 +98,7 @@ function ArrayEditor({
     <div className="flex items-center gap-2 flex-wrap bg-muted/30 p-1.5 rounded-lg border border-border">
       <div className="flex flex-col gap-1">
         <input
+          aria-label="Array values, separated by commas"
           type="text"
           value={inputValue}
           onChange={(e) => {
@@ -99,12 +111,12 @@ function ArrayEditor({
           placeholder="e.g. 5, 2, 8, 1"
           onKeyDown={(e) => e.key === "Enter" && handleApply()}
         />
-        {error && <span className="text-[10px] text-red-500 absolute -bottom-4">{error}</span>}
+        {error && <span className="text-xs text-red-500">{error}</span>}
       </div>
-      <Button size="sm" onClick={handleApply} className="h-8 w-8 p-0 bg-emerald-500 hover:bg-emerald-600 text-white">
+      <Button size="sm" onClick={handleApply} aria-label="Apply input" className="h-8 w-8 p-0 bg-emerald-500 hover:bg-emerald-600 text-white">
         <Check size={14} />
       </Button>
-      <Button size="sm" variant="ghost" onClick={onCancel} className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+      <Button size="sm" variant="ghost" onClick={onCancel} aria-label="Cancel input editing" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
         <XIcon size={14} />
       </Button>
     </div>
@@ -119,6 +131,10 @@ function SortingInputs({
   onRandomize,
   currentArray,
   onCustomArrayChange,
+  maxSize = 40,
+  minSize = 5,
+  inputLabel = "Input",
+  validateArray,
 }: SortingInputControlsProps) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -126,6 +142,8 @@ function SortingInputs({
     return (
       <ArrayEditor
         currentArray={currentArray}
+        maxItems={maxSize}
+        validateArray={validateArray}
         onApply={(arr) => {
           onCustomArrayChange(arr);
           setIsEditing(false);
@@ -145,7 +163,7 @@ function SortingInputs({
       {currentArray && onCustomArrayChange && (
         <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="h-8 gap-1.5 text-xs">
           <Edit2 size={13} />
-          Edit Input
+          Edit {inputLabel}
         </Button>
       )}
 
@@ -156,8 +174,8 @@ function SortingInputs({
         <Slider
           value={[arraySize]}
           onValueChange={([v]) => onArraySizeChange(v)}
-          min={5}
-          max={40}
+          min={minSize}
+          max={maxSize}
           step={1}
           className="w-24"
         />

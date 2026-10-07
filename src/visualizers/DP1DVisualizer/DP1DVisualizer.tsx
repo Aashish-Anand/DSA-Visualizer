@@ -1,131 +1,32 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
+import { useFollowActive } from "@/hooks/useFollowActive";
 import type { DP1DState } from "@/types";
 
-interface DP1DVisualizerProps {
-  state: DP1DState;
-}
-
-export function DP1DVisualizer({ state }: DP1DVisualizerProps) {
-  const { dpArray, inputArray, currentIndex, dependencies, phase, result } = state;
-
-  return (
-    <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[400px]">
-      {/* Result Info */}
-      <div className="flex flex-col items-center gap-2 mb-10 min-h-[100px]">
-        {phase === "complete" && result !== null ? (
-          <>
-            <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Result</span>
-            <div className="w-16 h-16 flex items-center justify-center rounded-xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-500 text-2xl font-mono shadow-[0_0_15px_hsla(142,71%,45%,0.3)] transition-colors">
-              {result}
-            </div>
-            <Badge className="bg-emerald-500 text-white border-none mt-2">Solved</Badge>
-          </>
-        ) : (
-          <div className="flex flex-col items-center opacity-50">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-2">Calculating DP Table...</span>
-            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-          </div>
-        )}
-      </div>
-
-      {/* DP Array Container */}
-      <div className="w-full overflow-x-auto pb-8 custom-scrollbar">
-        <div className="flex flex-col items-center gap-6">
-          
-          {/* Optional Input Array (e.g., costs) */}
-          {inputArray && (
-            <div className="flex flex-col items-center gap-2 opacity-60">
-              <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">Input Array (Costs)</span>
-              <div className="flex flex-nowrap items-center justify-center gap-2 p-3 bg-card/30 rounded-xl border border-border/30">
-                {inputArray.map((val, idx) => (
-                  <div key={`input-${idx}`} className="flex flex-col items-center gap-1">
-                    <div className="w-10 h-10 flex items-center justify-center rounded-md font-mono text-sm border border-border/50 bg-card text-muted-foreground">
-                      {val}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* DP Array */}
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-[10px] font-bold text-primary tracking-wider uppercase">DP Table (State)</span>
-            <div className="flex flex-nowrap items-center justify-center gap-2 p-6 bg-card/50 rounded-2xl border border-border/50 relative">
-              <AnimatePresence mode="popLayout">
-                {dpArray.map((val, idx) => {
-                  const isCurrent = currentIndex === idx;
-                  const isDependency = dependencies.includes(idx);
-                  const isFilled = val !== null;
-                  
-                  return (
-                    <motion.div
-                      key={`dp-${idx}`}
-                      layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex flex-col items-center gap-2 relative"
-                    >
-                      {/* Pointer Labels (top) */}
-                      <div className="h-6 flex flex-col items-center justify-end">
-                        {isCurrent && (
-                          <motion.div 
-                            initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
-                            className="text-[10px] font-bold text-amber-500"
-                          >
-                            dp[{idx}]
-                          </motion.div>
-                        )}
-                        {isDependency && !isCurrent && (
-                          <motion.div 
-                            initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
-                            className="text-[10px] font-bold text-blue-500"
-                          >
-                            uses
-                          </motion.div>
-                        )}
-                      </div>
-
-                      {/* Array Cell */}
-                      <motion.div
-                        className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-lg font-mono text-base md:text-lg border-2 transition-all duration-300 ${
-                          isCurrent ? "border-amber-500 bg-amber-500/10 text-amber-500 shadow-md scale-110 z-20" :
-                          isDependency ? "border-blue-500 bg-blue-500/10 text-blue-500 shadow-[0_0_15px_hsla(221,83%,53%,0.3)] scale-105 z-10" :
-                          isFilled ? "border-primary/40 bg-primary/5 text-foreground" :
-                          "border-border border-dashed bg-card text-muted-foreground/30"
-                        }`}
-                        animate={{
-                          y: isCurrent ? -4 : 0
-                        }}
-                      >
-                        {val !== null ? val : "∞"}
-                      </motion.div>
-
-                      {/* Index (bottom) */}
-                      <div className={`text-[10px] font-mono mt-1 ${isCurrent ? "text-amber-500 font-bold" : "text-muted-foreground"}`}>
-                        {idx}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div className="flex gap-6 mt-4 text-[11px] text-muted-foreground bg-card/30 px-4 py-2 rounded-full border border-border/50">
-         <div className="flex items-center gap-2">
-           <div className="w-3 h-3 rounded-sm border-2 border-amber-500 bg-amber-500/10" />
-           <span>Calculating Current</span>
-         </div>
-         <div className="flex items-center gap-2">
-           <div className="w-3 h-3 rounded-sm border-2 border-blue-500 bg-blue-500/10" />
-           <span>Dependency (Used in calculation)</span>
-         </div>
-      </div>
+export function DP1DVisualizer({ state, kind = "stairs" }: { state: DP1DState; kind?: "stairs" | "frog" }) {
+  const { dpArray, inputArray, currentIndex, dependencies, result, phase } = state;
+  const i = currentIndex;
+  const { viewportRef, activeRef, follow, setFollow } = useFollowActive(i);
+  const previous = i !== null && i > 0 ? dpArray[i - 1] : null;
+  const earlier = i !== null && i > 1 ? dpArray[i - 2] : null;
+  const jump1 = inputArray && i !== null && i > 0 && previous !== null ? previous + Math.abs(inputArray[i] - inputArray[i - 1]) : null;
+  const jump2 = inputArray && i !== null && i > 1 && earlier !== null ? earlier + Math.abs(inputArray[i] - inputArray[i - 2]) : null;
+  return <div className="p-4 sm:p-6 space-y-5">
+    <div className="flex flex-wrap justify-between items-center gap-2"><div><h2 className="font-semibold">{kind === "frog" ? "Minimum energy to each stone" : "Ways to reach each stair"}</h2><p className="text-sm text-muted-foreground mt-1">{kind === "frog" ? "dp[i] is the minimum total energy to reach stone i." : "dp[i] counts every distinct way to reach stair i."}</p></div>{phase === "complete" && result !== null && <span className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 text-emerald-700 dark:text-emerald-400 font-bold">{result} {kind === "frog" ? "energy" : "ways"}</span>}</div>
+    <div ref={viewportRef} className="overflow-x-auto pb-3" aria-label="Dynamic programming table"><div className="flex gap-2 w-max min-w-full">
+      {dpArray.map((value, index) => {
+        const active = index === i, used = dependencies.includes(index);
+        return <div ref={active ? activeRef : undefined} key={index} className="flex-1 min-w-12 text-center space-y-2">
+          <span className="block text-xs text-muted-foreground">{kind === "frog" ? "Stone" : "Stair"} {index}</span>
+          {inputArray && <div className="rounded-lg bg-muted/50 border border-border p-2 font-mono text-sm"><span className="block text-[10px] text-muted-foreground">Height</span>{inputArray[index]}</div>}
+          <div aria-label={`dp[${index}]: ${value === null ? "not computed" : value}${active ? ", current" : used ? ", dependency" : ""}`} className={`rounded-lg border-2 p-3 font-mono font-semibold ${active ? "border-amber-500 bg-amber-500/10" : used ? "border-blue-500 bg-blue-500/10" : "border-border bg-card"}`}><span className="block text-[10px] font-sans text-muted-foreground mb-1">dp[{index}]</span>{value ?? "—"}</div>
+          <span className="block h-4 text-[10px] font-semibold text-muted-foreground">{active ? "Current" : used ? "Uses" : value === null ? "Not computed" : "Computed"}</span>
+        </div>;
+      })}
+    </div></div>
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+      <h3 className="text-xs font-bold uppercase tracking-wide text-primary mb-2">Current calculation</h3>
+      {i === null ? <p className="text-sm text-muted-foreground">{phase === "complete" ? "All states are computed. The final table entry is the answer." : "Start playback or step forward to initialize the base cases."}</p> : i === 0 ? <p className="font-mono text-sm">dp[0] = {kind === "frog" ? "0 (no jump needed)" : "1 (one empty route)"}</p> : kind === "stairs" ? <p className="font-mono text-sm break-words">{i === 1 ? "dp[1] = 1 (one single step)" : `dp[${i}] = dp[${i - 1}] + dp[${i - 2}] = ${previous ?? "?"} + ${earlier ?? "?"}${previous !== null && earlier !== null ? ` = ${previous + earlier}` : ""}`}</p> : <div className="space-y-2 text-sm font-mono break-words"><p>From stone {i - 1}: {previous ?? "?"} + |{inputArray?.[i]} − {inputArray?.[i - 1]}| = {jump1 ?? "?"}</p>{i > 1 && <p>From stone {i - 2}: {earlier ?? "?"} + |{inputArray?.[i]} − {inputArray?.[i - 2]}| = {jump2 ?? "?"}</p>}<p className="font-semibold text-primary">dp[{i}] = {i === 1 ? jump1 : `min(${jump1 ?? "?"}, ${jump2 ?? "?"})${jump1 !== null && jump2 !== null ? ` = ${Math.min(jump1, jump2)}` : ""}`}</p></div>}
     </div>
-  );
+    <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={follow} onChange={e => setFollow(e.target.checked)} className="accent-primary"/>Follow active state</label>
+    <p className="text-xs text-muted-foreground">Amber: current state · Blue: dependencies · —: not computed</p>
+  </div>;
 }

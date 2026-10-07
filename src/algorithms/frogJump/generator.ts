@@ -113,17 +113,17 @@ export function generateFrogJumpSteps(heights: number[]): VisualizationStep<DP1D
 }
 
 export function runFrogJumpExperiment(n: number): ComplexityMetrics {
-  
+
   let comparisons = 0;
   let operations = 0;
 
   comparisons++;
   if (n <= 1) {
-    return { comparisons, operations };
+    return { comparisons, operations: 2 };
   }
 
   operations += 4; // array init, dp[0], dp[1]
-  
+
   for (let i = 2; i < n; i++) {
     operations += 8; // jump1, jump2, assignment
     comparisons++; // min()
@@ -152,7 +152,7 @@ interface LayoutNode {
 function buildLayoutTree(index: number, depth: number, isMemoized: boolean, memo: Record<number, number> = {}): LayoutNode {
   const id = `node-${index}-${Math.random().toString(36).substr(2, 9)}`;
   const node: LayoutNode = { id, label: `f(${index})`, index, x: 0, y: depth * 80 + 50 };
-  
+
   if (isMemoized && memo[index] !== undefined) return node;
   if (isMemoized) memo[index] = 1;
 
@@ -173,7 +173,7 @@ function assignXCoordinates(node: LayoutNode) {
   } else {
     if (node.left) assignXCoordinates(node.left);
     if (node.right) assignXCoordinates(node.right);
-    
+
     if (node.left && node.right) {
       node.x = (node.left.x + node.right.x) / 2;
     } else if (node.left) {
@@ -197,30 +197,30 @@ function flattenLayoutTree(node: LayoutNode, nodes: RecursionNode[], edges: Recu
 export function generateFrogJumpRecursiveSteps(heights: number[]): VisualizationStep<RecursionTreeState>[] {
   const nodes: RecursionNode[] = [];
   const edges: RecursionEdge[] = [];
-  
+
   currentLeafX = 0; // Reset global layout counter
   const root = buildLayoutTree(heights.length - 1, 0, false);
   assignXCoordinates(root);
   flattenLayoutTree(root, nodes, edges);
-  
+
   return buildFrogJumpTreeSteps(heights, nodes, false);
 }
 
 export function generateFrogJumpMemoizedSteps(heights: number[]): VisualizationStep<RecursionTreeState>[] {
   const nodes: RecursionNode[] = [];
   const edges: RecursionEdge[] = [];
-  
+
   currentLeafX = 0; // Reset global layout counter
   const root = buildLayoutTree(heights.length - 1, 0, true);
   assignXCoordinates(root);
   flattenLayoutTree(root, nodes, edges);
-  
+
   return buildFrogJumpTreeSteps(heights, nodes, true);
 }
 
 function buildFrogJumpTreeSteps(
-  heights: number[], 
-  layoutNodes: RecursionNode[], 
+  heights: number[],
+  layoutNodes: RecursionNode[],
   useMemo: boolean
 ): VisualizationStep<RecursionTreeState>[] {
   const steps: VisualizationStep<RecursionTreeState>[] = [];
@@ -248,26 +248,27 @@ function buildFrogJumpTreeSteps(
       },
       activeLine,
       explanation,
-      beginnerExplanation
+      beginnerExplanation,
+      complexityMetrics: { operations: state.nodes.length + state.computedNodeIds.length, comparisons: 0, recursiveCalls: state.nodes.length, computedStates: state.computedNodeIds.length, cacheHits: state.memoizedNodeIds.length },
     });
   }
 
   const memoCache: Record<number, number> = {};
-  let layoutNodeIndex = 0; 
+  let layoutNodeIndex = 0;
 
   function dfs(index: number, parentId: string | null): [number, string] {
     const currentNode = { ...layoutNodes[layoutNodeIndex++] };
-    
+
     state.nodes = [...state.nodes, currentNode];
     if (parentId) {
       state.edges = [...state.edges, { source: parentId, target: currentNode.id }];
     }
-    
+
     state.currentNodeId = currentNode.id;
     state.callStackIds = [...state.callStackIds, currentNode.id];
-    
+
     addStep(
-      useMemo ? 1 : 0, 
+      0,
       `Calling f(${index}). We want the min energy to reach stone ${index}.`,
       `Let's find out how much energy we need to reach stone ${index}.`
     );
@@ -276,9 +277,9 @@ function buildFrogJumpTreeSteps(
       state.memoizedNodeIds = [...state.memoizedNodeIds, currentNode.id];
       // Update the node's value immutably in state.nodes
       state.nodes = state.nodes.map(n => n.id === currentNode.id ? { ...n, value: memoCache[index] } : n);
-      
+
       addStep(
-        2, 
+        2,
         `Cache hit! f(${index}) was already computed as ${memoCache[index]}.`,
         `We've been here before! We already know the answer is ${memoCache[index]}.`
       );
@@ -296,13 +297,13 @@ function buildFrogJumpTreeSteps(
         newMemo[0] = 0;
         state.memoArray = newMemo;
       }
-      
+
       addStep(
-        useMemo ? 4 : 1, 
+        1,
         `Base case: f(0) = 0. No energy needed to stay at the start.`,
         `We are already at the first stone! Energy is 0.`
       );
-      
+
       state.callStackIds = state.callStackIds.slice(0, -1);
       return [0, currentNode.id];
     }
@@ -311,10 +312,10 @@ function buildFrogJumpTreeSteps(
     const cost1 = Math.abs(heights[index] - heights[index - 1]);
     const [prevEnergy1] = dfs(index - 1, currentNode.id);
     const jump1 = prevEnergy1 + cost1;
-    
+
     state.currentNodeId = currentNode.id;
     addStep(
-      useMemo ? 5 : 2,
+      useMemo ? 3 : 2,
       `Jump from stone ${index - 1} costs ${cost1}. Total for this path: ${prevEnergy1} + ${cost1} = ${jump1}.`,
       `If we take a small jump, it costs ${jump1} energy.`
     );
@@ -326,18 +327,18 @@ function buildFrogJumpTreeSteps(
       const cost2 = Math.abs(heights[index] - heights[index - 2]);
       const [prevEnergy2] = dfs(index - 2, currentNode.id);
       const jump2 = prevEnergy2 + cost2;
-      
+
       state.currentNodeId = currentNode.id;
       addStep(
-        useMemo ? 7 : 4,
+        useMemo ? 5 : 4,
         `Jump from stone ${index - 2} costs ${cost2}. Total for this path: ${prevEnergy2} + ${cost2} = ${jump2}.`,
         `If we take a big jump, it costs ${jump2} energy.`
       );
-      
+
       result = Math.min(jump1, jump2);
-      
+
       addStep(
-        useMemo ? 8 : 5,
+        useMemo ? 6 : 5,
         `We take the minimum of the two jumps: min(${jump1}, ${jump2}) = ${result}.`,
         `We want to save energy! So we choose the smaller path, which costs ${result}.`
       );
@@ -345,7 +346,7 @@ function buildFrogJumpTreeSteps(
 
     state.nodes = state.nodes.map(n => n.id === currentNode.id ? { ...n, value: result } : n);
     state.computedNodeIds = [...state.computedNodeIds, currentNode.id];
-    
+
     if (useMemo) {
       memoCache[index] = result;
       const newMemo = [...state.memoArray];
@@ -353,14 +354,14 @@ function buildFrogJumpTreeSteps(
       state.memoArray = newMemo;
 
       addStep(
-        9, 
+        index > 1 ? 6 : 8,
         `Store f(${index}) = ${result} in the memo table for later.`,
         `Let's remember this answer so we don't have to calculate it again!`
       );
     }
 
     addStep(
-      useMemo ? 10 : (index > 1 ? 5 : 6), 
+      useMemo ? (index > 1 ? 7 : 9) : (index > 1 ? 5 : 6),
       `f(${index}) returns ${result}.`,
       `We've figured out stone ${index}! It takes ${result} energy.`
     );
@@ -377,7 +378,7 @@ function buildFrogJumpTreeSteps(
   );
 
   dfs(heights.length - 1, null);
-  
+
   state.currentNodeId = null;
   addStep(
     -1,

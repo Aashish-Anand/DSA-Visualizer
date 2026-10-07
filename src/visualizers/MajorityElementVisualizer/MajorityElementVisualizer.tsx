@@ -1,3 +1,4 @@
+import { useFollowActive } from "@/hooks/useFollowActive";
 import { motion, AnimatePresence } from "framer-motion";
 import type { MajorityElement1State, MajorityElement2State } from "@/types";
 
@@ -20,19 +21,20 @@ export function MajorityElementVisualizer({ state, variant }: MajorityElementVis
 
 function Majority1View({ state }: { state: MajorityElement1State }) {
   const { array, currentIndex, candidate, count, phase } = state;
+  const { viewportRef, activeRef, follow, setFollow } = useFollowActive(currentIndex);
 
   return (
-    <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[400px]">
+    <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[280px]">
       
       {/* Candidate Dashboard */}
-      <div className="flex flex-col items-center justify-center w-full max-w-4xl shrink-0 mt-8 mb-16">
+      <div className="flex flex-col items-center justify-center w-full max-w-4xl shrink-0 mt-2 mb-5">
         <div className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-widest">
           Voting Dashboard
         </div>
         
         <motion.div
           layout
-          className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 min-w-[200px] ${
+          className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-300 min-w-[200px] ${
             phase === "complete"
               ? "border-emerald-500 bg-emerald-500/10 shadow-[0_0_30px_hsla(142,71%,45%,0.3)]"
               : phase === "new-candidate"
@@ -54,7 +56,7 @@ function Majority1View({ state }: { state: MajorityElement1State }) {
              
              {candidate !== null && (
                <div className="flex flex-col items-center ml-4">
-                 <span className="text-[10px] text-muted-foreground font-bold">VOTES</span>
+                 <span className="text-[10px] text-muted-foreground font-bold">VOTE BALANCE</span>
                  <motion.span 
                    key={`count-${count}`}
                    initial={{ opacity: 0, y: -10 }}
@@ -72,8 +74,9 @@ function Majority1View({ state }: { state: MajorityElement1State }) {
       </div>
 
       {/* Array Display */}
-      <div className="w-full overflow-x-auto pb-8 custom-scrollbar">
-        <div className="flex items-center justify-center min-w-max mx-auto px-4 gap-3 relative mt-4">
+      <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" className="accent-primary" checked={follow} onChange={e => setFollow(e.target.checked)}/>Follow active element</label>
+      <div ref={viewportRef} className="w-full overflow-x-auto pb-8 custom-scrollbar">
+        <div className="flex items-center justify-center min-w-max mx-auto px-2 gap-2 relative mt-4">
           <AnimatePresence mode="popLayout">
             {array.map((val, idx) => {
               const isCurrent = idx === currentIndex && phase !== "complete";
@@ -81,7 +84,7 @@ function Majority1View({ state }: { state: MajorityElement1State }) {
               const isMismatch = isCurrent && val !== candidate && phase === "decrement";
 
               return (
-                <div key={`cell-${idx}`} className="flex flex-col items-center relative group">
+                <div ref={isCurrent ? activeRef : undefined} key={`cell-${idx}`} className="flex flex-col items-center relative group">
                   
                   {/* Indicators Above */}
                   <div className="h-6 flex flex-col justify-end items-center mb-2 w-full">
@@ -99,7 +102,7 @@ function Majority1View({ state }: { state: MajorityElement1State }) {
                     layout
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-xl font-mono text-xl font-bold border-2 transition-all duration-300 relative ${
+                    className={`w-12 h-12 md:w-12 md:h-12 flex items-center justify-center rounded-xl font-mono text-xl font-bold border-2 transition-all duration-300 relative ${
                       isMatch
                         ? "border-emerald-500 bg-emerald-500/20 text-emerald-500 shadow-[0_0_15px_hsla(142,71%,45%,0.3)] scale-110 z-20"
                         : isMismatch
@@ -131,12 +134,13 @@ function Majority1View({ state }: { state: MajorityElement1State }) {
 
 function Majority2View({ state }: { state: MajorityElement2State }) {
   const { array, currentIndex, candidate1, count1, candidate2, count2, phase } = state;
+  const { viewportRef, activeRef, follow, setFollow } = useFollowActive(currentIndex);
 
   return (
-    <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[400px]">
+    <div className="flex flex-col items-center w-full h-full p-4 overflow-y-auto min-h-[280px]">
       
       {/* Candidate Dashboard */}
-      <div className="flex flex-col items-center justify-center w-full max-w-4xl shrink-0 mt-8 mb-16">
+      <div className="flex flex-col items-center justify-center w-full max-w-4xl shrink-0 mt-2 mb-5">
         <div className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-widest">
           Voting Dashboard
         </div>
@@ -145,7 +149,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
           {/* Candidate 1 */}
           <motion.div
             layout
-            className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 min-w-[200px] ${
+            className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-300 min-w-[200px] ${
               phase === "complete" && candidate1 !== null
                 ? "border-emerald-500 bg-emerald-500/10 shadow-[0_0_30px_hsla(142,71%,45%,0.3)]"
                 : phase === "new-cand1"
@@ -169,7 +173,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
               
               {candidate1 !== null && phase !== "complete" && (
                 <div className="flex flex-col items-center ml-4">
-                  <span className="text-[10px] text-muted-foreground font-bold">VOTES</span>
+                  <span className="text-[10px] text-muted-foreground font-bold">VOTE BALANCE</span>
                   <motion.span 
                     key={`count1-${count1}`}
                     initial={{ opacity: 0, y: -10 }}
@@ -188,7 +192,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
           {/* Candidate 2 */}
           <motion.div
             layout
-            className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 min-w-[200px] ${
+            className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-300 min-w-[200px] ${
               phase === "complete" && candidate2 !== null
                 ? "border-emerald-500 bg-emerald-500/10 shadow-[0_0_30px_hsla(142,71%,45%,0.3)]"
                 : phase === "new-cand2"
@@ -212,7 +216,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
               
               {candidate2 !== null && phase !== "complete" && (
                 <div className="flex flex-col items-center ml-4">
-                  <span className="text-[10px] text-muted-foreground font-bold">VOTES</span>
+                  <span className="text-[10px] text-muted-foreground font-bold">VOTE BALANCE</span>
                   <motion.span 
                     key={`count2-${count2}`}
                     initial={{ opacity: 0, y: -10 }}
@@ -231,8 +235,9 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
       </div>
 
       {/* Array Display */}
-      <div className="w-full overflow-x-auto pb-8 custom-scrollbar">
-        <div className="flex items-center justify-center min-w-max mx-auto px-4 gap-3 relative mt-4">
+      <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" className="accent-primary" checked={follow} onChange={e => setFollow(e.target.checked)}/>Follow active element</label>
+      <div ref={viewportRef} className="w-full overflow-x-auto pb-8 custom-scrollbar">
+        <div className="flex items-center justify-center min-w-max mx-auto px-2 gap-2 relative mt-4">
           <AnimatePresence mode="popLayout">
             {array.map((val, idx) => {
               const isCurrent = idx === currentIndex && phase !== "complete" && phase !== "verify";
@@ -241,7 +246,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
               const isMismatch = isCurrent && phase === "decrement-both";
 
               return (
-                <div key={`cell-${idx}`} className="flex flex-col items-center relative group">
+                <div ref={isCurrent ? activeRef : undefined} key={`cell-${idx}`} className="flex flex-col items-center relative group">
                   
                   {/* Indicators Above */}
                   <div className="h-6 flex flex-col justify-end items-center mb-2 w-full">
@@ -259,7 +264,7 @@ function Majority2View({ state }: { state: MajorityElement2State }) {
                     layout
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className={`w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-xl font-mono text-xl font-bold border-2 transition-all duration-300 relative ${
+                    className={`w-12 h-12 md:w-12 md:h-12 flex items-center justify-center rounded-xl font-mono text-xl font-bold border-2 transition-all duration-300 relative ${
                       isMatch1
                         ? "border-emerald-500 bg-emerald-500/20 text-emerald-500 shadow-[0_0_15px_hsla(142,71%,45%,0.3)] scale-110 z-20"
                         : isMatch2

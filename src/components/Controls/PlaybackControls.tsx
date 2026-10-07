@@ -12,6 +12,8 @@ import type { PlaybackSpeed } from "@/types";
 import { useEffect } from "react";
 
 interface PlaybackControlsProps {
+  shortcutsEnabled?: boolean;
+  onGoToStep?: (index: number) => void;
   isPlaying: boolean;
   speed: PlaybackSpeed;
   currentStep: number;
@@ -32,6 +34,8 @@ interface PlaybackControlsProps {
 const SPEEDS: PlaybackSpeed[] = [0.5, 1, 2, 4];
 
 export function PlaybackControls({
+  shortcutsEnabled = true,
+  onGoToStep,
   isPlaying,
   speed,
   currentStep,
@@ -50,11 +54,15 @@ export function PlaybackControls({
 }: PlaybackControlsProps) {
   // Keyboard shortcuts
   useEffect(() => {
+    if (!shortcutsEnabled) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if user is typing in an input
       if (
         e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement ||
+        e.target instanceof HTMLButtonElement ||
+        (e.target instanceof HTMLElement && e.target.isContentEditable)
       ) {
         return;
       }
@@ -86,7 +94,7 @@ export function PlaybackControls({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, onPlay, onPause, onNext, onPrevious, onReset]);
+  }, [shortcutsEnabled, isPlaying, onPlay, onPause, onNext, onPrevious, onReset]);
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -98,6 +106,7 @@ export function PlaybackControls({
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Reset playback"
                 onClick={onReset}
                 disabled={isFirstStep && !isPlaying}
                 className="h-8 w-8"
@@ -115,6 +124,7 @@ export function PlaybackControls({
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Previous step"
                 onClick={onPrevious}
                 disabled={isFirstStep}
                 className="h-8 w-8"
@@ -132,6 +142,7 @@ export function PlaybackControls({
               <Button
                 variant="default"
                 size="icon"
+                aria-label={isPlaying ? "Pause playback" : "Play playback"}
                 onClick={isPlaying ? onPause : onPlay}
                 className="h-9 w-9 rounded-full"
               >
@@ -148,6 +159,7 @@ export function PlaybackControls({
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Next step"
                 onClick={onNext}
                 disabled={isLastStep}
                 className="h-8 w-8"
@@ -194,6 +206,7 @@ export function PlaybackControls({
               Dry Run
             </span>
             <button
+              aria-label="Quiz checkpoints" aria-pressed={isDryRunMode}
               onClick={onToggleDryRunMode}
               className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 isDryRunMode ? "bg-primary" : "bg-input"
@@ -219,12 +232,12 @@ export function PlaybackControls({
           >
             {currentStep + 1} / {totalSteps}
           </Badge>
-          <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+          {onGoToStep ? <input aria-label="Playback timeline" type="range" min={0} max={Math.max(totalSteps - 1, 0)} value={currentStep} onChange={e => onGoToStep(Number(e.target.value))} className="w-24 sm:w-40 accent-primary"/> : <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
             <div
               className="h-full bg-primary rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
-          </div>
+          </div>}
         </div>
       </div>
     </TooltipProvider>

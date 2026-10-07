@@ -75,6 +75,8 @@ export const majorityElement1Config: AlgorithmConfig = {
     patterns: ["Boyer-Moore Voting", "Array", "Space Optimization"]
   },
   complexityExplorer: {
+    expectedGrowth: "linear",
+    operationDefinition: "Counts two comparisons (zero-balance check and candidate match) and one scan operation per element. The vote balance is a cancellation counter, not a frequency count.",
     trackedMetrics: ["comparisons", "operations"],
     storyParagraphs: [
       "The Boyer-Moore Voting Algorithm achieves O(N) time and O(1) space, making it the most optimal way to find a majority element.",

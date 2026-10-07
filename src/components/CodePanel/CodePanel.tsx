@@ -11,19 +11,22 @@ type Language = "pseudocode" | "python" | "java" | "cpp";
 
 export function CodePanel({ config, activeLine }: CodePanelProps) {
   const activeRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState<Language>("pseudocode");
 
   // Fallback to pseudocode if selected language is not available in config
-  const lines: PseudocodeLine[] = config[language] || config.pseudocode;
+  const effectiveLanguage = config[language] ? language : "pseudocode";
+  const lines: PseudocodeLine[] = config[effectiveLanguage] || config.pseudocode;
 
   // Scroll active line into view
   useEffect(() => {
-    if (activeRef.current) {
-      activeRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
+    const container = scrollRef.current;
+    const active = activeRef.current;
+    if (!container || !active) return;
+    const bounds = container.getBoundingClientRect();
+    const line = active.getBoundingClientRect();
+    if (line.top < bounds.top) container.scrollTop += line.top - bounds.top;
+    else if (line.bottom > bounds.bottom) container.scrollTop += line.bottom - bounds.bottom;
   }, [activeLine, language]);
 
   return (
@@ -38,7 +41,8 @@ export function CodePanel({ config, activeLine }: CodePanelProps) {
         
         <select
           className="text-[11px] bg-secondary text-secondary-foreground border border-border rounded px-2 py-1 outline-none focus:ring-1 focus:ring-primary cursor-pointer font-medium"
-          value={language}
+          aria-label="Code language"
+          value={effectiveLanguage}
           onChange={(e) => setLanguage(e.target.value as Language)}
         >
           <option value="pseudocode">Pseudocode</option>
@@ -47,7 +51,8 @@ export function CodePanel({ config, activeLine }: CodePanelProps) {
           {config.cpp && <option value="cpp">C++</option>}
         </select>
       </div>
-      <div className="flex-1 overflow-y-auto py-2">
+      {language !== effectiveLanguage && <p role="status" className="px-4 py-2 text-xs text-muted-foreground">This approach has no {language} translation. Showing pseudocode.</p>}
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-auto py-2">
         {lines.map((line, index) => {
           const isActive = index === activeLine;
           return (

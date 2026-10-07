@@ -37,6 +37,7 @@ AlgoLens includes **22+ fully animated algorithms** across 6 core DSA categories
 | | Stock Buy and Sell | Medium | Dynamic min-price pointer & profit maximization |
 | | Kadane's Algorithm | Medium | Maximum contiguous subarray boundary tracking |
 | | Majority Element (I & II) | Easy/Medium | Boyer-Moore voting counters & candidate frequencies |
+| **Stacks** | Largest Rectangle in Histogram | Hard | Monotonic index stack, rectangle boundaries, sentinel flush, & area calculation |
 | **Sorting** | Bubble, Selection, Insertion | Easy | Dynamic comparison pointers, sorted partitions, & swaps |
 | | Quick Sort | Medium | Pivot selection (Lomuto), partition splits, & call stack |
 | | Merge Sort | Medium | Divide-and-conquer tree splitting & auxiliary array merging |

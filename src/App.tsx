@@ -1,3 +1,4 @@
+import { MotionConfig } from "framer-motion";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { AlgorithmPage } from "@/pages/AlgorithmPage";
@@ -108,10 +109,9 @@ function AppContent() {
         isDark={isDark}
         toggleTheme={toggleTheme}
       />
-      <main className="flex-1 min-w-0 lg:overflow-hidden">
+      <main className="flex-1 min-w-0 lg:overflow-clip">
         <AlgorithmPage key={activeAlgorithm} algorithmId={activeAlgorithm} />
       </main>
-      <FeedbackButton />
       <FeedbackModal />
     </div>
   );
@@ -119,9 +119,11 @@ function AppContent() {
 
 function App() {
   return (
-    <FeedbackProvider>
-      <AppContent />
-    </FeedbackProvider>
+    <MotionConfig reducedMotion="user">
+      <FeedbackProvider>
+        <AppContent />
+      </FeedbackProvider>
+    </MotionConfig>
   );
 }
 

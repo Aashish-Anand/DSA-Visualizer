@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import type { RecursionTreeState } from "@/types";
 
 interface RecursionTreeVisualizerProps {
   state: RecursionTreeState;
+  showMemo?: boolean;
 }
 
-export function RecursionTreeVisualizer({ state }: RecursionTreeVisualizerProps) {
+export function RecursionTreeVisualizer({ state, showMemo = true }: RecursionTreeVisualizerProps) {
+  const [zoom, setZoom] = useState(1);
   const { nodes, edges, currentNodeId, computedNodeIds, memoizedNodeIds, callStackIds, memoArray } = state;
 
   // Create a map for easy lookup of node coordinates
@@ -32,12 +35,13 @@ export function RecursionTreeVisualizer({ state }: RecursionTreeVisualizerProps)
   const viewBox = `${viewBoxX} ${viewBoxY} ${svgWidth} ${svgHeight}`;
 
   return (
-    <div className="w-full h-full flex flex-col items-center bg-card/30 p-4 overflow-y-auto">
+    <div className="w-full flex flex-col items-center bg-card/30 p-4 overflow-y-auto">
+      <div className="w-full flex flex-wrap justify-between gap-2 mb-3"><p className="text-xs text-muted-foreground">Blue: active call · Green: computed{showMemo ? " · Amber: cache hit" : ""}</p><div className="flex gap-2"><button className="lesson-action" aria-label="Zoom out tree" onClick={() => setZoom(v => Math.max(1, v - 0.5))}>−</button><button className="lesson-action" onClick={() => setZoom(1)}>Fit tree</button><button className="lesson-action" aria-label="Zoom in tree" onClick={() => setZoom(v => Math.min(4, v + 0.5))}>+</button></div></div>
       {/* 
         Dynamic SVG viewBox that expands to fit the generated tree bounds
       */}
-      <div className="w-full flex-1 flex items-center justify-center min-h-0">
-        <svg viewBox={viewBox} className="w-full h-full overflow-visible max-h-full">
+      {nodes.length === 0 ? <p className="w-full rounded-lg border border-dashed border-border p-5 text-sm text-muted-foreground">Step forward to create the first recursive call.</p> : <div className="w-full overflow-auto">
+        <svg aria-label="Recursive call tree" role="img" viewBox={viewBox} style={{ width: `${zoom * 100}%`, height: `${Math.max(220, Math.min(svgHeight, 420)) * zoom}px` }} className="block">
           {/* Edges Layer */}
           <g className="edges">
             {edges.map((edge) => {
@@ -174,13 +178,13 @@ export function RecursionTreeVisualizer({ state }: RecursionTreeVisualizerProps)
             })}
           </g>
         </svg>
-      </div>
+      </div>}
       
       {/* Bottom Information UI */}
       <div className="w-full max-w-5xl mt-2 flex flex-col md:flex-row items-start justify-center gap-8 px-4 pb-8 min-h-[120px]">
         
         {/* Memo Array UI */}
-        {memoArray && memoArray.length > 0 && (
+        {showMemo && memoArray && memoArray.length > 0 && (
           <div className="flex flex-col items-center border border-border rounded-xl p-4 bg-background/50 backdrop-blur-sm min-w-[200px]">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
               Memo Table

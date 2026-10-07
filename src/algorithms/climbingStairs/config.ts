@@ -1,3 +1,4 @@
+import { getDPComplexity } from "../dpExperiments";
 import type { AlgorithmConfig } from "@/types";
 import { runClimbingStairsExperiment } from "./generator";
 
@@ -121,20 +122,10 @@ export const climbingStairsConfig: AlgorithmConfig = {
     ],
     intuitionPrompt: "To reach step `n`, your very last step must have been from step `n-1` (taking 1 step) or step `n-2` (taking 2 steps). Therefore, total ways to step `n` is simply: waysTo(n-1) + waysTo(n-2)!",
     approaches: [
-      {
-        name: "Naive Recursion",
-        complexity: "O(2ⁿ)",
-        spaceComplexity: "O(n)",
-        description: "Recompute climbStairs(n-1) and climbStairs(n-2) recursively. High overlap of duplicate subproblems.",
-        isOptimal: false
-      },
-      {
-        name: "Dynamic Programming (Tabulation / Memoization)",
-        complexity: "O(n)",
-        spaceComplexity: "O(n) or O(1)",
-        description: "Store ways to reach step i in a dp table or two variables (prev1, prev2) and compute bottom-up.",
-        isOptimal: true
-      }
+      { name: "Recursion", complexity: "O(2ⁿ)", spaceComplexity: "O(n)", description: "Explore both predecessor choices recursively. Repeated subproblems make the work grow exponentially.", isOptimal: false },
+      { name: "Memoization", complexity: "O(n)", spaceComplexity: "O(n)", description: "Solve top-down and cache each subproblem. The cache and recursion stack each use linear extra space.", isOptimal: true },
+      { name: "Tabulation", complexity: "O(n)", spaceComplexity: "O(n)", description: "Fill a DP table from the base cases upward, using the previous two states to compute the next one.", isOptimal: true },
+      { name: "Rolling variables (explanation only)", complexity: "O(n)", spaceComplexity: "O(1)", description: "Only the previous two values are needed. Replacing the table with two variables reduces storage; this optimization is not an available visualization approach yet.", isOptimal: false },
     ],
     realWorldApplications: [
       "Path counting in grid routing and game movement physics.",
@@ -145,3 +136,8 @@ export const climbingStairsConfig: AlgorithmConfig = {
   }
 };
 
+
+// Resolve performance metadata for the actual selected implementation.
+for (const variant of climbingStairsConfig.variants ?? []) {
+  variant.complexityExplorer = getDPComplexity("stairs", variant.id as "recursive" | "memoized" | "iterative", climbingStairsConfig.complexityExplorer!);
+}

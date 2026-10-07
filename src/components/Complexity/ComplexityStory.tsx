@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { InlineText } from "@/components/Lesson/InlineText";
 
 interface ComplexityStoryProps {
   paragraphs: string[];
@@ -9,10 +10,10 @@ interface ComplexityStoryProps {
  */
 function highlightText(text: string): React.ReactNode {
   // Match O(...) notation, technical keywords, and emphasized phrases
-  const regex = /O\([^)]+\)|HashMap|nested loops?|inner loop|outer loop|brute[- ]force|quadratic|linear|constant|squared|n²|log\s*n|complement/gi;
+  const regex = /O\([^)]+\)|HashMap|nested loops?|inner loop|outer loop|brute[- ]force|\bquadratic\b|\blinear\b|\bconstant\b|\bsquared\b|n²|log\s*n|complement/gi;
   const allMatches = [...text.matchAll(regex)];
 
-  if (allMatches.length === 0) return text;
+  if (allMatches.length === 0) return <InlineText text={text}/>;
 
   const result: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -23,7 +24,7 @@ function highlightText(text: string): React.ReactNode {
 
     // Push text before this match
     if (start > lastIndex) {
-      result.push(text.slice(lastIndex, start));
+      result.push(<InlineText key={`text-${i}`} text={text.slice(lastIndex, start)}/>);
     }
 
     const isComplexity = /^O\(/.test(matchText);
@@ -45,7 +46,7 @@ function highlightText(text: string): React.ReactNode {
 
   // Push remaining text after last match
   if (lastIndex < text.length) {
-    result.push(text.slice(lastIndex));
+    result.push(<InlineText key="remaining" text={text.slice(lastIndex)}/>);
   }
 
   return result;

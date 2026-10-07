@@ -1,234 +1,27 @@
-import { motion, type Variants } from "framer-motion";
-import {
-  BookOpen,
-  Lightbulb,
-  TrendingUp,
-  Globe,
-  Tag,
-  ArrowRight,
-  Zap,
-  ChevronRight,
-} from "lucide-react";
-import type { ProblemContext } from "@/types";
+import type { AlgorithmVariant, ProblemContext } from "@/types";
+import { ArrowRight, Lightbulb } from "lucide-react";
+import { InlineText } from "@/components/Lesson/InlineText";
 
-interface ProblemContextPanelProps {
+interface Props {
   context: ProblemContext;
   onStartVisualization: () => void;
+  onExampleSelect?: (index: number) => void;
+  simulation?: React.ReactNode;
+  variants?: AlgorithmVariant[];
+  onVariantSelect?: (id: string) => void;
 }
-
-const container: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
-};
-
-export function ProblemContextPanel({ context, onStartVisualization }: ProblemContextPanelProps) {
-  return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="w-full"
-    >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-24 space-y-5">
-        {/* Problem Statement */}
-        <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-primary/10">
-              <BookOpen size={16} className="text-primary" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Problem Statement</h2>
-          </div>
-          <p className="text-sm text-foreground/90 leading-relaxed">
-            {context.statement}
-          </p>
-          {context.referenceImage && (
-            <div className="mt-4 rounded-lg overflow-hidden border border-border bg-muted/20 flex justify-center py-4 px-2">
-              <img
-                src={context.referenceImage}
-                alt="Problem Illustration"
-                className="max-h-72 w-auto object-contain rounded-md shadow-md"
-              />
-            </div>
-          )}
-        </motion.section>
-
-        {/* Examples */}
-        <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10">
-              <Zap size={16} className="text-emerald-500" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Examples</h2>
-          </div>
-          <div className="space-y-3">
-            {context.examples.map((example, i) => (
-              <div
-                key={i}
-                className="rounded-lg bg-muted/40 border border-border/50 p-3.5 space-y-2"
-              >
-                <div className="flex items-start gap-2 text-xs">
-                  <span className="shrink-0 font-semibold text-muted-foreground w-12">Input:</span>
-                  <code className="font-mono text-foreground/90 bg-background/60 px-1.5 py-0.5 rounded">
-                    {example.input}
-                  </code>
-                </div>
-                <div className="flex items-start gap-2 text-xs">
-                  <span className="shrink-0 font-semibold text-muted-foreground w-12">Output:</span>
-                  <code className="font-mono text-emerald-500 bg-emerald-500/5 px-1.5 py-0.5 rounded">
-                    {example.output}
-                  </code>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed pt-1 border-t border-border/30">
-                  💡 {example.explanation}
-                </p>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Intuition Builder */}
-        <motion.section variants={item} className="rounded-xl border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-amber-500/10">
-              <Lightbulb size={16} className="text-amber-500" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Think First</h2>
-          </div>
-          <p className="text-sm text-foreground/90 leading-relaxed italic">
-            &ldquo;{context.intuitionPrompt}&rdquo;
-          </p>
-        </motion.section>
-
-        {/* Approach Evolution */}
-        <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="p-1.5 rounded-lg bg-violet-500/10">
-              <TrendingUp size={16} className="text-violet-500" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Approach Evolution</h2>
-          </div>
-          <div className="space-y-0">
-            {context.approaches.map((approach, i) => (
-              <div key={i} className="relative">
-                {/* Connector line */}
-                {i < context.approaches.length - 1 && (
-                  <div className="absolute left-[15px] top-[36px] bottom-0 w-px bg-border" />
-                )}
-                <div className="flex gap-3 pb-4">
-                  {/* Step indicator */}
-                  <div
-                    className={`relative z-10 shrink-0 w-[31px] h-[31px] rounded-full flex items-center justify-center text-xs font-bold border-2 ${
-                      approach.isOptimal
-                        ? "bg-emerald-500/10 border-emerald-500 text-emerald-500"
-                        : "bg-muted/50 border-border text-muted-foreground"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-sm text-foreground">{approach.name}</span>
-                      <span
-                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
-                          approach.isOptimal
-                            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                            : "bg-muted/50 text-muted-foreground border-border"
-                        }`}
-                      >
-                        {approach.complexity}
-                      </span>
-                      {approach.spaceComplexity && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border">
-                          Space: {approach.spaceComplexity}
-                        </span>
-                      )}
-                      {approach.isOptimal && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                          ✦ Optimal
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                      {approach.description}
-                    </p>
-                  </div>
-                </div>
-                {/* Arrow between approaches */}
-                {i < context.approaches.length - 1 && (
-                  <div className="flex items-center gap-2 pl-2 pb-4 -mt-1 relative z-10">
-                    <div className="w-4 h-4 rounded-full bg-background border border-border flex items-center justify-center text-primary shadow-sm -ml-[1px]">
-                      <ChevronRight size={12} className="text-primary stroke-[3]" />
-                    </div>
-                    <span className="text-xs font-semibold text-foreground/90 italic">Can we do better?</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Real-World Applications */}
-        <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-sky-500/10">
-              <Globe size={16} className="text-sky-500" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Real-World Applications</h2>
-          </div>
-          <div className="grid gap-2">
-            {context.realWorldApplications.map((app, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-2 text-xs text-foreground/80 leading-relaxed"
-              >
-                <ArrowRight size={12} className="shrink-0 text-sky-500 mt-0.5" />
-                <span>{app}</span>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Patterns */}
-        {context.patterns.length > 0 && (
-          <motion.section variants={item} className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-pink-500/10">
-                <Tag size={16} className="text-pink-500" />
-              </div>
-              <h2 className="text-sm font-bold text-foreground uppercase tracking-wide">Patterns Used</h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {context.patterns.map((pattern) => (
-                <span
-                  key={pattern}
-                  className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
-                >
-                  {pattern}
-                </span>
-              ))}
-            </div>
-          </motion.section>
-        )}
-
-        {/* CTA */}
-        <motion.div variants={item} className="pt-1 pb-4">
-          <button
-            onClick={onStartVisualization}
-            className="w-full group flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-[1.01] transition-all duration-200"
-          >
-            Start Visualization
-            <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
+export function ProblemContextPanel({ context, onStartVisualization, onExampleSelect, simulation, variants, onVariantSelect }: Props) {
+  return <article className="max-w-4xl mx-auto px-5 sm:px-8 py-8 space-y-8">
+    <section aria-labelledby="problem-statement"><div className="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 id="problem-statement" className="text-xl font-bold">The problem</h2><button onClick={onStartVisualization} className="lesson-action text-primary">Explore the visualization <ArrowRight size={14}/></button></div><p className="text-base leading-7"><InlineText text={context.statement}/></p>{context.referenceImage && <img src={context.referenceImage} alt="Problem illustration" className="max-h-72 mx-auto mt-5"/>}</section>
+    <section aria-labelledby="examples-heading"><h2 id="examples-heading" className="text-lg font-bold mb-4">Examples</h2><div className="grid sm:grid-cols-2 gap-4">{context.examples.map((example, index) => {
+      const values = example.input.match(/\[([^\]]+)\]/)?.[1].split(',').map(v => v.trim());
+      return <div key={index} className="rounded-xl border border-border bg-card/50 p-5 space-y-3"><span className="text-xs font-semibold text-muted-foreground">EXAMPLE {index + 1}</span><p className="text-sm break-words"><strong>Input: </strong><code className="font-mono">{example.input}</code></p>{values && <div className="flex flex-wrap gap-1.5" aria-hidden="true">{values.map((value, i) => <span key={i} className={`w-9 h-9 rounded-md border flex items-center justify-center text-sm font-mono ${context.patterns.includes("Boyer-Moore Voting") && value === example.output ? "border-primary/40 bg-primary/10 text-primary font-bold" : "border-border bg-background"}`}>{value}</span>)}</div>}<p className="text-sm"><strong>Output: </strong><code className="text-primary font-bold">{example.output}</code></p><p className="text-sm text-muted-foreground leading-6"><InlineText text={example.explanation}/></p>{onExampleSelect && <button onClick={() => onExampleSelect(index)} className="lesson-action text-primary">Visualize this example <ArrowRight size={14}/></button>}</div>;
+    })}</div></section>
+    {simulation && <section aria-label="Explore the problem">{simulation}</section>}
+    <section className="rounded-xl bg-amber-500/5 border-l-4 border-amber-500 p-5"><h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Lightbulb size={18} className="text-amber-600 dark:text-amber-400"/>Build the intuition</h2><p className="text-base leading-7"><InlineText text={context.intuitionPrompt}/></p></section>
+    <section><h2 className="text-lg font-bold mb-4">Compare approaches</h2><div className="space-y-2">{context.approaches.map((approach, index) => <details key={index} open={approach.isOptimal} className="rounded-lg border border-border bg-card/30 p-4"><summary className="cursor-pointer text-sm font-semibold"><span>{approach.name}</span><span className="inline-flex flex-wrap gap-2 ml-3 text-xs font-mono font-normal"><span className="text-primary">Time {approach.complexity}</span>{approach.spaceComplexity && <span className="text-muted-foreground">Space {approach.spaceComplexity}</span>}</span></summary><p className="text-sm leading-6 text-muted-foreground mt-3"><InlineText text={approach.description}/></p></details>)}</div>{variants && onVariantSelect && <div className="mt-4 flex flex-wrap gap-2">{variants.map(v => <button key={v.id} onClick={() => onVariantSelect(v.id)} className="lesson-action">Explore {v.id === "iterative" ? "tabulation" : v.id === "memoized" ? "memoization" : "recursion"}<ArrowRight size={14}/></button>)}</div>}</section>
+    <details className="border-t border-border pt-5"><summary className="cursor-pointer font-semibold text-sm">Where this is useful</summary><ul className="list-disc pl-5 mt-3 space-y-2 text-sm leading-6 text-muted-foreground">{context.realWorldApplications.map(app => <li key={app}>{app}</li>)}</ul></details>
+    <div className="flex flex-wrap gap-2">{context.patterns.map(pattern => <span key={pattern} className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">{pattern}</span>)}</div>
+    <button onClick={onStartVisualization} className="bg-primary text-primary-foreground rounded-xl px-5 py-3 font-semibold text-sm flex items-center gap-2">Start visualization <ArrowRight size={16}/></button>
+  </article>;
 }

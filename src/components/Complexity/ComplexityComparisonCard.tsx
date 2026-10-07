@@ -35,7 +35,7 @@ function CaseRow({
         {icon}
         {label}
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      {cases.best === cases.average && cases.average === cases.worst ? <p className="text-lg font-mono font-semibold text-primary">{cases.worst}<span className="text-xs font-sans font-normal text-muted-foreground ml-3">Across best, average, and worst cases</span></p> : <div className="grid grid-cols-3 gap-2">
         {(["best", "average", "worst"] as const).map((caseKey) => (
           <div
             key={caseKey}
@@ -47,7 +47,7 @@ function CaseRow({
             <span className="text-sm font-mono font-bold">{cases[caseKey]}</span>
           </div>
         ))}
-      </div>
+      </div>}
     </motion.div>
   );
 }
@@ -57,14 +57,13 @@ export function ComplexityComparisonCard({
   spaceCases,
 }: ComplexityComparisonCardProps) {
   return (
-    <div className="p-4 rounded-xl bg-card border border-border/50 space-y-4">
+    <div className="p-4 rounded-xl bg-card border border-border/50 grid sm:grid-cols-2 gap-5">
       <CaseRow
         label="Time Complexity"
         icon={<Clock size={12} />}
         cases={timeCases}
         delay={0.1}
       />
-      <div className="h-px bg-border/50" />
       <CaseRow
         label="Space Complexity"
         icon={<HardDrive size={12} />}
